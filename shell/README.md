@@ -23,7 +23,7 @@ the same.
 
 ##How to use it
 To prepare message for signing take data/template.xml and change anything inside element <Trzby> 
-save it to sale-to-register-soap.xml.
+save it to `sale-to-register-soap.xml`.
 
 To sign prefabricated SOAP message use script:
 
