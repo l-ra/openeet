@@ -33,5 +33,7 @@ To send signed message to testing API:
 
 `send-req.sh signed-soap.xml`
 
+After sending you shoul see API response on the output containing FIK.
+
 The scripts hard code certificates/keys used for signing for now. The original message and keys/certificate 
 are published on http://etrzby.cz
