@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <wsse:Security 
+          xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" 
+          xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+          soap:mustUnderstand="1">
+      <wsse:BinarySecurityToken 
+            EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" 
+            ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" 
+            wsu:Id="TheCert">@@@BASE64CERTIFICATE@@@</wsse:BinarySecurityToken>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="TheSignature">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="soap"/>
+          </ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+          <ds:Reference URI="">
+            <ds:Transforms>
+              <ds:Transform Algorithm='http://www.w3.org/2002/06/xmldsig-filter2'
+                            xmlns:dsxp='http://www.w3.org/2002/06/xmldsig-filter2'>
+                <dsxp:XPath Filter='intersect'>/soap:Envelope/soap:Body/*</dsxp:XPath>
+              </ds:Transform>
+              <ds:Transform Algorithm='http://www.w3.org/2001/10/xml-exc-c14n#'/>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+            <ds:DigestValue></ds:DigestValue><!--computed by xmldig engine -->
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue></ds:SignatureValue><!--computed by xmldig engine -->
+        <ds:KeyInfo Id="TheKeyInfo">
+          <wsse:SecurityTokenReference wsu:Id="TheSecurityTokenReference">
+            <wsse:Reference URI="#TheCert" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+    </wsse:Security>
+  </SOAP-ENV:Header>
+  <soap:Body>
+    <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v2">
+      <Hlavicka 
+        dat_odesl="%%%DATUM_ODESLANI%%%" 
+        prvni_zaslani="%%%PRVNI_ZASLANI%%%" 
+        uuid_zpravy="%%%UUID%%%%"/>
+      <Data 
+        celk_trzba="%%%SUMA%%%" cerp_zuct="0.00" cest_sluz="0.00" 
+        dat_trzby="%%%DATUM_ODESLANI%%%" dic_popl="CZ1212121218" 
+        id_pokl="%%%POKLADNAID%%%" id_provoz="%%%PROVOZID%%%" porad_cis="%%%PORADCIS%%%" 
+        pouzit_zboz1="0.00" pouzit_zboz2="0.00" pouzit_zboz3="0.00" 
+        rezim="0" urceno_cerp_zuct="0.00" 
+        zakl_dan1="0.00" zakl_dan2="0.00" zakl_dan3="0.00" 
+        dan1="0.00" dan2="0.00" dan3="0.00" 
+        zakl_nepodl_dph="%%%SUMA%%%"/>
+      <KontrolniKody>
+        <pkp cipher="RSA2048" digest="SHA256" encoding="base64">lncmU7IdeWbscoTzTykEZ7NdATPtAH3t3i0mpNbAx3oquNJ7ML3UghGDDHncKLyfpnR+zCIltifxCx7k18X/9ZQVRMh5/42kTTPHlTR9x8y8i3zcK00+5znfgW/ofIT+mZUkJQ2dztxGmrVTJeYvXCrKX5qH+zwPpkdAAbc3DjhC+meMA8U+FY9MpqYZd0x7AzWSUI5gmrBxMThPZnzn3nonpFLwRI+WcGndnWzzLPf16CnJW3LJoYojGxzBC0peaEnDcWbr9WGeW+OFBv2MHrglip5RWugp+xat4g1jgWiMWyDA2TF6yY6ybtD1axygRfqqbmPMPKSX7Wl3xi4C3g==</pkp>
+        <bkp digest="SHA1" encoding="base16">F7370733-DF026DD5-704477C8-6AEA6E34-4CB34D92</bkp>
+      </KontrolniKody>
+    </Trzba>
+  </soap:Body>
+</soap:Envelope>
