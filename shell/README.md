@@ -22,6 +22,8 @@ During signing/validation using xmlsec1 xml:id is used. API internaly (presumabl
 the same.   
 
 ##How to use it
+Prerequisites - wosking xmlsec1 command (part of most Linux distros and included in cygwin)
+
 To prepare message for signing take data/template.xml and change anything inside element <Trzby> 
 save it to `sale-to-register-soap.xml`.
 
