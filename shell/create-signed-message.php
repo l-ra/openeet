@@ -19,9 +19,9 @@ $signatureTemplate=file_get_contents($dir."/templates/signature-template");
 $data["dat_odesl"]=date("c");
 $data["dat_trzby"]=date("c");
 
-#generate message uuid
+#generate message uuid 
 $uuidFile=$dir."/work/uuid";
-system("uuid | tr -d \"\\n\"> $uuidFile");
+system("uuid | tr -d \"\\n\"> $uuidFile");  #uid generated, extra spaces&newlines removed
 $data["uuid_zpravy"]=file_get_contents($uuidFile);
 
 #compute PKP
@@ -32,19 +32,25 @@ file_put_contents($pkpInputFile,$pkpInput);
 
 #compute rsassa-pkcs1_5 signature using demo key
 $pkpValueFile=$dir."/work/pkp-value";
-$pkpBinaryValueFile=$dir."/work/pkp-value-bin";
-$pkpBinaryValueCheckFile=$dir."/work/pkp-value-bin-check";
 $certFile=$dir."/cert/01000003.pem";
 $keyFile=$dir."/cert/01000003.key";
-$signDataCmd="openssl sha256 -binary $pkpInputFile | openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile | tee $pkpBinaryValueFile | base64 -w 0 > $pkpValueFile";
+$signDataCmd= "openssl sha256 -binary $pkpInputFile " #compute hash
+             ."| openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile " #apply rsa signature alg to the hash
+             ."| base64 -w 0 > $pkpValueFile";  # base64 resulting raw signature 
 system($signDataCmd);
 $pkpValue=file_get_contents($pkpValueFile);
 $data["pkp"]=$pkpValue;
 
 
 #compute BKP
+#shit - more than hour spent until great discovery - BKP IS CASE SENSITIVE - the hexcode must be uppercase to be accepted as valid
 $bkpValueFile=$dir."/work/bkp-value";
-$digestCmd="base64 -d $pkpValueFile | tee $pkpBinaryValueCheckFile | openssl sha1 -binary | xxd -p | tr -d \" \\n\" | tr \"abcdef\" \"ABCDEF\"  |  sed -e \"s/\\(........\\)/\\1-/g\" | sed -e \"s/-\$//\" > $bkpValueFile";
+$digestCmd= "base64 -d $pkpValueFile "    #take PKP base64 encoded value and decode back to binary
+           ."| openssl sha1 -binary "    #compute SHA1 over the binary representation of the signature
+           ."| xxd -p "                   #hexdump resulting hash value
+           ."| tr -d \" \\n\" "           #remove spaces and newlines added by xxd
+           ."| tr \"abcdef\" \"ABCDEF\""  #upercase the hex code to be recognized by EET server as valid (WTF WTF WTF)
+           ."| sed -e \"s/\\(........\\)/\\1-/g\" | sed -e \"s/-\$//\" > $bkpValueFile";  #and format the hexdump of hash according to spec (WHY ? who knows!)
 system($digestCmd);
 $bkpValue=file_get_contents($bkpValueFile);
 #for debug
@@ -57,6 +63,7 @@ $data["bkp"]=$bkpValue;
 
 
 #compute digest from canonicalized data of the Body element based on template extracted enriched with business data
+#replace the placeholders with real business data and stpore to file  
 $digestFinal=$digestTemplate;
 #fill in data in the digest first
 foreach ($data as $key => $value) {
@@ -65,10 +72,13 @@ foreach ($data as $key => $value) {
 $digestDataFile=$dir."/work/digest-data";
 $digestValueFile=$dir."/work/digest-value";
 file_put_contents($digestDataFile, $digestFinal);
-$digestCmd="openssl sha256 -binary $digestDataFile | base64  | tr -d \" \\n\" > $digestValueFile";
+#compute digest over the enriched data
+$digestCmd= "openssl sha256 -binary $digestDataFile "  #compute hash
+           ."| base64  "                               #apply base64 according to XMLDSig
+           ."| tr -d \" \\n\" > $digestValueFile";     #fix extra spaces & newlines
 system($digestCmd);
 $digestValue=file_get_contents($digestValueFile);
-$data["digest"]=$digestValue;
+$data["digest"]=$digestValue; #add digest to data - it is used in the next replacement step
 
 
 
@@ -76,14 +86,18 @@ $data["digest"]=$digestValue;
 
 
 #compute signature value from canonicalized siginfo enriched with digest value 
+#replace placeholders - in fact the only placeholder in signaturte template needs to be replaced - ${digest}
 $signatureFinal=$signatureTemplate;
 foreach ($data as $key => $value) {
 	$signatureFinal=str_replace("\${".$key."}",$value,$signatureFinal);
 }
 $signatureDataFile=$dir."/work/signature-data";
 file_put_contents($signatureDataFile, $signatureFinal);
+#compute rsassa-pkcs1_5 over the data 
 $signatureValueFile=$dir."/work/signature-value";
-$signSigCmd="openssl sha256 -binary $signatureDataFile | openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile | base64 -w 0 > $signatureValueFile";
+$signSigCmd= "openssl sha256 -binary $signatureDataFile "    #compute hash
+            ."| openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile "  #compute sig of the hash
+            ."| base64 -w 0 > $signatureValueFile"; #apply base64 according to XMLDSig
 system($signSigCmd);
 $signatureValue=file_get_contents($signatureValueFile);
 $data["signature"]=$signatureValue;
@@ -96,7 +110,16 @@ foreach ($data as $key => $value) {
 $signedMessageFile=$dir."/work/signed-message";
 file_put_contents($signedMessageFile, $xmlFinal);
 
-#selfcheck
+
+
+
+
+#selfcheck - to be sure we had templates right and didn't messed anything
+#the verification produces binary snapshot of digested and signed data
+#work/digest-data-verify must be binary equal to work/digest-data
+#work/signature-data-verify must be binary equal to work/signature-data
+#if not - difference must be eliminated by changing inputs/process 
+#during development the only lline end in uuid escaped - now it is fixed and working well
 $xmlsecCmd="xmlsec1 --verify --store-references --store-signatures --pubkey-cert-pem $certFile $signedMessageFile | php $dir/extract-c14n-templates.php $dir/work/digest-data-verify $dir/work/signature-data-verify";
 system($xmlsecCmd);
 
