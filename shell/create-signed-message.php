@@ -69,6 +69,10 @@ $digestFinal=$digestTemplate;
 foreach ($data as $key => $value) {
 	$digestFinal=str_replace("\${".$key."}",$value,$digestFinal);
 }
+#remove unused fields
+$digestFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$digestFinal);
+$digestFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$digestFinal);
+
 $digestDataFile=$dir."/work/digest-data";
 $digestValueFile=$dir."/work/digest-value";
 file_put_contents($digestDataFile, $digestFinal);
@@ -91,6 +95,11 @@ $signatureFinal=$signatureTemplate;
 foreach ($data as $key => $value) {
 	$signatureFinal=str_replace("\${".$key."}",$value,$signatureFinal);
 }
+#remove unused fields
+$signatureFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$signatureFinal);
+$signatureFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$signatureFinal);
+
+
 $signatureDataFile=$dir."/work/signature-data";
 file_put_contents($signatureDataFile, $signatureFinal);
 #compute rsassa-pkcs1_5 over the data 
@@ -107,12 +116,12 @@ $xmlFinal=$xmlTemplate;
 foreach ($data as $key => $value) {
 	$xmlFinal=str_replace("\${".$key."}",$value,$xmlFinal);
 }
+#remove unused fields
+$xmlFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$xmlFinal);
+$xmlFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$xmlFinal);
+
 $signedMessageFile=$dir."/work/signed-message";
 file_put_contents($signedMessageFile, $xmlFinal);
-
-
-
-
 
 #selfcheck - to be sure we had templates right and didn't messed anything
 #the verification produces binary snapshot of digested and signed data
@@ -122,9 +131,6 @@ file_put_contents($signedMessageFile, $xmlFinal);
 #during development the only lline end in uuid escaped - now it is fixed and working well
 $xmlsecCmd="xmlsec1 --verify --store-references --store-signatures --pubkey-cert-pem $certFile $signedMessageFile | php $dir/extract-c14n-templates.php $dir/work/digest-data-verify $dir/work/signature-data-verify";
 system($xmlsecCmd);
-
-
-
 
 
 ?>
