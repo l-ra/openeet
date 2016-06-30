@@ -110,14 +110,16 @@ public class EetMessageDataTest {
 		   .id_pokl("POKLADNA01")
 		   .porad_cis("1")
 		   .dat_trzby("2016-06-30T08:43:28+02:00")
-		   .celk_trzba(1000.0)
+		   .celk_trzba(100.0)
 		   .rezim(0)
 		   .certificate(cert)
 		   .key(key)
 		   .build();
 		assertNotNull(data);
-		assertEquals(EetMessageData.formatPkp(data.getPkp()),"Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==");
-		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",EetMessageData.formatBkp(data.getBkp()));
+		String pkp=EetMessageData.formatPkp(data.getPkp());
+		String bkp=EetMessageData.formatBkp(data.getBkp());
+		assertEquals(pkp,"Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==");
+		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",bkp);
 	}
 	
 	

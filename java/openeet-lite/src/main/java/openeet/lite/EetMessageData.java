@@ -472,7 +472,7 @@ public class EetMessageData {
 		        pkp=signature.sign();					}
 		}
 
-		if ( bkp!=null && pkp !=null){
+		if ( bkp==null && pkp !=null){
 			MessageDigest md=MessageDigest.getInstance("SHA-1");
 			bkp=md.digest(pkp);
 		}
@@ -629,10 +629,9 @@ public class EetMessageData {
 	public static String formatBkp(byte[] _bkp){
 		StringBuilder sb=new StringBuilder();
 		for (int i=0; i<_bkp.length; i++){
-			if (i+1%5==0) sb.append("-");
 			sb.append(String.format("%02x",_bkp[i]));
 		}
-		return sb.toString().toUpperCase();
+		return sb.toString().toUpperCase().replaceFirst("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$","$1-$2-$3-$4-$5");
 	}
 	
 	public static byte[] parseBkp(String val){
