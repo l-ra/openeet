@@ -16,6 +16,10 @@
  */
 package openeet.lite;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -26,7 +30,10 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
+import com.sun.corba.se.spi.orbutil.fsm.Input;
+
 public class EetMessageData {
+	
 	public static enum PrvniZaslani {
 		PRVNI(true), OPAKOVANE(false);
 		private boolean _value;
@@ -43,8 +50,37 @@ public class EetMessageData {
 			if (b) return PRVNI;
 			else return OPAKOVANE;
 		}
+		
+		@Override
+		public String toString(){
+			return String.valueOf(_value);
+		}
 	}
 
+	public static enum Overeni {
+		OVEROVACI(true), PRODUKCNI(false);
+		private boolean _value;
+
+		private Overeni(boolean value) {
+			_value = value;
+		}
+
+		public boolean toBoolean() {
+			return _value;
+		}
+		
+		public static Overeni valueOf(boolean b){
+			if (b) return OVEROVACI;
+			else return PRODUKCNI;
+		}
+
+		@Override
+		public String toString(){
+			return String.valueOf(_value);
+		}
+	}
+
+	
 	public static enum Rezim {
 		STANDARDNI(0), ZJEDNODUSENY(1);
 		private int _value;
@@ -74,6 +110,11 @@ public class EetMessageData {
 			if (n.matches("^[0-9]+$")) return valueOf(Integer.valueOf(n));
 			return valueOf(n);
 		}
+
+		@Override
+		public String toString(){
+			return String.valueOf(_value);
+		}
 	}
 
 	public static class Builder {
@@ -82,6 +123,7 @@ public class EetMessageData {
 		protected Date _dat_odesl=new Date();
 		protected PrvniZaslani _prvni_zaslani=PrvniZaslani.PRVNI;
 		protected UUID _uuid_zpravy=UUID.randomUUID();
+		protected Overeni _overeni=Overeni.PRODUKCNI;
 		protected String _dic_popl;
 		protected String _dic_poverujiciho;
 		protected String _id_provoz;
@@ -164,6 +206,27 @@ public class EetMessageData {
 			return this;
 		}
 
+		/**
+		 * Defaults to PRODUKCNI
+		 * @param val
+		 * @return
+		 */
+		public Builder overeni(Overeni val) {
+			_overeni = val;
+			return this;
+		}
+
+		public Builder overeni(boolean val) {
+			_overeni = Overeni.valueOf(val);
+			return this;
+		}
+
+		public Builder overeni(String val) {
+			_overeni = Overeni.valueOf(val);
+			return this;
+		}
+		
+		
 		public Builder dic_popl(String val) {
 			_dic_popl = val;
 			return this;
@@ -403,6 +466,7 @@ public class EetMessageData {
 	protected Date dat_odesl;
 	protected PrvniZaslani prvni_zaslani;
 	protected UUID uuid_zpravy;
+	protected Overeni overeni;
 	protected String dic_popl;
 	protected String dic_poverujiciho;
 	protected String id_provoz;
@@ -433,6 +497,7 @@ public class EetMessageData {
 		dat_odesl = builder._dat_odesl;
 		prvni_zaslani = builder._prvni_zaslani;
 		uuid_zpravy = builder._uuid_zpravy;
+		overeni=builder._overeni;
 		dic_popl = builder._dic_popl;
 		dic_poverujiciho = builder._dic_poverujiciho;
 		id_provoz = builder._id_provoz;
@@ -469,7 +534,8 @@ public class EetMessageData {
 				Signature signature = Signature.getInstance("SHA256withRSA");
 		        signature.initSign(key);
 		        signature.update(toBeSigned.getBytes("UTF-8"));
-		        pkp=signature.sign();					}
+		        pkp=signature.sign();					
+		    }
 		}
 
 		if ( bkp==null && pkp !=null){
@@ -502,6 +568,10 @@ public class EetMessageData {
 		return uuid_zpravy;
 	}
 
+	public Overeni getOvereni(){
+		return overeni;
+	}
+	
 	public String getDic_popl() {
 		return dic_popl;
 	}
@@ -662,5 +732,91 @@ public class EetMessageData {
 	}
 
 
+	public String generateSoapRequest(PrivateKey key){
+		try {
+			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml");
+			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template");
+			String signatureTemplate=loadTemplateFromResource("/openeet/lite/templates/signature-template");
+			
+			digestTemplate=replacePlaceholders(digestTemplate, null, null);
+			digestTemplate=removeUnusedPlaceholders(digestTemplate);
+			MessageDigest md=MessageDigest.getInstance("SHA-256");
+			byte[] digestRaw=md.digest(digestTemplate.getBytes("utf-8"));
+			String digest=Base64.getEncoder().encodeToString(digestRaw);
+			
+			signatureTemplate=replacePlaceholders(signatureTemplate, digest, null);
+			signatureTemplate=removeUnusedPlaceholders(signatureTemplate);
+			Signature signatureEngine = Signature.getInstance("SHA256withRSA");
+	        signatureEngine.initSign(key);
+	        signatureEngine.update(signatureTemplate.getBytes("UTF-8"));
+	        byte[] signatureRaw=signatureEngine.sign();
+	        String signature=Base64.getEncoder().encodeToString(signatureRaw);
+	        
+			xmlTemplate=replacePlaceholders(xmlTemplate, digest, signature);
+			xmlTemplate=removeUnusedPlaceholders(xmlTemplate);
+
+			return xmlTemplate;			
+		}
+		catch (Exception e){
+			throw new RuntimeException("Error while generating soap request");
+		}
+	}
+	
+	private String replacePlaceholders(String src, String digest, String signature){
+		
+		if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
+		if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
+		if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
+		if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
+		if (dic_popl!=null) src=src.replace("${dic_popl}",dic_popl);
+		if (dic_poverujiciho!=null) src=src.replace("${dic_poverujiciho}",dic_poverujiciho);
+		if (id_provoz!=null) src=src.replace("${id_provoz}",id_provoz);
+		if (id_pokl!=null) src=src.replace("${id_pokl}",id_pokl);
+		if (porad_cis!=null) src=src.replace("${porad_cis}",porad_cis);
+		if (dat_trzby!=null) src=src.replace("${dat_trzby}",formatDate(dat_trzby));
+		if (celk_trzba!=null) src=src.replace("${celk_trzba}",formatAmount(celk_trzba));
+		if (zakl_nepodl_dph!=null) src=src.replace("${zakl_nepodl_dph}",formatAmount(zakl_nepodl_dph));
+		if (zakl_dan1!=null) src=src.replace("${zakl_dan1}",formatAmount(zakl_dan1));
+		if (dan1!=null) src=src.replace("${dan1}",formatAmount(dan1));
+		if (zakl_dan2!=null) src=src.replace("${zakl_dan2}",formatAmount(zakl_dan2));
+		if (dan2!=null) src=src.replace("${dan2}",formatAmount(dan2));
+		if (zakl_dan3!=null) src=src.replace("${zakl_dan3}",formatAmount(zakl_dan3));
+		if (dan3!=null) src=src.replace("${dan3}",formatAmount(dan3));
+		if (cest_sluz!=null) src=src.replace("${cest_sluz}",formatAmount(cest_sluz));
+		if (pouzit_zboz1!=null) src=src.replace("${pouzit_zboz1}",formatAmount(pouzit_zboz1));
+		if (pouzit_zboz2!=null) src=src.replace("${pouzit_zboz2}",formatAmount(pouzit_zboz2));
+		if (pouzit_zboz3!=null) src=src.replace("${pouzit_zboz3}",formatAmount(pouzit_zboz3));
+		if (urceno_cerp_zuct!=null) src=src.replace("${urceno_cerp_zuct}",formatAmount(urceno_cerp_zuct));
+		if (cerp_zuct!=null) src=src.replace("${cerp_zuct}",formatAmount(cerp_zuct));
+		if (rezim!=null) src=src.replace("${rezim}",rezim.toString());
+		if (bkp!=null) src=src.replace("${bkp}",formatBkp(bkp));
+		if (pkp!=null) src=src.replace("${pkp}",formatPkp(pkp));
+		if (digest!=null) src=src.replace("${digest}",digest);
+		if (signature!=null) src=src.replace("${signature}",signature);
+		
+		return src;
+	}
+	
+	private String removeUnusedPlaceholders(String src){
+		src=src.replaceAll(" [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"","");
+		src=src.replaceAll("\\$\\{[a-b_0-9]+\\}","");
+		return src;
+	}
+
+	private static byte[] loadStream(InputStream in) throws IOException{
+		byte[] buf=new byte[1024];
+		ByteArrayOutputStream bos=new ByteArrayOutputStream();
+		int n=0;
+		while ((n=in.read(buf))>0) bos.write(buf,0,n);
+		in.close();
+		return bos.toByteArray();
+	}
+	
+	private String loadTemplateFromResource(String resource) throws IOException {
+		byte[] streamData=loadStream(getClass().getResourceAsStream(resource));
+		return new String(streamData,"UTF-8");
+	}
+	
+	
 
 }

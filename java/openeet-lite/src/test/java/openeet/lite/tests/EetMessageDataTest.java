@@ -2,6 +2,7 @@ package openeet.lite.tests;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,12 +21,23 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Enumeration;
+import java.util.Iterator;
+
+import javax.xml.crypto.dsig.Reference;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import openeet.lite.EetMessageData;
 
@@ -120,7 +132,50 @@ public class EetMessageDataTest {
 		String bkp=EetMessageData.formatBkp(data.getBkp());
 		assertEquals(pkp,"Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==");
 		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",bkp);
+		String signed=data.generateSoapRequest(key);
+		assertTrue(validateXmlDSig(signed));
 	}
+
+
+	private boolean validateXmlDSig(String signed){
+		try {
+			DocumentBuilderFactory dbf = 
+					  DocumentBuilderFactory.newInstance(); 
+			dbf.setNamespaceAware(true);
+
+			DocumentBuilder builder = dbf.newDocumentBuilder();  
+			Document doc = builder.parse(new ByteArrayInputStream(signed.getBytes("utf-8")));
+			NodeList signatureNodeList = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+			NodeList bodyNodeList = doc.getElementsByTagNameNS("http://schemas.xmlsoap.org/soap/envelope/", "Body");
+			
+			if (signatureNodeList.getLength() == 0) {
+			  throw new Exception("Cannot find Signature element");
+			}
+			DOMValidateContext valContext = new DOMValidateContext(cert.getPublicKey(), signatureNodeList.item(0));
+			valContext.setIdAttributeNS((Element)bodyNodeList.item(0),"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd","Id");
+			
+			XMLSignatureFactory factory = 
+					  XMLSignatureFactory.getInstance("DOM");
+			XMLSignature signature = 
+					  factory.unmarshalXMLSignature(valContext);
+			boolean coreValidity = signature.validate(valContext); 
+			
+			/* 
+			//detailed validation - use when solving validity problems
+			boolean sv = signature.getSignatureValue().validate(valContext);
+			Iterator<Reference> i = signature.getSignedInfo().getReferences().iterator();
+			for (int j=0; i.hasNext(); j++) {
+			  boolean refValid = ( i.next()).validate(valContext);
+			} 
+			*/
+			
+			return coreValidity;
+		}
+		catch (Exception e){
+			throw new IllegalArgumentException("validation failes", e);
+		}
+	}
+	
 	
 	
 
