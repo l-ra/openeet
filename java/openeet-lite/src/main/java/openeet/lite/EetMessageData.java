@@ -1,27 +1,47 @@
+/*
+ * Copyright 2016 Luděk Rašek and other contributors as 
+ * indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package openeet.lite;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
 public class EetMessageData {
-	public static enum PrvniOdeslani {
+	public static enum PrvniZaslani {
 		PRVNI(true), OPAKOVANE(false);
 		private boolean _value;
 
-		private PrvniOdeslani(boolean value) {
+		private PrvniZaslani(boolean value) {
 			_value = value;
 		}
 
 		public boolean toBoolean() {
 			return _value;
+		}
+		
+		public static PrvniZaslani valueOf(boolean b){
+			if (b) return PRVNI;
+			else return OPAKOVANE;
 		}
 	}
 
@@ -36,13 +56,31 @@ public class EetMessageData {
 		public int toInt() {
 			return _value;
 		}
+		
+		public static Rezim valueOf(int n){
+			switch (n) {
+				case 0: return STANDARDNI;
+				case 1: return ZJEDNODUSENY;
+				default: throw new IllegalArgumentException("requested value not allowed:"+n);
+			}
+		}
+
+		/**
+		 * merges 0,1 and names of enums together
+		 * @param n 0,1,STANDARDNI,ZJEDNODUSENY are valid inputs
+		 * @return enum member accordingly
+		 */
+		public static Rezim fromString(String n){
+			if (n.matches("^[0-9]+$")) return valueOf(Integer.valueOf(n));
+			return valueOf(n);
+		}
 	}
 
 	public static class Builder {
 		protected PrivateKey _key;
 		protected X509Certificate _certificate;
 		protected Date _dat_odesl=new Date();
-		protected PrvniOdeslani _prvni_zaslani=PrvniOdeslani.PRVNI;
+		protected PrvniZaslani _prvni_zaslani=PrvniZaslani.PRVNI;
 		protected UUID _uuid_zpravy=UUID.randomUUID();
 		protected String _dic_popl;
 		protected String _dic_poverujiciho;
@@ -96,8 +134,18 @@ public class EetMessageData {
 		 * @param val
 		 * @return
 		 */
-		public Builder prvni_zaslani(PrvniOdeslani val) {
+		public Builder prvni_zaslani(PrvniZaslani val) {
 			_prvni_zaslani = val;
+			return this;
+		}
+
+		public Builder prvni_zaslani(boolean val) {
+			_prvni_zaslani = PrvniZaslani.valueOf(val);
+			return this;
+		}
+
+		public Builder prvni_zaslani(String val) {
+			_prvni_zaslani = PrvniZaslani.valueOf(val);
 			return this;
 		}
 
@@ -108,6 +156,11 @@ public class EetMessageData {
 		 */
 		public Builder uuid_zpravy(UUID val) {
 			_uuid_zpravy = val;
+			return this;
+		}
+
+		public Builder uuid_zpravy(String val) {
+			_uuid_zpravy = UUID.fromString(val);
 			return this;
 		}
 
@@ -146,8 +199,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder dat_trzby(String val) {
+			_dat_trzby = EetMessageData.parseDate(val);
+			return this;
+		}
+
 		public Builder celk_trzba(Double val) {
 			_celk_trzba = val;
+			return this;
+		}
+
+		public Builder celk_trzba(String val) {
+			_celk_trzba = Double.valueOf(val);
 			return this;
 		}
 
@@ -156,8 +219,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder zakl_nepodl_dph(String val) {
+			_zakl_nepodl_dph = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder zakl_dan1(Double val) {
 			_zakl_dan1 = val;
+			return this;
+		}
+
+		public Builder zakl_dan1(String val) {
+			_zakl_dan1 = Double.valueOf(val);
 			return this;
 		}
 
@@ -166,8 +239,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder dan1(String val) {
+			_dan1 = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder zakl_dan2(Double val) {
 			_zakl_dan2 = val;
+			return this;
+		}
+
+		public Builder zakl_dan2(String val) {
+			_zakl_dan2 = Double.valueOf(val);
 			return this;
 		}
 
@@ -176,8 +259,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder dan2(String val) {
+			_dan2 = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder zakl_dan3(Double val) {
 			_zakl_dan3 = val;
+			return this;
+		}
+
+		public Builder zakl_dan3(String val) {
+			_zakl_dan3 = Double.valueOf(val);
 			return this;
 		}
 
@@ -186,8 +279,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder dan3(String val) {
+			_dan3 = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder cest_sluz(Double val) {
 			_cest_sluz = val;
+			return this;
+		}
+
+		public Builder cest_sluz(String val) {
+			_cest_sluz = Double.valueOf(val);
 			return this;
 		}
 
@@ -196,8 +299,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder pouzit_zboz1(String val) {
+			_pouzit_zboz1 = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder pouzit_zboz2(Double val) {
 			_pouzit_zboz2 = val;
+			return this;
+		}
+
+		public Builder pouzit_zboz2(String val) {
+			_pouzit_zboz2 = Double.valueOf(val);
 			return this;
 		}
 
@@ -206,8 +319,18 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder pouzit_zboz3(String val) {
+			_pouzit_zboz3 = Double.valueOf(val);
+			return this;
+		}
+
 		public Builder urceno_cerp_zuct(Double val) {
 			_urceno_cerp_zuct = val;
+			return this;
+		}
+
+		public Builder urceno_cerp_zuct(String val) {
+			_urceno_cerp_zuct = Double.valueOf(val);
 			return this;
 		}
 
@@ -216,11 +339,28 @@ public class EetMessageData {
 			return this;
 		}
 
+		public Builder cerp_zuct(String val) {
+			_cerp_zuct = Double.valueOf(val);
+			return this;
+		}
+
+		
+		
 		/*
 		 * Defualts to Rezim.STANDARDNI
 		 */
 		public Builder rezim(Rezim val) {
 			_rezim = val;
+			return this;
+		}
+
+		public Builder rezim(int val) {
+			_rezim = Rezim.valueOf(val);
+			return this;
+		}
+
+		public Builder rezim(String val) {
+			_rezim = Rezim.fromString(val);
 			return this;
 		}
 
@@ -235,6 +375,16 @@ public class EetMessageData {
 		}
 
 		/**
+		 * Parses string according to EET spec e.g 17796128-AED2BB9E-2301FF97-0A75656A-DF2B011D
+		 * @param val hex splitted into 5 groups containing 8 digits
+		 * @return
+		 */
+		public Builder bkp(String val) {
+			_bkp=EetMessageData.parseBkp(val);
+			return this;
+		}
+
+		/**
 		 * Computed when private key available during nuild() call
 		 * @param val
 		 * @return
@@ -245,38 +395,13 @@ public class EetMessageData {
 		}
 
 		public EetMessageData build() {
-			try {
-				if (_pkp==null && _key!=null){
-					String toBeSigned=formatToBeSignedData();
-					if (toBeSigned!=null){
-						Signature signature = Signature.getInstance("SHA256withRSA");
-				        signature.initSign(_key);
-				        signature.update(toBeSigned.getBytes("UTF-8"));
-				        _pkp=signature.sign();					}
-				}
-
-				if ( _bkp!=null && _pkp !=null){
-					MessageDigest md=MessageDigest.getInstance("SHA-1");
-					_bkp=md.digest(_pkp);
-				}
-				return new EetMessageData(this);
-			}
-			catch(Exception e){
-				throw new RuntimeException("Problems with cryptosetup",e);
-			} 
-		}
-
-
-		private String formatToBeSignedData() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
+			return new EetMessageData(this);
+		}		
 	}
 
 	protected X509Certificate certificate;
 	protected Date dat_odesl;
-	protected PrvniOdeslani prvni_zaslani;
+	protected PrvniZaslani prvni_zaslani;
 	protected UUID uuid_zpravy;
 	protected String dic_popl;
 	protected String dic_poverujiciho;
@@ -331,8 +456,36 @@ public class EetMessageData {
 		rezim = builder._rezim;
 		bkp = builder._bkp;
 		pkp = builder._pkp;
+	
+		if (builder._key!=null)
+			computeCodes(builder._key);
 	}
 
+	private void computeCodes(PrivateKey key){
+		try {
+		if (pkp==null && key!=null){
+			String toBeSigned=formatToBeSignedData();
+			if (toBeSigned!=null){
+				Signature signature = Signature.getInstance("SHA256withRSA");
+		        signature.initSign(key);
+		        signature.update(toBeSigned.getBytes("UTF-8"));
+		        pkp=signature.sign();					}
+		}
+
+		if ( bkp!=null && pkp !=null){
+			MessageDigest md=MessageDigest.getInstance("SHA-1");
+			bkp=md.digest(pkp);
+		}
+		}
+		catch (Exception e){
+			throw new IllegalArgumentException("error while computing codes",e);
+		}
+	}
+	
+	public static Builder builder(){
+		return new Builder();
+	}
+	
 	public X509Certificate getCertificate() {
 		return certificate;
 	}
@@ -341,7 +494,7 @@ public class EetMessageData {
 		return dat_odesl;
 	}
 
-	public PrvniOdeslani getPrvni_zaslani() {
+	public PrvniZaslani getPrvni_zaslani() {
 		return prvni_zaslani;
 	}
 
@@ -440,4 +593,75 @@ public class EetMessageData {
 	public byte[] getPkp() {
 		return pkp;
 	}
+
+	/**
+	 * Formats data to form ready to be signed for PKP computation based on data in this object 
+	 * @return 
+	 */
+	public String formatToBeSignedData() {
+		if (dic_popl == null || id_provoz==null || id_pokl==null || porad_cis==null || dat_trzby==null || celk_trzba==null ) 
+			throw new NullPointerException(
+					String.format("missing some of _dic_popl(%s), _id_provoz(%s), _id_pokl(%s), _porad_cis(%s), _celk_trzba(%s)",
+							dic_popl, id_provoz, id_pokl, porad_cis, dat_trzby,celk_trzba));
+		return String.format("%s|%s|%s|%s|%s|%s",dic_popl, id_provoz, id_pokl, porad_cis, formatDate(dat_trzby),formatAmount(celk_trzba));
+	}
+	
+	public String formatDate(Date date){
+		String ret= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date);
+		ret=ret.replaceFirst("\\+([0-9][0-9])([0-9][0-9])$","+$1:$2");
+		return ret;
+	}
+	
+	public static Date parseDate(String date){
+		try {
+			//replace 02:00 with 0200
+			date=date.replaceFirst("\\+([0-9][0-9]):([0-9][0-9])$","+$1$2");
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(date);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("bad date",e);
+		}
+	}
+
+	public String formatBkp(){
+		return formatBkp(bkp);
+	}
+	
+	public static String formatBkp(byte[] _bkp){
+		StringBuilder sb=new StringBuilder();
+		for (int i=0; i<_bkp.length; i++){
+			if (i+1%5==0) sb.append("-");
+			sb.append(String.format("%02x",_bkp[i]));
+		}
+		return sb.toString().toUpperCase();
+	}
+	
+	public static byte[] parseBkp(String val){
+		byte[] _bkp=new byte[20];
+		val=val.replace("-","");
+		
+		if (val.length()!=40) 
+			throw new IllegalArgumentException("Wrong length (~=!=40) of bkp string after dash removal:"+val);
+		if (!val.toUpperCase().matches("^[A-F0-9]{40}$")) 
+			throw new IllegalArgumentException("Wrong format, hexdump expected:"+val);
+		
+		for (int i=0; i<20; i++){
+			_bkp[i]=(byte) Integer.parseInt(val.substring(i*2,i*2+1), 16);
+		}
+		return _bkp;  
+	}
+
+	private static String formatAmount(double amount){
+		return String.format("%.2f", amount);
+	}
+
+	public static String formatPkp(byte[] _pkp) {
+		return Base64.getEncoder().encodeToString(_pkp);
+	}
+
+	public static byte[] parsePkp(String _pkp) {
+		return Base64.getDecoder().decode(_pkp);
+	}
+
+
+
 }
