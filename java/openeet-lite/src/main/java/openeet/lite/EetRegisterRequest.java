@@ -826,6 +826,10 @@ public class EetRegisterRequest {
 		return String.format("%.2f", amount);
 	}
 
+	public String formatPkp() {
+		return formatPkp(pkp);
+	}
+
 	public static String formatPkp(byte[] _pkp) {
 		return Base64.getEncoder().encodeToString(_pkp);
 	}

@@ -11,6 +11,12 @@ Look at tests for example ho to use the class.
 
 There are no other dependences but java runtime (at least 1.4.2.)
 
+List of features:
+
+* build a sale registration based on business data
+* generate PKP/BKP for receipt printing
+* 
+
 
 # Build 
 ```
@@ -24,7 +30,7 @@ Then find openeet/java/openeet-lite/build/libs/openeet-lite.jar and use it in yo
 # Basic usage
 
 ```
-EetMessageData request=EetMessageData.builder()
+EetRegisterRequest request=EetRegisterRequest.builder()
    .dic_popl("CZ1212121218")
    .id_provoz("1")
    .id_pokl("POKLADNA01")
@@ -35,11 +41,12 @@ EetMessageData request=EetMessageData.builder()
    .certificate(cert)
    .key(key)
    .build();
-String requestBody=request.generateSoapRequest(key);
-String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-```
+String bkp=request.formatBkp();
+String pkp=request.formatPkp();
+String requestBody=request.generateSoapRequest();
+String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 
-For key&certificate manipulation see the tests source code. There you can find a code for key&certificate loading from PKCS12 file.
+```
 
 # Plans
 

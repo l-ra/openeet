@@ -9,7 +9,7 @@ Java implementation now works with EET playtground v2. No dependencies, just the
 To register a sale it is as easy as this:
 
 ```
-EetMessageData request=EetMessageData.builder()
+EetRegisterRequest request=EetRegisterRequest.builder()
    .dic_popl("CZ1212121218")
    .id_provoz("1")
    .id_pokl("POKLADNA01")
@@ -20,8 +20,11 @@ EetMessageData request=EetMessageData.builder()
    .certificate(cert)
    .key(key)
    .build();
-String requestBody=request.generateSoapRequest(key);
-String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+String bkp=request.formatBkp();
+String pkp=request.formatPkp();
+String requestBody=request.generateSoapRequest();
+String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+
 ```
 
 

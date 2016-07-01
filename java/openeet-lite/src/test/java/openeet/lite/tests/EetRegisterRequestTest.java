@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -111,6 +112,29 @@ public class EetRegisterRequestTest {
 		String signed=data.generateSoapRequest();
 		assertTrue(validateXmlDSig(signed, data.getCertificate()));
 		data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+	}
+	
+	@Test 
+	public void exampleFromDoc() throws MalformedURLException, IOException{
+		EetRegisterRequest request=EetRegisterRequest.builder()
+		   .dic_popl("CZ1212121218")
+		   .id_provoz("1")
+		   .id_pokl("POKLADNA01")
+		   .porad_cis("1")
+		   .dat_trzby("2016-06-30T08:43:28+02:00")
+		   .celk_trzba(100.0)
+		   .rezim(0)
+		   .certificate(cert)
+		   .key(key)
+		   .build();
+		String bkp=request.formatBkp();
+		String pkp=request.formatPkp();
+		String requestBody=request.generateSoapRequest();
+		String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		assertNotNull(bkp);
+		assertNotNull(pkp);
+		assertNotNull(requestBody);
+		assertNotNull(response);
 	}
 
 
