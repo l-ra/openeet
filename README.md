@@ -4,7 +4,7 @@ Open source experimenty s rozhraním pro EET.
 Open source experimens with the Czech government system for Electronic Registration of Sales 
 
 ## Java implementation
-Java implementation now works with EET playtground v2. 
+Java implementation now works with EET playtground v2. No dependencies, just the java runtime itself (1.4.2). 
 
 To register a sale it is as easy as this:
 

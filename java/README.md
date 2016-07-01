@@ -1,7 +1,7 @@
 # Work In Progress
 Even if working well with playground of the EET system, this is still work in progress.
 
-Any cotribuution is welcomed
+Any cotribuution is welcomed!
 
 
 # Java implementation of core EET functionalities
@@ -18,6 +18,7 @@ git clone https://github.com/l-ra/openeet.git
 cd openeet/java
 ./gradlew jar
 ```
+Then find openeet/java/openeet-lite/build/libs/openeet-lite.jar and use it in your builds.
 
 
 # Basic usage
@@ -42,5 +43,6 @@ For key&certificate manipulation see the tests source code. There you can find a
 
 # Plans
 
+* releas & publish maven artefact
 * certificate management utilities - create cert request, get certificate and key ready to use (depends on including CA services in the playground)
 * basic offline processing - mainly in the point of view of request structure manipulation (what remains unchanged when resending)
