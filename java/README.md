@@ -33,7 +33,9 @@ Then find openeet/java/openeet-lite/build/libs/openeet-lite.jar and use it in yo
 
 ```java
 @Test
-public void simpleRegistrationProcessTest() throws MalformedURLException, IOException{
+public void simpleRegistrationProcessTest() 
+    throws MalformedURLException, IOException{
+    
     //set minimal business data & certificate with key loaded from pkcs12 file
 	EetRegisterRequest request=EetRegisterRequest.builder()
 	   .dic_popl("CZ1212121218")
@@ -60,7 +62,8 @@ public void simpleRegistrationProcessTest() throws MalformedURLException, IOExce
 	String requestBody=request.generateSoapRequest();
 	assertNotNull(requestBody);
 
-	String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+	String response=request.sendRequest(requestBody, 
+		      new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 	//extract FIK
 	assertNotNull(response);
 	assertTrue(response.contains("Potvrzeni fik="));
