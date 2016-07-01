@@ -1,10 +1,10 @@
 # OpenEET
-Open source light implementation of EET client. Working client with no external dependencies in 16kB JAR file. 
-Try it. 
+Open source light implementation of EET client library. Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16kB JAR file. 
+Get the snapshot development openeet-lite.jar and !Try it!. 
 
 ## Java implementation
 Java implementation now works with EET playground v2. No dependencies, just the java runtime itself (1.4.2).
-No release yet - use source code. For details look at Java implementation description [Java implementation description/](java/openeet-lite) 
+No release yet - use source code. For details look at Java implementation description [Java implementation description/](java/) 
 
 To register a sale it is as easy as this:
 
