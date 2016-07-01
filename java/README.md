@@ -15,7 +15,9 @@ List of features:
 
 * build a sale registration based on business data
 * generate PKP/BKP for receipt printing
-* 
+* generate valid signed SOAP message
+* send the request to the playground endpoint
+* receive response containing FIK
 
 
 # Build 
