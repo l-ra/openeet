@@ -1,3 +1,9 @@
+# Work In Progress
+Even if working well with playground of the EET system, this is still work in progress.
+
+Any cotribuution is welcomed
+
+
 # Java implementation of core EET functionalities
 Based on proof of concept implemented in the shell folder, Java implementation now works for generating valid signed SOAP request.
 
@@ -5,10 +11,19 @@ Look at tests for example ho to use the class.
 
 There are no other dependences but java runtime (at least 1.4.2.)
 
-Basic usage:
+
+# Build 
+`
+git clone https://github.com/l-ra/openeet.git
+cd openeet/java
+./gradlew jar
+
+
+
+# Basic usage
 
 `
-EetMessageData data=EetMessageData.builder()
+EetMessageData request=EetMessageData.builder()
    .dic_popl("CZ1212121218")
    .id_provoz("1")
    .id_pokl("POKLADNA01")
@@ -19,7 +34,7 @@ EetMessageData data=EetMessageData.builder()
    .certificate(cert)
    .key(key)
    .build();
-String requestBody=dat_trzbyta.generateSoapRequest(key);
+String requestBody=request.generateSoapRequest(key);
 String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 `
 

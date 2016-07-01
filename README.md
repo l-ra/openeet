@@ -3,6 +3,28 @@ Open source experimenty s rozhraním pro EET.
 
 Open source experimens with the Czech government system for Electronic Registration of Sales 
 
+## Java implementation
+Java implementation now works with EET playtground v2. 
+
+To register a sale it is as easy as this:
+
+`
+EetMessageData request=EetMessageData.builder()
+   .dic_popl("CZ1212121218")
+   .id_provoz("1")
+   .id_pokl("POKLADNA01")
+   .porad_cis("1")
+   .dat_trzby("2016-06-30T08:43:28+02:00")
+   .celk_trzba(100.0)
+   .rezim(0)
+   .certificate(cert)
+   .key(key)
+   .build();
+String requestBody=request.generateSoapRequest(key);
+String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+`
+
+
 ##XMLDSig&SOAP&WS-Security approach for restricted devices
 As XMLDsig&SOAP&WSS are huge standards, it is hard to find fuully compliant implementation on restricted devices. I decided to work around this. The intention of of this work (for now) is to provide "light" implementation of the EET API clien.
 I will decsribe my approach later (not som much spare time now). For now just short intro. You ucan see working PoC in th shell implementation. The concept is based on XMLDSig processing (see spec). XML is preprocessed from the point of view of canonicalization during compile time and then message is constructed using preprocessing results (templates), some (careful) string replacements and basic crytpo primitives (SHA256, SHA1 and RSASSA_PKCS_1_5)which are widely available on most platforms.
