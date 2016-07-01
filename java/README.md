@@ -35,7 +35,7 @@ Then find openeet/java/openeet-lite/build/libs/openeet-lite.jar and use it in yo
 @Test
 public void simpleRegistrationProcessTest() 
     throws MalformedURLException, IOException{
-    
+
     //set minimal business data & certificate with key loaded from pkcs12 file
 	EetRegisterRequest request=EetRegisterRequest.builder()
 	   .dic_popl("CZ1212121218")
