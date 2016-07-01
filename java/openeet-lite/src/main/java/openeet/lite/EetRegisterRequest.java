@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -35,10 +34,45 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
 
-public class EetMessageData {
-	
+/**
+ * Class implements everything what's needed to send sale registration request to the registration server. 
+ * The code is tailored to version 2 of the registration interface as described <a href="http://www.etrzby.cz/cs/technicka-specifikace">in the technical specification</a> 
+ * The code does not have any other dependencies than java runtime itself. As it requires SHA-256 hash function 
+ * at least java 1.4.2 must be used.
+ * <p>
+ * The Builder is a tool for instance creation. For usage examples see tests. 
+ * <p>
+ * Basic usage:
+ * <pre>
+ * EetRegisterRequest data=EetRegisterRequest.builder()
+	   .dic_popl("CZ1212121218")
+	   .id_provoz("1")
+	   .id_pokl("POKLADNA01")
+	   .porad_cis("1")
+	   .dat_trzby("2016-06-30T08:43:28+02:00")
+	   .celk_trzba(100.0)
+	   .rezim(0)
+	   .certificate(cert)
+	   .key(key)
+	   .build();
+	String requestBody=data.generateSoapRequest(key);
+	String response=data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+ * 
+ * </pre>
+ *  
+ * @author rasekl
+ *
+ */
+
+public class EetRegisterRequest {
+
+	/**
+	 * Enumeration representing request header entry prvni_zaslani. 
+	 * 
+	 * @author rasekl
+	 *
+	 */
 	public static enum PrvniZaslani {
 		PRVNI(true), OPAKOVANE(false);
 		private boolean _value;
@@ -62,6 +96,12 @@ public class EetMessageData {
 		}
 	}
 
+	/**
+	 * Enumeration representing request header entry overeni. 
+	 * 
+	 * @author rasekl
+	 *
+	 */
 	public static enum Overeni {
 		OVEROVACI(true), PRODUKCNI(false);
 		private boolean _value;
@@ -85,7 +125,13 @@ public class EetMessageData {
 		}
 	}
 
-	
+	/**
+	 * Enumeration representing request entry rezim. 
+	 * 
+	 * @author rasekl
+	 *
+	 */
+
 	public static enum Rezim {
 		STANDARDNI(0), ZJEDNODUSENY(1);
 		private int _value;
@@ -122,6 +168,15 @@ public class EetMessageData {
 		}
 	}
 
+	
+	/**
+	 * The Builder class is a tool for EetRegisterRequest creation. 
+	 * Some of the fields has default values. See each builder method for default values.
+	 * When a key property is set, PKP and BKP codes are computed during build phase.
+	 * When a certificate property is set it is possible to create SOAP request from the resulting EetRegisterRequest object      
+	 * @author rasekl
+	 *
+	 */
 	public static class Builder {
 		protected PrivateKey _key;
 		protected X509Certificate _certificate;
@@ -268,7 +323,7 @@ public class EetMessageData {
 		}
 
 		public Builder dat_trzby(String val) {
-			_dat_trzby = EetMessageData.parseDate(val);
+			_dat_trzby = EetRegisterRequest.parseDate(val);
 			return this;
 		}
 
@@ -448,7 +503,7 @@ public class EetMessageData {
 		 * @return
 		 */
 		public Builder bkp(String val) {
-			_bkp=EetMessageData.parseBkp(val);
+			_bkp=EetRegisterRequest.parseBkp(val);
 			return this;
 		}
 
@@ -462,8 +517,8 @@ public class EetMessageData {
 			return this;
 		}
 
-		public EetMessageData build() {
-			return new EetMessageData(this);
+		public EetRegisterRequest build() {
+			return new EetRegisterRequest(this);
 		}		
 	}
 
@@ -497,7 +552,7 @@ public class EetMessageData {
 	protected byte[] bkp;
 	protected byte[] pkp;
 
-	protected EetMessageData(Builder builder) {
+	protected EetRegisterRequest(Builder builder) {
 		certificate = builder._certificate;
 		dat_odesl = builder._dat_odesl;
 		prvni_zaslani = builder._prvni_zaslani;

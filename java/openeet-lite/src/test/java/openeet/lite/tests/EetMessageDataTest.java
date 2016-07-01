@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import openeet.lite.EetMessageData;
+import openeet.lite.EetRegisterRequest;
 
 public class EetMessageDataTest {
 
@@ -55,7 +55,6 @@ public class EetMessageDataTest {
 		return bos.toByteArray();
 	}
 	
-	
 	private static void loadCert() throws IOException, CertificateException{
 		CertificateFactory cf=CertificateFactory.getInstance("X509");
 		cert=(X509Certificate)cf.generateCertificate(EetMessageDataTest.class.getResourceAsStream("/01000003.pem"));
@@ -69,7 +68,6 @@ public class EetMessageDataTest {
 	}
 
 	private static void loadP12() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException {
-		//TODO: fix this - not workingt
 		char[] password="eet".toCharArray();
 		KeyStore ks=KeyStore.getInstance("PKCS12");
 		ks.load(EetMessageDataTest.class.getResourceAsStream("/01000003.p12"), password);
@@ -93,9 +91,9 @@ public class EetMessageDataTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		loadKey();
-		loadCert();
-		//loadP12();
+		//loadKey();
+		//loadCert();
+		loadP12();
 	}
 
 	@AfterClass
@@ -116,8 +114,8 @@ public class EetMessageDataTest {
     <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
     */
 	@Test
-	public void testEetMessageData() throws Exception {
-		EetMessageData data=EetMessageData.builder()
+	public void signAndSend() throws Exception {
+		EetRegisterRequest data=EetRegisterRequest.builder()
 		   .dic_popl("CZ1212121218")
 		   .id_provoz("1")
 		   .id_pokl("POKLADNA01")
@@ -129,8 +127,8 @@ public class EetMessageDataTest {
 		   .key(key)
 		   .build();
 		assertNotNull(data);
-		String pkp=EetMessageData.formatPkp(data.getPkp());
-		String bkp=EetMessageData.formatBkp(data.getBkp());
+		String pkp=EetRegisterRequest.formatPkp(data.getPkp());
+		String bkp=EetRegisterRequest.formatBkp(data.getBkp());
 		assertEquals(pkp,"Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==");
 		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",bkp);
 		String signed=data.generateSoapRequest(key);
@@ -139,6 +137,11 @@ public class EetMessageDataTest {
 	}
 
 
+	/**
+	 * Utility function to validate XML Signature to do a self check
+	 * @param signed request 
+	 * @return
+	 */
 	private boolean validateXmlDSig(String signed){
 		try {
 			DocumentBuilderFactory dbf = 

@@ -3,7 +3,9 @@ Based on proof of concept implemented in the shell folder, Java implementation n
 
 Look at tests for example ho to use the class.
 
-There are no dependences but java runtime.
+There are no other dependences but java runtime (at least 1.4.2.)
+
+Basic usage:
 
 `
 EetMessageData data=EetMessageData.builder()
@@ -17,4 +19,13 @@ EetMessageData data=EetMessageData.builder()
    .certificate(cert)
    .key(key)
    .build();
-String requestBody=data.generateSoapRequest(key);
+String requestBody=dat_trzbyta.generateSoapRequest(key);
+String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+`
+
+For key&certificate manipulation see the tests source code. There you can find a code for key&certificate loading from PKCS12 file.
+
+# Plans
+
+* certificate management utilities - create cert request, get certificate and key ready to use (depends on including CA services in the playground)
+* basic offline processing - mainly in the point of view of request structure manipulation (what remains unchanged when resending)
