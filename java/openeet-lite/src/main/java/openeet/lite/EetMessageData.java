@@ -768,38 +768,43 @@ public class EetMessageData {
 	}
 	
 	private String replacePlaceholders(String src, String digest, String signature){
-		
-		if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
-		if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
-		if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
-		if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
-		if (dic_popl!=null) src=src.replace("${dic_popl}",dic_popl);
-		if (dic_poverujiciho!=null) src=src.replace("${dic_poverujiciho}",dic_poverujiciho);
-		if (id_provoz!=null) src=src.replace("${id_provoz}",id_provoz);
-		if (id_pokl!=null) src=src.replace("${id_pokl}",id_pokl);
-		if (porad_cis!=null) src=src.replace("${porad_cis}",porad_cis);
-		if (dat_trzby!=null) src=src.replace("${dat_trzby}",formatDate(dat_trzby));
-		if (celk_trzba!=null) src=src.replace("${celk_trzba}",formatAmount(celk_trzba));
-		if (zakl_nepodl_dph!=null) src=src.replace("${zakl_nepodl_dph}",formatAmount(zakl_nepodl_dph));
-		if (zakl_dan1!=null) src=src.replace("${zakl_dan1}",formatAmount(zakl_dan1));
-		if (dan1!=null) src=src.replace("${dan1}",formatAmount(dan1));
-		if (zakl_dan2!=null) src=src.replace("${zakl_dan2}",formatAmount(zakl_dan2));
-		if (dan2!=null) src=src.replace("${dan2}",formatAmount(dan2));
-		if (zakl_dan3!=null) src=src.replace("${zakl_dan3}",formatAmount(zakl_dan3));
-		if (dan3!=null) src=src.replace("${dan3}",formatAmount(dan3));
-		if (cest_sluz!=null) src=src.replace("${cest_sluz}",formatAmount(cest_sluz));
-		if (pouzit_zboz1!=null) src=src.replace("${pouzit_zboz1}",formatAmount(pouzit_zboz1));
-		if (pouzit_zboz2!=null) src=src.replace("${pouzit_zboz2}",formatAmount(pouzit_zboz2));
-		if (pouzit_zboz3!=null) src=src.replace("${pouzit_zboz3}",formatAmount(pouzit_zboz3));
-		if (urceno_cerp_zuct!=null) src=src.replace("${urceno_cerp_zuct}",formatAmount(urceno_cerp_zuct));
-		if (cerp_zuct!=null) src=src.replace("${cerp_zuct}",formatAmount(cerp_zuct));
-		if (rezim!=null) src=src.replace("${rezim}",rezim.toString());
-		if (bkp!=null) src=src.replace("${bkp}",formatBkp(bkp));
-		if (pkp!=null) src=src.replace("${pkp}",formatPkp(pkp));
-		if (digest!=null) src=src.replace("${digest}",digest);
-		if (signature!=null) src=src.replace("${signature}",signature);
-		
-		return src;
+		try {
+			if (certificate!=null) src=src.replace("${certb64}",Base64.getEncoder().encodeToString(certificate.getEncoded()));
+			if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
+			if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
+			if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
+			if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
+			if (dic_popl!=null) src=src.replace("${dic_popl}",dic_popl);
+			if (dic_poverujiciho!=null) src=src.replace("${dic_poverujiciho}",dic_poverujiciho);
+			if (id_provoz!=null) src=src.replace("${id_provoz}",id_provoz);
+			if (id_pokl!=null) src=src.replace("${id_pokl}",id_pokl);
+			if (porad_cis!=null) src=src.replace("${porad_cis}",porad_cis);
+			if (dat_trzby!=null) src=src.replace("${dat_trzby}",formatDate(dat_trzby));
+			if (celk_trzba!=null) src=src.replace("${celk_trzba}",formatAmount(celk_trzba));
+			if (zakl_nepodl_dph!=null) src=src.replace("${zakl_nepodl_dph}",formatAmount(zakl_nepodl_dph));
+			if (zakl_dan1!=null) src=src.replace("${zakl_dan1}",formatAmount(zakl_dan1));
+			if (dan1!=null) src=src.replace("${dan1}",formatAmount(dan1));
+			if (zakl_dan2!=null) src=src.replace("${zakl_dan2}",formatAmount(zakl_dan2));
+			if (dan2!=null) src=src.replace("${dan2}",formatAmount(dan2));
+			if (zakl_dan3!=null) src=src.replace("${zakl_dan3}",formatAmount(zakl_dan3));
+			if (dan3!=null) src=src.replace("${dan3}",formatAmount(dan3));
+			if (cest_sluz!=null) src=src.replace("${cest_sluz}",formatAmount(cest_sluz));
+			if (pouzit_zboz1!=null) src=src.replace("${pouzit_zboz1}",formatAmount(pouzit_zboz1));
+			if (pouzit_zboz2!=null) src=src.replace("${pouzit_zboz2}",formatAmount(pouzit_zboz2));
+			if (pouzit_zboz3!=null) src=src.replace("${pouzit_zboz3}",formatAmount(pouzit_zboz3));
+			if (urceno_cerp_zuct!=null) src=src.replace("${urceno_cerp_zuct}",formatAmount(urceno_cerp_zuct));
+			if (cerp_zuct!=null) src=src.replace("${cerp_zuct}",formatAmount(cerp_zuct));
+			if (rezim!=null) src=src.replace("${rezim}",rezim.toString());
+			if (bkp!=null) src=src.replace("${bkp}",formatBkp(bkp));
+			if (pkp!=null) src=src.replace("${pkp}",formatPkp(pkp));
+			if (digest!=null) src=src.replace("${digest}",digest);
+			if (signature!=null) src=src.replace("${signature}",signature);
+			
+			return src;
+		}
+		catch (Exception e){
+			throw new IllegalArgumentException("replacement processing got wrong",e);
+		}
 	}
 	
 	private String removeUnusedPlaceholders(String src){
@@ -824,7 +829,8 @@ public class EetMessageData {
 	
 	public void sendRequest(String requestBody, URL serviceUrl) throws IOException{
 		byte[] content=requestBody.getBytes("utf-8");
-		Files.write(Paths.get("signed-message.dump"), content);
+		//FIXME: remove 
+		Files.write(Paths.get("/tmp/openeet/eet-requuest.dump"), content);
 		HttpURLConnection con=(HttpURLConnection)serviceUrl.openConnection();
 		con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
 		con.setRequestProperty("Content-Length",String.format("%d", content.length));
@@ -841,6 +847,8 @@ public class EetMessageData {
 		int responseCode=con.getResponseCode();
 		InputStream is=con.getInputStream();
 		byte[] response=loadStream(is);
+		//FIXME: remove
+		Files.write(Paths.get("/tmp/openeet/eet-response.dump"), response);
 		String responseString=new String(response,"utf-8");
 		String a=responseString;		
 	}
