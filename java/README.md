@@ -29,23 +29,41 @@ Then find openeet/java/openeet-lite/build/libs/openeet-lite.jar and use it in yo
 
 # Basic usage
 
-```
-EetRegisterRequest request=EetRegisterRequest.builder()
-   .dic_popl("CZ1212121218")
-   .id_provoz("1")
-   .id_pokl("POKLADNA01")
-   .porad_cis("1")
-   .dat_trzby("2016-06-30T08:43:28+02:00")
-   .celk_trzba(100.0)
-   .rezim(0)
-   .certificate(cert)
-   .key(key)
-   .build();
-String bkp=request.formatBkp();
-String pkp=request.formatPkp();
-String requestBody=request.generateSoapRequest();
-String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+```java
+@Test
+public void simpleRegistrationProcessTest() throws MalformedURLException, IOException{
+    //set minimal business data & certificate with key loaded from pkcs12 file
+	EetRegisterRequest request=EetRegisterRequest.builder()
+	   .dic_popl("CZ1212121218")
+	   .id_provoz("1")
+	   .id_pokl("POKLADNA01")
+	   .porad_cis("1")
+	   .dat_trzby("2016-06-30T08:43:28+02:00")
+	   .celk_trzba(100.0)
+	   .rezim(0)
+	   .pkcs12(loadStream(getClass().getResourceAsStream("/01000003.p12")))
+	   .pkcs12password("eet")
+	   .build();
 
+	//for receipt printing in online mode
+	String bkp=request.formatBkp();
+	assertNotNull(bkp);
+
+	//for receipt printing in offline mode
+	String pkp=request.formatPkp();
+	assertNotNull(pkp);
+	//the receipt can be now stored for offline processing
+
+	//try send
+	String requestBody=request.generateSoapRequest();
+	assertNotNull(requestBody);
+
+	String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+	//extract FIK
+	assertNotNull(response);
+	assertTrue(response.contains("Potvrzeni fik="));
+	//ready to print online receipt
+}
 ```
 
 # Plans
