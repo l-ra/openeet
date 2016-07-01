@@ -13,16 +13,16 @@ There are no other dependences but java runtime (at least 1.4.2.)
 
 
 # Build 
-`
+```
 git clone https://github.com/l-ra/openeet.git
 cd openeet/java
 ./gradlew jar
-
+```
 
 
 # Basic usage
 
-`
+```
 EetMessageData request=EetMessageData.builder()
    .dic_popl("CZ1212121218")
    .id_provoz("1")
@@ -36,7 +36,7 @@ EetMessageData request=EetMessageData.builder()
    .build();
 String requestBody=request.generateSoapRequest(key);
 String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-`
+```
 
 For key&certificate manipulation see the tests source code. There you can find a code for key&certificate loading from PKCS12 file.
 

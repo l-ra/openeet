@@ -8,7 +8,7 @@ Java implementation now works with EET playtground v2.
 
 To register a sale it is as easy as this:
 
-`
+```
 EetMessageData request=EetMessageData.builder()
    .dic_popl("CZ1212121218")
    .id_provoz("1")
@@ -22,7 +22,7 @@ EetMessageData request=EetMessageData.builder()
    .build();
 String requestBody=request.generateSoapRequest(key);
 String response=data.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-`
+```
 
 
 ##XMLDSig&SOAP&WS-Security approach for restricted devices
