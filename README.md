@@ -8,7 +8,7 @@ Java implementation now works with EET playtground v2. No dependencies, just the
 
 To register a sale it is as easy as this:
 
-```
+```java
 @Test
 public void simpleRegistrationProcessTest() throws MalformedURLException, IOException{
     //set minimal business data & certificate with key loaded from pkcs12 file
