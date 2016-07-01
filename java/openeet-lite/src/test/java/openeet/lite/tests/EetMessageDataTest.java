@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -115,7 +116,7 @@ public class EetMessageDataTest {
     <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
     */
 	@Test
-	public void testEetMessageData() {
+	public void testEetMessageData() throws Exception {
 		EetMessageData data=EetMessageData.builder()
 		   .dic_popl("CZ1212121218")
 		   .id_provoz("1")
@@ -134,6 +135,7 @@ public class EetMessageDataTest {
 		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",bkp);
 		String signed=data.generateSoapRequest(key);
 		assertTrue(validateXmlDSig(signed));
+		data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 	}
 
 

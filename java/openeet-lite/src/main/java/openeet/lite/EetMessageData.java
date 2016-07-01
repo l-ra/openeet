@@ -19,7 +19,12 @@ package openeet.lite;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -815,6 +820,29 @@ public class EetMessageData {
 	private String loadTemplateFromResource(String resource) throws IOException {
 		byte[] streamData=loadStream(getClass().getResourceAsStream(resource));
 		return new String(streamData,"UTF-8");
+	}
+	
+	public void sendRequest(String requestBody, URL serviceUrl) throws IOException{
+		byte[] content=requestBody.getBytes("utf-8");
+		Files.write(Paths.get("signed-message.dump"), content);
+		HttpURLConnection con=(HttpURLConnection)serviceUrl.openConnection();
+		con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+		con.setRequestProperty("Content-Length",String.format("%d", content.length));
+		con.setRequestProperty("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
+		con.setUseCaches(false);
+		con.setDoOutput(true);
+		con.setDoInput(true);
+		con.setRequestMethod("POST");
+		
+		OutputStream os=con.getOutputStream();
+		os.write(content);
+		os.flush();os.close();
+		
+		int responseCode=con.getResponseCode();
+		InputStream is=con.getInputStream();
+		byte[] response=loadStream(is);
+		String responseString=new String(response,"utf-8");
+		String a=responseString;		
 	}
 	
 	
