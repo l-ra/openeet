@@ -1,7 +1,7 @@
 # Work In Progress
 Even if working well with playground of the EET system, this is still work in progress.
 
-Any cotribuution is welcomed!
+Any cotribution is welcomed!
 
 
 # Java implementation of core EET functionalities

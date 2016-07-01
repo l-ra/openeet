@@ -1,10 +1,10 @@
 # OpenEET
-Open source experimenty s rozhraním pro EET.
-
-Open source experimens with the Czech government system for Electronic Registration of Sales 
+Open source light implementation of EET client. Working client with no external dependencies in 16kB JAR file. 
+Try it. 
 
 ## Java implementation
-Java implementation now works with EET playtground v2. No dependencies, just the java runtime itself (1.4.2). 
+Java implementation now works with EET playground v2. No dependencies, just the java runtime itself (1.4.2).
+No release yet - use source code. For details look at Java implementation description [Java implementation description/](java/openeet-lite) 
 
 To register a sale it is as easy as this:
 
