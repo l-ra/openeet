@@ -931,8 +931,6 @@ public class EetRegisterRequest {
 	
 	public String sendRequest(String requestBody, URL serviceUrl) throws IOException{
 		byte[] content=requestBody.getBytes("utf-8");
-		//FIXME: remove 
-		Files.write(Paths.get("/tmp/openeet/eet-requuest.dump"), content);
 		HttpURLConnection con=(HttpURLConnection)serviceUrl.openConnection();
 		con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
 		con.setRequestProperty("Content-Length",String.format("%d", content.length));
@@ -949,8 +947,6 @@ public class EetRegisterRequest {
 		int responseCode=con.getResponseCode();
 		InputStream is=con.getInputStream();
 		byte[] response=loadStream(is);
-		//FIXME: remove
-		Files.write(Paths.get("/tmp/openeet/eet-response.dump"), response);
 		String responseString=new String(response,"utf-8");
 		return responseString;
 	}
