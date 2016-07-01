@@ -16,7 +16,9 @@
  */
 package openeet.lite;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,14 +26,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.Key;
+import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Signature;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.UUID;
 
 
@@ -178,6 +185,8 @@ public class EetRegisterRequest {
 	 *
 	 */
 	public static class Builder {
+		protected byte[] _pkcs12bytes;
+		protected char[] _pkcs12password;
 		protected PrivateKey _key;
 		protected X509Certificate _certificate;
 		protected Date _dat_odesl=new Date();
@@ -467,10 +476,10 @@ public class EetRegisterRequest {
 			return this;
 		}
 
-		
-		
-		/*
+		/**
 		 * Defualts to Rezim.STANDARDNI
+		 * @param val
+		 * @return
 		 */
 		public Builder rezim(Rezim val) {
 			_rezim = val;
@@ -517,6 +526,29 @@ public class EetRegisterRequest {
 			return this;
 		}
 
+		/** 
+		 * file is loaded immediately
+		 * @param p12Filename
+		 * @return
+		 */
+		public Builder pkcs12(String p12Filename) throws IOException{
+			return pkcs12(loadStream(new FileInputStream(p12Filename)));
+		}
+		
+		public Builder pkcs12(byte[] p12bytes){
+			_pkcs12bytes=p12bytes;
+			return this;
+		}
+
+		public Builder pkcs12password(String password){
+			return pkcs12password(password.toCharArray());
+		}
+		
+		public Builder pkcs12password(char[] password){
+			_pkcs12password=password;
+			return this;
+		}
+		
 		public EetRegisterRequest build() {
 			return new EetRegisterRequest(this);
 		}		
@@ -551,6 +583,8 @@ public class EetRegisterRequest {
 
 	protected byte[] bkp;
 	protected byte[] pkp;
+	
+	protected PrivateKey key;
 
 	protected EetRegisterRequest(Builder builder) {
 		certificate = builder._certificate;
@@ -581,27 +615,36 @@ public class EetRegisterRequest {
 		rezim = builder._rezim;
 		bkp = builder._bkp;
 		pkp = builder._pkp;
-	
-		if (builder._key!=null)
-			computeCodes(builder._key);
+		key= builder._key;
+		certificate = builder._certificate;
+		
+		if ( builder._pkcs12bytes!=null ){
+			if (builder._pkcs12password==null){
+				throw new IllegalArgumentException("found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the builder setup.") ;
+			}
+			loadP12(builder._pkcs12bytes, builder._pkcs12password);
+		}
+		
+		if (key!=null)
+			computeCodes(key);
 	}
 
 	private void computeCodes(PrivateKey key){
 		try {
-		if (pkp==null && key!=null){
-			String toBeSigned=formatToBeSignedData();
-			if (toBeSigned!=null){
-				Signature signature = Signature.getInstance("SHA256withRSA");
-		        signature.initSign(key);
-		        signature.update(toBeSigned.getBytes("UTF-8"));
-		        pkp=signature.sign();					
-		    }
-		}
-
-		if ( bkp==null && pkp !=null){
-			MessageDigest md=MessageDigest.getInstance("SHA-1");
-			bkp=md.digest(pkp);
-		}
+			if (pkp==null && key!=null){
+				String toBeSigned=formatToBeSignedData();
+				if (toBeSigned!=null){
+					Signature signature = Signature.getInstance("SHA256withRSA");
+			        signature.initSign(key);
+			        signature.update(toBeSigned.getBytes("UTF-8"));
+			        pkp=signature.sign();					
+			    }
+			}
+	
+			if ( bkp==null && pkp !=null){
+				MessageDigest md=MessageDigest.getInstance("SHA-1");
+				bkp=md.digest(pkp);
+			}
 		}
 		catch (Exception e){
 			throw new IllegalArgumentException("error while computing codes",e);
@@ -792,7 +835,7 @@ public class EetRegisterRequest {
 	}
 
 
-	public String generateSoapRequest(PrivateKey key){
+	public String generateSoapRequest(){
 		try {
 			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml");
 			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template");
@@ -868,7 +911,7 @@ public class EetRegisterRequest {
 		return src;
 	}
 
-	private static byte[] loadStream(InputStream in) throws IOException{
+	public static byte[] loadStream(InputStream in) throws IOException{
 		byte[] buf=new byte[1024];
 		ByteArrayOutputStream bos=new ByteArrayOutputStream();
 		int n=0;
@@ -882,7 +925,7 @@ public class EetRegisterRequest {
 		return new String(streamData,"UTF-8");
 	}
 	
-	public void sendRequest(String requestBody, URL serviceUrl) throws IOException{
+	public String sendRequest(String requestBody, URL serviceUrl) throws IOException{
 		byte[] content=requestBody.getBytes("utf-8");
 		//FIXME: remove 
 		Files.write(Paths.get("/tmp/openeet/eet-requuest.dump"), content);
@@ -905,9 +948,33 @@ public class EetRegisterRequest {
 		//FIXME: remove
 		Files.write(Paths.get("/tmp/openeet/eet-response.dump"), response);
 		String responseString=new String(response,"utf-8");
-		String a=responseString;		
+		return responseString;
 	}
 	
-	
-
+	private void loadP12(byte[] p12data, char[] password)  {
+		try {
+			KeyStore ks=KeyStore.getInstance("PKCS12");
+			ks.load(new ByteArrayInputStream(p12data), password);
+			Enumeration<String> aliases= ks.aliases();
+			while(aliases.hasMoreElements() ){
+				String alias=aliases.nextElement();
+				Key _key=ks.getKey(alias, password);
+				if (_key!=null){
+					Certificate _cert=ks.getCertificate(alias);
+					if (_cert!=null){
+						if (   _cert instanceof X509Certificate 
+							&& _key instanceof RSAPrivateKey ){
+							key=(PrivateKey) _key;
+							certificate=(X509Certificate)_cert;
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e ){
+			throw new IllegalArgumentException("Exception while loading p12 data",e);
+		}
+		
+		if (key==null || certificate==null) throw new IllegalArgumentException("key and/or certificate still missing after p12 processing");
+	}
 }

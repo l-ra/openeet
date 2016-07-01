@@ -42,7 +42,7 @@ import org.w3c.dom.NodeList;
 
 import openeet.lite.EetRegisterRequest;
 
-public class EetMessageDataTest {
+public class EetRegisterRequestTest {
 
 	static PrivateKey key;
 	static X509Certificate cert;
@@ -57,43 +57,20 @@ public class EetMessageDataTest {
 	
 	private static void loadCert() throws IOException, CertificateException{
 		CertificateFactory cf=CertificateFactory.getInstance("X509");
-		cert=(X509Certificate)cf.generateCertificate(EetMessageDataTest.class.getResourceAsStream("/01000003.pem"));
+		cert=(X509Certificate)cf.generateCertificate(EetRegisterRequestTest.class.getResourceAsStream("/01000003.pem"));
 	}
 	
 	//pkcs1->pkcs8 openssl pkcs8 -topk8 -inform PEM -outform DER -in mykey.pem -out mykey.der -nocrypt
 	private static void loadKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException{
 		KeyFactory kf=KeyFactory.getInstance("RSA");
-		PKCS8EncodedKeySpec ks=new PKCS8EncodedKeySpec(loadStream(EetMessageDataTest.class.getResourceAsStream("/01000003.der")));
+		PKCS8EncodedKeySpec ks=new PKCS8EncodedKeySpec(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.der")));
 		key=kf.generatePrivate(ks);
-	}
-
-	private static void loadP12() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException {
-		char[] password="eet".toCharArray();
-		KeyStore ks=KeyStore.getInstance("PKCS12");
-		ks.load(EetMessageDataTest.class.getResourceAsStream("/01000003.p12"), password);
-		Enumeration<String> aliases= ks.aliases();
-		while(aliases.hasMoreElements() ){
-			String alias=aliases.nextElement();
-			Key _key=ks.getKey(alias, password);
-			if (_key!=null){
-				Certificate _cert=ks.getCertificate(alias);
-				if (_cert!=null){
-					if (   _cert instanceof X509Certificate 
-						&& _key instanceof RSAPrivateKey ){
-						key=(PrivateKey) _key;
-						cert=(X509Certificate)_cert;
-					}
-				}
-			}
-			
-		}
 	}
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		//loadKey();
 		//loadCert();
-		loadP12();
 	}
 
 	@AfterClass
@@ -123,16 +100,16 @@ public class EetMessageDataTest {
 		   .dat_trzby("2016-06-30T08:43:28+02:00")
 		   .celk_trzba(100.0)
 		   .rezim(0)
-		   .certificate(cert)
-		   .key(key)
+		   .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
+		   .pkcs12password("eet")
 		   .build();
 		assertNotNull(data);
 		String pkp=EetRegisterRequest.formatPkp(data.getPkp());
 		String bkp=EetRegisterRequest.formatBkp(data.getBkp());
 		assertEquals(pkp,"Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==");
 		assertEquals("AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199",bkp);
-		String signed=data.generateSoapRequest(key);
-		assertTrue(validateXmlDSig(signed));
+		String signed=data.generateSoapRequest();
+		assertTrue(validateXmlDSig(signed, data.getCertificate()));
 		data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 	}
 
@@ -142,7 +119,7 @@ public class EetMessageDataTest {
 	 * @param signed request 
 	 * @return
 	 */
-	private boolean validateXmlDSig(String signed){
+	private boolean validateXmlDSig(String signed, X509Certificate cert){
 		try {
 			DocumentBuilderFactory dbf = 
 					  DocumentBuilderFactory.newInstance(); 
