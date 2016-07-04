@@ -28,14 +28,20 @@ namespace tests
         static void loadP12(byte[] p12data, string password)
         {
             X509Certificate2Collection col = new X509Certificate2Collection();
-            col.Import(p12data, password, X509KeyStorageFlags.Exportable & X509KeyStorageFlags.DefaultKeySet);
+            col.Import(p12data, password, X509KeyStorageFlags.Exportable);
             foreach (X509Certificate2 cert in col)
             {
                 if (cert.HasPrivateKey)
                 {
                     certificate = cert;
-                    key = (RSACryptoServiceProvider)cert.PrivateKey;
+                    RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
+                    RSAParameters keyParams = tmpKey.ExportParameters(true);
+                    CspParameters p = new CspParameters();
+                    p.ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider";
+                    key = new RSACryptoServiceProvider(p);
+                    key.ImportParameters(keyParams);
                 }
+
             }
 
             if (key == null || certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
@@ -43,16 +49,16 @@ namespace tests
 
         static void sign()
         {
-            HashAlgorithm hashAlg = new SHA256CryptoServiceProvider();
+            loadP12(TestData._01000003,"eet");
+            SHA256 sha256 = SHA256.Create();
 
             byte[] data = UTF8Encoding.UTF8.GetBytes("aaa");
-            byte[] hash = hashAlg.ComputeHash(data);
+            byte[] hash = sha256.ComputeHash(data);
 
-            RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter();
-            fmt.SetKey(key);
+            RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(key);
             fmt.SetHashAlgorithm("SHA256");
 
-            byte[] sig = key.Encrypt(hash, false);
+            byte[] sig = fmt.CreateSignature(hash);
 
         }
 
@@ -97,7 +103,7 @@ namespace tests
         }
 
         
-	    public void signAndSend() {
+	    public static void signAndSend() {
 		    EetRegisterRequest data=EetRegisterRequest.builder()
 		       .dic_popl("CZ1212121218")
 		       .id_provoz("1")
@@ -127,6 +133,8 @@ namespace tests
 
         static void Main(string[] args)
         {
+            signAndSend();
+            //sign();
 
 
             Console.ReadKey();

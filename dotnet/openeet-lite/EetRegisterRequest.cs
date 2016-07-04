@@ -407,30 +407,30 @@ namespace openeet_lite
     {
         X509Certificate2 _certificate; public X509Certificate2 certificate { get { return _certificate; } }
         DateTime _dat_odesl; public DateTime dat_odesl { get { return _dat_odesl; } }
-        PrvniZaslani _prvni_zaslani; public PrvniZaslani prvni_zaslani { get { return _prvni_zaslani; } }
+        PrvniZaslani _prvni_zaslani; public PrvniZaslani? prvni_zaslani { get { return _prvni_zaslani; } }
         Guid _uuid_zpravy; public Guid uuid_zpravy { get { return _uuid_zpravy; } }
-        Overeni _overeni; public Overeni overeni { get { return _overeni; } }
+        Overeni _overeni; public Overeni? overeni { get { return _overeni; } }
         String _dic_popl; public String dic_popl { get { return _dic_popl; } }
         String _dic_poverujiciho; public String dic_poverujiciho { get { return _dic_poverujiciho; } }
         String _id_provoz; public String id_provoz { get { return _id_provoz; } }
         String _id_pokl; public String id_pokl { get { return _id_pokl; } }
         String _porad_cis; public String porad_cis { get { return _porad_cis; } }
         DateTime _dat_trzby; public DateTime dat_trzby { get { return _dat_trzby; } }
-        Double _celk_trzba; public Double celk_trzba { get { return _celk_trzba; } }
-        Double _zakl_nepodl_dph; public Double zakl_nepodl_dph { get { return _zakl_nepodl_dph; } }
-        Double _zakl_dan1; public Double zakl_dan1 { get { return _zakl_dan1; } }
-        Double _dan1; public Double dan1 { get { return _dan1; } }
-        Double _zakl_dan2; public Double zakl_dan2 { get { return _zakl_dan2; } }
-        Double _dan2; public Double dan2 { get { return _dan2; } }
-        Double _zakl_dan3; public Double zakl_dan3 { get { return _zakl_dan3; } }
-        Double _dan3; public Double dan3 { get { return _dan3; } }
-        Double _cest_sluz; public Double cest_sluz { get { return _cest_sluz; } }
-        Double _pouzit_zboz1; public Double pouzit_zboz1 { get { return _pouzit_zboz1; } }
-        Double _pouzit_zboz2; public Double pouzit_zboz2 { get { return _pouzit_zboz2; } }
-        Double _pouzit_zboz3; public Double pouzit_zboz3 { get { return _pouzit_zboz3; } }
-        Double _urceno_cerp_zuct; public Double urceno_cerp_zuct { get { return _urceno_cerp_zuct; } }
-        Double _cerp_zuct; public Double cerp_zuct { get { return _cerp_zuct; } }
-        Rezim _rezim; public Rezim rezim { get { return _rezim; } }
+        Double _celk_trzba; public Double? celk_trzba { get { return _celk_trzba; } }
+        Double _zakl_nepodl_dph; public Double? zakl_nepodl_dph { get { return _zakl_nepodl_dph; } }
+        Double _zakl_dan1; public Double? zakl_dan1 { get { return _zakl_dan1; } }
+        Double _dan1; public Double? dan1 { get { return _dan1; } }
+        Double _zakl_dan2; public Double? zakl_dan2 { get { return _zakl_dan2; } }
+        Double _dan2; public Double? dan2 { get { return _dan2; } }
+        Double _zakl_dan3; public Double? zakl_dan3 { get { return _zakl_dan3; } }
+        Double _dan3; public Double? dan3 { get { return _dan3; } }
+        Double _cest_sluz; public Double? cest_sluz { get { return _cest_sluz; } }
+        Double _pouzit_zboz1; public Double? pouzit_zboz1 { get { return _pouzit_zboz1; } }
+        Double _pouzit_zboz2; public Double? pouzit_zboz2 { get { return _pouzit_zboz2; } }
+        Double _pouzit_zboz3; public Double? pouzit_zboz3 { get { return _pouzit_zboz3; } }
+        Double _urceno_cerp_zuct; public Double? urceno_cerp_zuct { get { return _urceno_cerp_zuct; } }
+        Double _cerp_zuct; public Double? cerp_zuct { get { return _cerp_zuct; } }
+        Rezim _rezim; public Rezim? rezim { get { return _rezim; } }
 
         byte[] _bkp; public byte[] bkp { get { return _bkp; } }
         byte[] _pkp; public byte[] pkp { get { return _pkp; } }
@@ -499,7 +499,7 @@ namespace openeet_lite
                     {
                         SHA256CryptoServiceProvider sha256 = new SHA256CryptoServiceProvider();
                         byte[] hash = sha256.ComputeHash(UTF8Encoding.UTF8.GetBytes(toBeSigned));
-                        _pkp = key.Encrypt(hash, false);
+                        _pkp = key.Encrypt(hash, false); //FIXME: wrong
                     }
                 }
 
@@ -527,7 +527,7 @@ namespace openeet_lite
                 throw new NullReferenceException(
                         String.Format("missing some of _dic_popl({0}), _id_provoz({1}), _id_pokl({2}), _porad_cis({3}), _celk_trzba({4})",
                                 dic_popl, id_provoz, id_pokl, porad_cis, dat_trzby, celk_trzba));
-            return String.Format("{0}|{1}|{2}|{3}|{4}|{5}", dic_popl, id_provoz, id_pokl, porad_cis, formatDate(dat_trzby), formatAmount(celk_trzba));
+            return String.Format("{0}|{1}|{2}|{3}|{4}|{5}", dic_popl, id_provoz, id_pokl, porad_cis, formatDate(dat_trzby), formatAmount(celk_trzba.GetValueOrDefault()));
         }
 
         public String formatDate(DateTime date)
@@ -637,28 +637,28 @@ namespace openeet_lite
                 if (prvni_zaslani != null) src = src.Replace("${prvni_zaslani}", formatPrvniZaslani(_prvni_zaslani)); 
                 if (dat_odesl != null) src = src.Replace("${dat_odesl}", formatDate(dat_odesl));
                 if (uuid_zpravy != null) src = src.Replace("${uuid_zpravy}", uuid_zpravy.ToString());
-                if (overeni != null) src = src.Replace("${overeni}", formatOvereni(overeni));
+                if (overeni != null) src = src.Replace("${overeni}", formatOvereni(overeni.GetValueOrDefault()));
                 if (dic_popl != null) src = src.Replace("${dic_popl}", dic_popl);
                 if (dic_poverujiciho != null) src = src.Replace("${dic_poverujiciho}", dic_poverujiciho);
                 if (id_provoz != null) src = src.Replace("${id_provoz}", id_provoz);
                 if (id_pokl != null) src = src.Replace("${id_pokl}", id_pokl);
                 if (porad_cis != null) src = src.Replace("${porad_cis}", porad_cis);
                 if (dat_trzby != null) src = src.Replace("${dat_trzby}", formatDate(dat_trzby));
-                if (celk_trzba != null) src = src.Replace("${celk_trzba}", formatAmount(celk_trzba));
-                if (zakl_nepodl_dph != null) src = src.Replace("${zakl_nepodl_dph}", formatAmount(zakl_nepodl_dph));
-                if (zakl_dan1 != null) src = src.Replace("${zakl_dan1}", formatAmount(zakl_dan1));
-                if (dan1 != null) src = src.Replace("${dan1}", formatAmount(dan1));
-                if (zakl_dan2 != null) src = src.Replace("${zakl_dan2}", formatAmount(zakl_dan2));
-                if (dan2 != null) src = src.Replace("${dan2}", formatAmount(dan2));
-                if (zakl_dan3 != null) src = src.Replace("${zakl_dan3}", formatAmount(zakl_dan3));
-                if (dan3 != null) src = src.Replace("${dan3}", formatAmount(dan3));
-                if (cest_sluz != null) src = src.Replace("${cest_sluz}", formatAmount(cest_sluz));
-                if (pouzit_zboz1 != null) src = src.Replace("${pouzit_zboz1}", formatAmount(pouzit_zboz1));
-                if (pouzit_zboz2 != null) src = src.Replace("${pouzit_zboz2}", formatAmount(pouzit_zboz2));
-                if (pouzit_zboz3 != null) src = src.Replace("${pouzit_zboz3}", formatAmount(pouzit_zboz3));
-                if (urceno_cerp_zuct != null) src = src.Replace("${urceno_cerp_zuct}", formatAmount(urceno_cerp_zuct));
-                if (cerp_zuct != null) src = src.Replace("${cerp_zuct}", formatAmount(cerp_zuct));
-                if (rezim != null) src = src.Replace("${rezim}", formatRezim(rezim));
+                if (celk_trzba != null) src = src.Replace("${celk_trzba}", formatAmount(celk_trzba.GetValueOrDefault()));
+                if (zakl_nepodl_dph != null) src = src.Replace("${zakl_nepodl_dph}", formatAmount(zakl_nepodl_dph.GetValueOrDefault()));
+                if (zakl_dan1 != null) src = src.Replace("${zakl_dan1}", formatAmount(zakl_dan1.GetValueOrDefault()));
+                if (dan1 != null) src = src.Replace("${dan1}", formatAmount(dan1.GetValueOrDefault()));
+                if (zakl_dan2 != null) src = src.Replace("${zakl_dan2}", formatAmount(zakl_dan2.GetValueOrDefault()));
+                if (dan2 != null) src = src.Replace("${dan2}", formatAmount(dan2.GetValueOrDefault()));
+                if (zakl_dan3 != null) src = src.Replace("${zakl_dan3}", formatAmount(zakl_dan3.GetValueOrDefault()));
+                if (dan3 != null) src = src.Replace("${dan3}", formatAmount(dan3.GetValueOrDefault()));
+                if (cest_sluz != null) src = src.Replace("${cest_sluz}", formatAmount(cest_sluz.GetValueOrDefault()));
+                if (pouzit_zboz1 != null) src = src.Replace("${pouzit_zboz1}", formatAmount(pouzit_zboz1.GetValueOrDefault()));
+                if (pouzit_zboz2 != null) src = src.Replace("${pouzit_zboz2}", formatAmount(pouzit_zboz2.GetValueOrDefault()));
+                if (pouzit_zboz3 != null) src = src.Replace("${pouzit_zboz3}", formatAmount(pouzit_zboz3.GetValueOrDefault()));
+                if (urceno_cerp_zuct != null) src = src.Replace("${urceno_cerp_zuct}", formatAmount(urceno_cerp_zuct.GetValueOrDefault()));
+                if (cerp_zuct != null) src = src.Replace("${cerp_zuct}", formatAmount(cerp_zuct.GetValueOrDefault()));
+                if (rezim != null) src = src.Replace("${rezim}", formatRezim(rezim.GetValueOrDefault()));
                 if (bkp != null) src = src.Replace("${bkp}", formatBkp(bkp));
                 if (pkp != null) src = src.Replace("${pkp}", formatPkp(pkp));
                 if (digest != null) src = src.Replace("${digest}", digest);
@@ -702,22 +702,28 @@ namespace openeet_lite
                 return responseString;
             }
     */
+
         void loadP12(byte[] p12data, string password)
         {
             X509Certificate2Collection col = new X509Certificate2Collection();
-            col.Import(p12data, password, X509KeyStorageFlags.Exportable & X509KeyStorageFlags.DefaultKeySet);
+            col.Import(p12data, password, X509KeyStorageFlags.Exportable);
             foreach (X509Certificate2 cert in col)
             {
                 if (cert.HasPrivateKey)
                 {
                     _certificate = cert;
-                    _key = (RSACryptoServiceProvider)cert.PrivateKey;
+                    RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
+                    RSAParameters keyParams = tmpKey.ExportParameters(true);
+                    CspParameters p = new CspParameters();
+                    p.ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider";
+                    _key = new RSACryptoServiceProvider(p);
+                    _key.ImportParameters(keyParams);
                 }
+
             }
 
             if (_key == null || _certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
         }
-
 
         protected String formatPrvniZaslani(PrvniZaslani val)
         {
