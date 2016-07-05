@@ -100,37 +100,3 @@ namespace tests
 }
 
 
-/*
-
-
-	private boolean validateXmlDSig(String signed, X509Certificate cert){
-		try {
-			DocumentBuilderFactory dbf = 
-					  DocumentBuilderFactory.newInstance(); 
-			dbf.setNamespaceAware(true);
-
-			DocumentBuilder builder = dbf.newDocumentBuilder();  
-			Document doc = builder.parse(new ByteArrayInputStream(signed.getBytes("utf-8")));
-			NodeList signatureNodeList = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-			NodeList bodyNodeList = doc.getElementsByTagNameNS("http://schemas.xmlsoap.org/soap/envelope/", "Body");
-			
-			if (signatureNodeList.getLength() == 0) {
-			  throw new Exception("Cannot find Signature element");
-			}
-			DOMValidateContext valContext = new DOMValidateContext(cert.getPublicKey(), signatureNodeList.item(0));
-			valContext.setIdAttributeNS((Element)bodyNodeList.item(0),"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd","Id");
-			
-			XMLSignatureFactory factory = 
-					  XMLSignatureFactory.getInstance("DOM");
-			XMLSignature signature = 
-					  factory.unmarshalXMLSignature(valContext);
-			boolean coreValidity = signature.validate(valContext); 
-			
-			
-			return coreValidity;
-		}
-		catch (Exception e){
-			throw new IllegalArgumentException("validation failes", e);
-		}
-	}
-  */
