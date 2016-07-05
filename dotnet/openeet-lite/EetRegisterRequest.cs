@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using System.Net;
 
 namespace openeet_lite
 {
@@ -36,30 +37,30 @@ namespace openeet_lite
 		internal RSACryptoServiceProvider _key;
 		internal X509Certificate2 _certificate;
 		internal DateTime _dat_odesl=DateTime.Now;
-		internal PrvniZaslani _prvni_zaslani=PrvniZaslani.PRVNI;
+		internal PrvniZaslani? _prvni_zaslani=PrvniZaslani.PRVNI;
 		internal Guid _uuid_zpravy=Guid.NewGuid();
-		internal Overeni _overeni=Overeni.PRODUKCNI;
+		internal Overeni? _overeni=Overeni.PRODUKCNI;
 		internal String _dic_popl;
 		internal String _dic_poverujiciho;
 		internal String _id_provoz;
 		internal String _id_pokl;
 		internal String _porad_cis;
 		internal DateTime _dat_trzby=DateTime.Now;
-		internal Double _celk_trzba;
-		internal Double _zakl_nepodl_dph;
-		internal Double _zakl_dan1;
-		internal Double _dan1;
-		internal Double _zakl_dan2;
-		internal Double _dan2;
-		internal Double _zakl_dan3;
-		internal Double _dan3;
-		internal Double _cest_sluz;
-		internal Double _pouzit_zboz1;
-		internal Double _pouzit_zboz2;
-		internal Double _pouzit_zboz3;
-		internal Double _urceno_cerp_zuct;
-		internal Double _cerp_zuct;
-		internal Rezim _rezim=Rezim.STANDARDNI;
+		internal Double? _celk_trzba;
+		internal Double? _zakl_nepodl_dph;
+		internal Double? _zakl_dan1;
+		internal Double? _dan1;
+		internal Double? _zakl_dan2;
+		internal Double? _dan2;
+		internal Double? _zakl_dan3;
+		internal Double? _dan3;
+		internal Double? _cest_sluz;
+		internal Double? _pouzit_zboz1;
+		internal Double? _pouzit_zboz2;
+		internal Double? _pouzit_zboz3;
+		internal Double? _urceno_cerp_zuct;
+		internal Double? _cerp_zuct;
+		internal Rezim? _rezim=Rezim.STANDARDNI;
         internal byte[] _bkp;
 		internal byte[] _pkp;
 
@@ -407,30 +408,30 @@ namespace openeet_lite
     {
         X509Certificate2 _certificate; public X509Certificate2 certificate { get { return _certificate; } }
         DateTime _dat_odesl; public DateTime dat_odesl { get { return _dat_odesl; } }
-        PrvniZaslani _prvni_zaslani; public PrvniZaslani? prvni_zaslani { get { return _prvni_zaslani; } }
+        PrvniZaslani? _prvni_zaslani; public PrvniZaslani? prvni_zaslani { get { return _prvni_zaslani; } }
         Guid _uuid_zpravy; public Guid uuid_zpravy { get { return _uuid_zpravy; } }
-        Overeni _overeni; public Overeni? overeni { get { return _overeni; } }
+        Overeni? _overeni; public Overeni? overeni { get { return _overeni; } }
         String _dic_popl; public String dic_popl { get { return _dic_popl; } }
         String _dic_poverujiciho; public String dic_poverujiciho { get { return _dic_poverujiciho; } }
         String _id_provoz; public String id_provoz { get { return _id_provoz; } }
         String _id_pokl; public String id_pokl { get { return _id_pokl; } }
         String _porad_cis; public String porad_cis { get { return _porad_cis; } }
         DateTime _dat_trzby; public DateTime dat_trzby { get { return _dat_trzby; } }
-        Double _celk_trzba; public Double? celk_trzba { get { return _celk_trzba; } }
-        Double _zakl_nepodl_dph; public Double? zakl_nepodl_dph { get { return _zakl_nepodl_dph; } }
-        Double _zakl_dan1; public Double? zakl_dan1 { get { return _zakl_dan1; } }
-        Double _dan1; public Double? dan1 { get { return _dan1; } }
-        Double _zakl_dan2; public Double? zakl_dan2 { get { return _zakl_dan2; } }
-        Double _dan2; public Double? dan2 { get { return _dan2; } }
-        Double _zakl_dan3; public Double? zakl_dan3 { get { return _zakl_dan3; } }
-        Double _dan3; public Double? dan3 { get { return _dan3; } }
-        Double _cest_sluz; public Double? cest_sluz { get { return _cest_sluz; } }
-        Double _pouzit_zboz1; public Double? pouzit_zboz1 { get { return _pouzit_zboz1; } }
-        Double _pouzit_zboz2; public Double? pouzit_zboz2 { get { return _pouzit_zboz2; } }
-        Double _pouzit_zboz3; public Double? pouzit_zboz3 { get { return _pouzit_zboz3; } }
-        Double _urceno_cerp_zuct; public Double? urceno_cerp_zuct { get { return _urceno_cerp_zuct; } }
-        Double _cerp_zuct; public Double? cerp_zuct { get { return _cerp_zuct; } }
-        Rezim _rezim; public Rezim? rezim { get { return _rezim; } }
+        Double? _celk_trzba; public Double? celk_trzba { get { return _celk_trzba; } }
+        Double? _zakl_nepodl_dph; public Double? zakl_nepodl_dph { get { return _zakl_nepodl_dph; } }
+        Double? _zakl_dan1; public Double? zakl_dan1 { get { return _zakl_dan1; } }
+        Double? _dan1; public Double? dan1 { get { return _dan1; } }
+        Double? _zakl_dan2; public Double? zakl_dan2 { get { return _zakl_dan2; } }
+        Double? _dan2; public Double? dan2 { get { return _dan2; } }
+        Double? _zakl_dan3; public Double? zakl_dan3 { get { return _zakl_dan3; } }
+        Double? _dan3; public Double? dan3 { get { return _dan3; } }
+        Double? _cest_sluz; public Double? cest_sluz { get { return _cest_sluz; } }
+        Double? _pouzit_zboz1; public Double? pouzit_zboz1 { get { return _pouzit_zboz1; } }
+        Double? _pouzit_zboz2; public Double? pouzit_zboz2 { get { return _pouzit_zboz2; } }
+        Double? _pouzit_zboz3; public Double? pouzit_zboz3 { get { return _pouzit_zboz3; } }
+        Double? _urceno_cerp_zuct; public Double? urceno_cerp_zuct { get { return _urceno_cerp_zuct; } }
+        Double? _cerp_zuct; public Double? cerp_zuct { get { return _cerp_zuct; } }
+        Rezim? _rezim; public Rezim? rezim { get { return _rezim; } }
 
         byte[] _bkp; public byte[] bkp { get { return _bkp; } }
         byte[] _pkp; public byte[] pkp { get { return _pkp; } }
@@ -497,9 +498,12 @@ namespace openeet_lite
                     String toBeSigned = formatToBeSignedData();
                     if (toBeSigned != null)
                     {
-                        SHA256CryptoServiceProvider sha256 = new SHA256CryptoServiceProvider();
-                        byte[] hash = sha256.ComputeHash(UTF8Encoding.UTF8.GetBytes(toBeSigned));
-                        _pkp = key.Encrypt(hash, false); //FIXME: wrong
+                        SHA256 sha256 = SHA256.Create();
+                        byte[] data = UTF8Encoding.UTF8.GetBytes(toBeSigned);
+                        byte[] hash = sha256.ComputeHash(data);
+                        RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(key);
+                        fmt.SetHashAlgorithm("SHA256");
+                        _pkp = fmt.CreateSignature(hash);
                     }
                 }
 
@@ -611,11 +615,16 @@ namespace openeet_lite
                 byte[] digestRaw = md.ComputeHash(UTF8Encoding.UTF8.GetBytes(digestTemplate));
                 String digest = Convert.ToBase64String(digestRaw);
 
+
                 signatureTemplate = replacePlaceholders(signatureTemplate, digest, null);
                 signatureTemplate = removeUnusedPlaceholders(signatureTemplate);
-                SHA256Managed md1 = new SHA256Managed();
-                byte[] hash = md1.ComputeHash(UTF8Encoding.UTF8.GetBytes(signatureTemplate));
-                byte[] signatureRaw = key.Encrypt(hash, false);
+                
+                SHA256 sha256 = SHA256.Create();
+                byte[] data = UTF8Encoding.UTF8.GetBytes(signatureTemplate);
+                byte[] hash = sha256.ComputeHash(data);
+                RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(key);
+                fmt.SetHashAlgorithm("SHA256");
+                byte[] signatureRaw = fmt.CreateSignature(hash);
                 String signature = Convert.ToBase64String(signatureRaw);
 
                 xmlTemplate = replacePlaceholders(xmlTemplate, digest, signature);
@@ -634,7 +643,7 @@ namespace openeet_lite
             try
             {
                 if (certificate != null) src = src.Replace("${certb64}", Convert.ToBase64String(certificate.GetRawCertData()));
-                if (prvni_zaslani != null) src = src.Replace("${prvni_zaslani}", formatPrvniZaslani(_prvni_zaslani)); 
+                if (prvni_zaslani != null) src = src.Replace("${prvni_zaslani}", formatPrvniZaslani(prvni_zaslani.GetValueOrDefault())); 
                 if (dat_odesl != null) src = src.Replace("${dat_odesl}", formatDate(dat_odesl));
                 if (uuid_zpravy != null) src = src.Replace("${uuid_zpravy}", uuid_zpravy.ToString());
                 if (overeni != null) src = src.Replace("${overeni}", formatOvereni(overeni.GetValueOrDefault()));
@@ -679,29 +688,27 @@ namespace openeet_lite
             return src;
         }
 
-        /*
-            public String sendRequest(String requestBody, URL serviceUrl) {
-                byte[] content=requestBody.getBytes("utf-8");
-                HttpURLConnection con=(HttpURLConnection)serviceUrl.openConnection();
-                con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-                con.setRequestProperty("Content-Length",String.format("%d", content.length));
-                con.setRequestProperty("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
-                con.setUseCaches(false);
-                con.setDoOutput(true);
-                con.setDoInput(true);
-                con.setRequestMethod("POST");
-		
-                OutputStream os=con.getOutputStream();
-                os.write(content);
-                os.flush();os.close();
-		
-                int responseCode=con.getResponseCode();
-                InputStream is=con.getInputStream();
-                byte[] response=loadStream(is);
-                String responseString=new String(response,"utf-8");
-                return responseString;
-            }
-    */
+        
+        public String sendRequest(String requestBody, String serviceUrl) {
+            //enable minimal versions of TLS required by EET
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+            byte[] content=UTF8Encoding.UTF8.GetBytes(requestBody);
+            WebRequest req=WebRequest.Create(serviceUrl);
+            req.ContentType="text/xml;charset=UTF-8";
+            req.ContentLength=content.Length;
+            req.Headers.Add("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
+            req.Method="POST";
+		    Stream reqStream=req.GetRequestStream();
+            reqStream.Write(content,0,content.Length);
+            reqStream.Close();
+
+            WebResponse resp=req.GetResponse();
+            Stream respStream=resp.GetResponseStream();
+            StreamReader rdr=new StreamReader(respStream,Encoding.UTF8);
+            String responseString = rdr.ReadToEnd();
+            return responseString;
+        }
+    
 
         void loadP12(byte[] p12data, string password)
         {

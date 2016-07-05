@@ -12,98 +12,49 @@ namespace tests
     class Program
     {
 
-        static void formatString()
+        public static void simpleRegistrationProcessTest(){
+	        //set minimal business data & certificate with key loaded from pkcs12 file
+		    EetRegisterRequest request=EetRegisterRequest.builder()
+		       .dic_popl("CZ1212121218")
+		       .id_provoz("1")
+		       .id_pokl("POKLADNA01")
+		       .porad_cis("1")
+		       .dat_trzby("2016-06-30T08:43:28+02:00")
+		       .celk_trzba(100.0)
+		       .rezim(0)
+               .pkcs12(TestData._01000003)
+		       .pkcs12password("eet")
+		       .build();
+
+		    //for receipt printing in online mode
+		    String bkp=request.formatBkp();
+            if (bkp == null) throw new ApplicationException("BKP is null");
+
+		    //for receipt printing in offline mode
+		    String pkp=request.formatPkp();
+            if (pkp == null) throw new ApplicationException("PKP is null");
+            //the receipt can be now stored for offline processing
+
+		    //try send
+		    String requestBody=request.generateSoapRequest();
+            if (requestBody == null) throw new ApplicationException("SOAP request is null");
+
+		    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+		    //extract FIK
+            if (response == null) throw new ApplicationException("response is null");
+            if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
+		    //ready to print online receipt
+	    }
+
+
+
+        /*
+            <Data dic_popl="CZ1212121218" id_provoz="1" id_pokl="POKLADNA01" porad_cis="1" dat_trzby="2016-06-30T08:43:28+02:00" celk_trzba="100.00" rezim="0"/>
+            <pkp cipher="RSA2048" digest="SHA256" encoding="base64">Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==</pkp>
+            <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
+            */
+        public static void signAndSend()
         {
-            DateTime dt = DateTime.Now;
-            string d = dt.ToString("yyyy-MM-dd'T'HH:mm:sszzz");
-            DateTime dp = DateTime.Parse(d);
-            string d1 = dt.ToString("yyyy-MM-dd'T'HH:mm:sszzz");
-            Console.WriteLine(d);
-            Console.WriteLine(d1);
-        }
-
-        static RSACryptoServiceProvider key;
-        static X509Certificate2 certificate;
-
-        static void loadP12(byte[] p12data, string password)
-        {
-            X509Certificate2Collection col = new X509Certificate2Collection();
-            col.Import(p12data, password, X509KeyStorageFlags.Exportable);
-            foreach (X509Certificate2 cert in col)
-            {
-                if (cert.HasPrivateKey)
-                {
-                    certificate = cert;
-                    RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
-                    RSAParameters keyParams = tmpKey.ExportParameters(true);
-                    CspParameters p = new CspParameters();
-                    p.ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider";
-                    key = new RSACryptoServiceProvider(p);
-                    key.ImportParameters(keyParams);
-                }
-
-            }
-
-            if (key == null || certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
-        }
-
-        static void sign()
-        {
-            loadP12(TestData._01000003,"eet");
-            SHA256 sha256 = SHA256.Create();
-
-            byte[] data = UTF8Encoding.UTF8.GetBytes("aaa");
-            byte[] hash = sha256.ComputeHash(data);
-
-            RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(key);
-            fmt.SetHashAlgorithm("SHA256");
-
-            byte[] sig = fmt.CreateSignature(hash);
-
-        }
-
-        public static String formatBkp(byte[] _bkp)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < _bkp.Length; i++)
-            {
-                sb.Append(String.Format("{0:X2}", _bkp[i]));
-            }
-            Regex re = new Regex("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$");
-
-            return re.Replace(sb.ToString().ToUpper(), @"$1-$2-$3-$4-$5"); ;
-        }
-
-        public static byte[] parseBkp(String val)
-        {
-            byte[] _bkp = new byte[20];
-            val = val.Replace("-", "");
-            Regex re = new Regex("^[A-F0-9]{40}$");
-
-            if (val.Length != 40)
-                throw new ArgumentException("Wrong length (~=!=40) of bkp string after dash removal:" + val);
-            if (re.Matches(val.ToUpper()).Count==0)
-                throw new ArgumentException("Wrong format, hexdump expected:" + val);
-
-            for (int i = 0; i < 20; i++)
-            {
-                _bkp[i] = (byte)Convert.ToUInt32(val.Substring(i * 2, 2), 16);
-            }
-            return _bkp;
-        }
-
-        static void testFormatBkp()
-        {
-            byte[] a = new byte[20];
-            for (int i = 0; i < 20; i++) a[i] = (byte)i;
-            String bkp = formatBkp(new SHA1CryptoServiceProvider().ComputeHash(a));
-            Console.WriteLine(bkp);
-            byte[] b = parseBkp(bkp);
-            Console.WriteLine(formatBkp(b));
-        }
-
-        
-	    public static void signAndSend() {
 		    EetRegisterRequest data=EetRegisterRequest.builder()
 		       .dic_popl("CZ1212121218")
 		       .id_provoz("1")
@@ -117,7 +68,9 @@ namespace tests
                .build();
             if (data == null) 
                 throw new Exception("failed - data null") ;
-		    String pkp=EetRegisterRequest.formatPkp(data.pkp);
+            Console.WriteLine("business data created");
+            
+            String pkp=EetRegisterRequest.formatPkp(data.pkp);
 		    String bkp=EetRegisterRequest.formatBkp(data.bkp);
             String expectedPkp="Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==";
             String expectedBkp="AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199";
@@ -125,63 +78,29 @@ namespace tests
                 throw new Exception("failed - PKP differs");
             if (!bkp.Equals(expectedBkp))
                 throw new Exception("failed - BKP differs");
+            Console.WriteLine("Codes validated");
 
-		    //String signed=data.generateSoapRequest();
+		    String signed=data.generateSoapRequest();
+            Console.WriteLine("SOAP request created");
+
 		    //assertTrue(validateXmlDSig(signed, data.getCertificate()));
-		    //data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-	    }
+		    String response=data.sendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+            if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
+            Console.WriteLine("FIK received:"+response.Substring(response.IndexOf("Potvrzeni fik=")+15,36));
+        }
 
         static void Main(string[] args)
         {
             signAndSend();
-            //sign();
-
-
+            //simpleRegistrationProcessTest(); 
+            Console.WriteLine("Press any key to finish ...");
             Console.ReadKey();
         }
     }
 }
 
-/*
-    <Data dic_popl="CZ1212121218" id_provoz="1" id_pokl="POKLADNA01" porad_cis="1" dat_trzby="2016-06-30T08:43:28+02:00" celk_trzba="100.00" rezim="0"/>
-    <pkp cipher="RSA2048" digest="SHA256" encoding="base64">Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==</pkp>
-    <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
-    */
 
 /*
-public void simpleRegistrationProcessTest() throws MalformedURLException, IOException{
-	    //set minimal business data & certificate with key loaded from pkcs12 file
-		EetRegisterRequest request=EetRegisterRequest.builder()
-		   .dic_popl("CZ1212121218")
-		   .id_provoz("1")
-		   .id_pokl("POKLADNA01")
-		   .porad_cis("1")
-		   .dat_trzby("2016-06-30T08:43:28+02:00")
-		   .celk_trzba(100.0)
-		   .rezim(0)
-		   .pkcs12(loadStream(getClass().getResourceAsStream("/01000003.p12")))
-		   .pkcs12password("eet")
-		   .build();
-
-		//for receipt printing in online mode
-		String bkp=request.formatBkp();
-		assertNotNull(bkp);
-
-		//for receipt printing in offline mode
-		String pkp=request.formatPkp();
-		assertNotNull(pkp);
-		//the receipt can be now stored for offline processing
-
-		//try send
-		String requestBody=request.generateSoapRequest();
-		assertNotNull(requestBody);
-
-		String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-		//extract FIK
-		assertNotNull(response);
-		assertTrue(response.contains("Potvrzeni fik="));
-		//ready to print online receipt
-	}
 
 
 	private boolean validateXmlDSig(String signed, X509Certificate cert){
