@@ -1,12 +1,19 @@
 # OpenEET
-Open source light implementation of EET client library. Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16kB JAR file. 
-Get the [devel snapshot openeet-lite-shapshot-jar-20160701-0939.jar](releases/prerelease/openeet-lite-shapshot-jar-20160701-0939.jar) and ! Try it !. 
+Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. 
+Get the devel snapshot and !Try It!
+* Java [openeet-lite-shapshot-jar-20160701-0939.jar](releases/prerelease/openeet-lite-shapshot-jar-20160701-0939.jar) 
+* .NET [openeet-lite-shapshot-20160705-0835.dll](releases/prerelease/openeet-lite-shapshot-20160705-0835.dll) 
 
-## Java implementation
-Java implementation now works with EET playground v2. No dependencies, just the java runtime itself (1.4.2).
-No full release yet - use snapshot or source code. For details look at Java implementation description [Java implementation description/](java/) 
+## Java/C# implementation
+Java/C# implementation now works with EET playground v2. No extra dependencies besides the runtime, just the java runtime itself (1.4.2+) or .NET framework. No full release yet - use snapshot or source code. 
+
+For details look at 
+* Java implementation description [Java implementation description/](java/) 
+* .NET implementation description [.NET implementation description/](dotnet/) 
 
 To register a sale it is as easy as this:
+
+Java:
 
 ```java
 @Test
@@ -45,6 +52,44 @@ public void simpleRegistrationProcessTest() throws MalformedURLException, IOExce
 }
 ```
 
+
+C#:
+```c#
+public static void simpleRegistrationProcessTest(){
+    //set minimal business data & certificate with key loaded from pkcs12 file
+    EetRegisterRequest request=EetRegisterRequest.builder()
+       .dic_popl("CZ1212121218")
+       .id_provoz("1")
+       .id_pokl("POKLADNA01")
+       .porad_cis("1")
+       .dat_trzby("2016-06-30T08:43:28+02:00")
+       .celk_trzba(100.0)
+       .rezim(0)
+       .pkcs12(TestData._01000003)
+       .pkcs12password("eet")
+       .build();
+
+    //for receipt printing in online mode
+    String bkp=request.formatBkp();
+    if (bkp == null) throw new ApplicationException("BKP is null");
+
+    //for receipt printing in offline mode
+    String pkp=request.formatPkp();
+    if (pkp == null) throw new ApplicationException("PKP is null");
+    //the receipt can be now stored for offline processing
+
+    //try send
+    String requestBody=request.generateSoapRequest();
+    if (requestBody == null) throw new ApplicationException("SOAP request is null");
+
+    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+    //extract FIK
+    if (response == null) throw new ApplicationException("response is null");
+    if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
+    //ready to print online receipt
+    Console.WriteLine("OK!"); //a bit brief :-) but enough
+}
+```
 
 ##XMLDSig&SOAP&WS-Security approach for restricted devices
 As XMLDsig&SOAP&WSS are huge standards, it is hard to find fuully compliant implementation on restricted devices. I decided to work around this. The intention of of this work (for now) is to provide "light" implementation of the EET API clien.
