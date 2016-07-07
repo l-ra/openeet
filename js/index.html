@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script
+			  src="https://code.jquery.com/jquery-3.0.0.min.js"
+			  integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
+			  crossorigin="anonymous"></script>
+		<script src="lib/common.js"></script>
+		<script src="lib/asn1.js"></script>
+		<script src="lib/pkcs12_schema.js"></script>
+		<script src="lib/pkcs12_simpl.js"></script>
+		<script src="lib/x509_schema.js"></script>
+		<script src="lib/x509_simpl.js"></script>
+	</head>
+<body>
+	<h1>OpenEET.js</h1>
+	<input type="file" id="xmlFile">
+	<button id="btnSend" type="button">Send!</button>
+	<pre id="xmldata"></pre>
+
+<script>
+
+//document.getElementById("xmlFile").addEventListener("change",onFileChange);
+
+$(document).ready(
+	function(){
+		$("#xmlFile").on("change", function(ev) { onFileChange(ev); } );
+		$("#btnSend").on("click",function() { sendRequest(xmlToSend); });
+	});
+
+var xmlToSend=null;
+
+function onFileChange(ev){
+	var file=ev.target.files[0];
+	var rdr=new FileReader();
+	rdr.addEventListener("loadend",function(ev){
+		$("#xmldata").text(ev.target.result);
+		xmlToSend=ev.target.result;
+		//sendRequest(ev.target.result);
+	})
+	rdr.readAsText(file,"utf-8");
+}
+
+function sendRequest(requestData){
+	console.log("sending");
+	$.ajax({
+		url: "https://pg.eet.cz/eet/services/EETServiceSOAP/v2",
+		urlxx: "https://gate.a.r73.info/xxx.php",
+		headers : {
+			"SOAPAction":"http://fs.mfcr.cz/eet/OdeslaniTrzby",
+		},
+		method: "POST",
+		contentType: "text/xml;charset=UTF-8",
+		data: requestData,
+		success: function(data,status,req){
+			console.log("success:"+status);
+		},
+
+		error: function(req,status,err){
+			console.log("error:"+err+" statuus:"+status);
+		},
+
+		complete: function(req,status){
+			console.log("complete:"+status);
+		}
+	});
+}
+
+
+</script>
+</body>
+</html>
