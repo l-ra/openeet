@@ -30,7 +30,6 @@ namespace tests
     {
 
         public static void simpleRegistrationProcessTest(){
-	        //set minimal business data & certificate with key loaded from pkcs12 file
 		    EetRegisterRequest request=EetRegisterRequest.builder()
 		       .dic_popl("CZ1212121218")
 		       .id_provoz("1")
@@ -62,6 +61,7 @@ namespace tests
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
 		    //ready to print online receipt
             Console.WriteLine("OK!"); //a bit brief :-) but enough
+	        //set minimal business data & certificate with key loaded from pkcs12 file
 	    }
 
 
