@@ -35,7 +35,7 @@ $pkpValueFile=$dir."/work/pkp-value";
 $certFile=$dir."/cert/01000003.pem";
 $keyFile=$dir."/cert/01000003.key";
 $signDataCmd= "openssl sha256 -binary $pkpInputFile " #compute hash
-             ."| openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile " #apply rsa signature alg to the hash
+             ."| openssl pkeyutl -sign -inkey $keyFile -pkeyopt digest:SHA256 " #apply rsa signature alg to the hash
              ."| base64 -w 0 > $pkpValueFile";  # base64 resulting raw signature 
 system($signDataCmd);
 $pkpValue=file_get_contents($pkpValueFile);
@@ -85,10 +85,6 @@ $digestValue=file_get_contents($digestValueFile);
 $data["digest"]=$digestValue; #add digest to data - it is used in the next replacement step
 
 
-
-
-
-
 #compute signature value from canonicalized siginfo enriched with digest value 
 #replace placeholders - in fact the only placeholder in signaturte template needs to be replaced - ${digest}
 $signatureFinal=$signatureTemplate;
@@ -105,7 +101,7 @@ file_put_contents($signatureDataFile, $signatureFinal);
 #compute rsassa-pkcs1_5 over the data 
 $signatureValueFile=$dir."/work/signature-value";
 $signSigCmd= "openssl sha256 -binary $signatureDataFile "    #compute hash
-            ."| openssl pkeyutl -sign -pkeyopt digest:SHA256 -inkey $keyFile "  #compute sig of the hash
+            ."| openssl pkeyutl -sign -inkey $keyFile -pkeyopt digest:SHA256 "  #compute sig of the hash
             ."| base64 -w 0 > $signatureValueFile"; #apply base64 according to XMLDSig
 system($signSigCmd);
 $signatureValue=file_get_contents($signatureValueFile);
