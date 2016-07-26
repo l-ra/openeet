@@ -9,3 +9,8 @@ xmlsec1 --sign --store-references --store-signatures \
         | php extract-c14n-templates.php $DIR/templates/digest-template $DIR/templates/signature-template 
 
 cp $DIR/data/template.xml $DIR/templates/template.xml
+
+(
+cd $DIR/templates
+sha1sum digest-template signature-template template.xml >sha1sum.txt
+)
