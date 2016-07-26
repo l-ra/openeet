@@ -16,19 +16,23 @@
  */
 package openeet.lite;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.BufferUnderflowException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.cert.Certificate;
@@ -39,9 +43,12 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
+import javax.management.RuntimeErrorException;
 
 /**
  * Class implements everything what's needed to send sale registration request to the registration server. 
@@ -533,7 +540,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder pkcs12(String p12Filename) throws IOException{
-			return pkcs12(loadStream(new FileInputStream(p12Filename)));
+			return pkcs12(loadStream(new FileInputStream(p12Filename),null));
 		}
 		
 		public Builder pkcs12(byte[] p12bytes){
@@ -801,11 +808,16 @@ public class EetRegisterRequest {
 	}
 	
 	public static String formatBkp(byte[] _bkp){
-		StringBuilder sb=new StringBuilder();
-		for (int i=0; i<_bkp.length; i++){
-			sb.append(String.format("%02x",_bkp[i]));
-		}
+		String sb = byte2hex(_bkp);
 		return sb.toString().toUpperCase().replaceFirst("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$","$1-$2-$3-$4-$5");
+	}
+
+	private static String byte2hex(byte[] data) {
+		StringBuilder sb=new StringBuilder();
+		for (int i=0; i<data.length; i++){
+			sb.append(String.format("%02x",data[i]));
+		}
+		return sb.toString();
 	}
 	
 	public static byte[] parseBkp(String val){
@@ -842,9 +854,21 @@ public class EetRegisterRequest {
 
 	public String generateSoapRequest(){
 		try {
-			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml");
-			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template");
-			String signatureTemplate=loadTemplateFromResource("/openeet/lite/templates/signature-template");
+			String sha1sum=loadTemplateFromResource("/openeet/lite/templates/sha1sum.txt");
+			BufferedReader  br=new BufferedReader(new StringReader(sha1sum));
+			String ln;
+			Map<String,String> hashes=new HashMap<String,String>();
+			while ((ln=br.readLine())!=null){
+				String[] items=ln.split("  ");
+				hashes.put(items[1],items[0]);
+			}
+			br.close();
+			
+			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml",hashes.get("template.xml"));
+			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template",hashes.get("digest-template"));
+			String signatureTemplate=loadTemplateFromResource("/openeet/lite/templates/signature-template",hashes.get("signature-template"));
+			
+			
 			
 			digestTemplate=replacePlaceholders(digestTemplate, null, null);
 			digestTemplate=removeUnusedPlaceholders(digestTemplate);
@@ -866,7 +890,7 @@ public class EetRegisterRequest {
 			return xmlTemplate;			
 		}
 		catch (Exception e){
-			throw new RuntimeException("Error while generating soap request");
+			throw new RuntimeException("Error while generating soap request",e);
 		}
 	}
 	
@@ -915,18 +939,40 @@ public class EetRegisterRequest {
 		src=src.replaceAll("\\$\\{[a-b_0-9]+\\}","");
 		return src;
 	}
+	
+	
+	public static byte[] loadStream(InputStream in) throws IOException {
+		return loadStream(in,null);
+	}
 
-	public static byte[] loadStream(InputStream in) throws IOException{
+	public static byte[] loadStream(InputStream in, String sha1sum) throws IOException {
 		byte[] buf=new byte[1024];
 		ByteArrayOutputStream bos=new ByteArrayOutputStream();
 		int n=0;
 		while ((n=in.read(buf))>0) bos.write(buf,0,n);
 		in.close();
-		return bos.toByteArray();
+		byte[] ret=bos.toByteArray();
+		if ( sha1sum!=null ){
+			try { 
+				byte[] resourceSum=MessageDigest.getInstance("SHA1").digest(ret);
+				String resourceSumStr=byte2hex(resourceSum);
+				if (!resourceSumStr.toLowerCase().equals(sha1sum.toLowerCase())){
+					throw new RuntimeException(String.format("Unexpected stream hash. Expected %s, computed %s",sha1sum, resourceSumStr));
+				}
+			} 
+			catch (NoSuchAlgorithmException e ){
+				throw new RuntimeException("fasiled to create message digest");
+			}
+		}
+		return ret;
 	}
 	
 	private String loadTemplateFromResource(String resource) throws IOException {
-		byte[] streamData=loadStream(getClass().getResourceAsStream(resource));
+		return loadTemplateFromResource(resource,null);
+	}
+	
+	private String loadTemplateFromResource(String resource, String sha1sum) throws IOException {
+		byte[] streamData=loadStream(getClass().getResourceAsStream(resource), sha1sum);
 		return new String(streamData,"UTF-8");
 	}
 	
