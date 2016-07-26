@@ -17,19 +17,6 @@
           <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
           <ds:Reference URI="#TheBody">
             <ds:Transforms>
-              <ds:Transform 
-                    Algorithm="http://www.w3.org/2002/06/xmldsig-filter2" 
-                    xmlns:ds-xpath="http://www.w3.org/2002/06/xmldsig-filter2"
-                    xmlns:eet2="http://fs.mfcr.cz/eet/schema/v2">
-                  <ds-xpath:XPath Filter="subtract">//eet2:Trzba</ds-xpath:XPath>
-                  <!--subtraction of the whole business data allows (for now) 
-                  to tackle with the business part withouth need to re-sign.
-                  This sage can be concidered as a security attack on API because 
-                  the message is received as signed but in fact business data 
-                  are excluded from the signature.
-                  XMLDSig dark corners :-)
-                   -->
-              </ds:Transform>
               <ds:Transform Algorithm='http://www.w3.org/2001/10/xml-exc-c14n#'/>
             </ds:Transforms>
             <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>

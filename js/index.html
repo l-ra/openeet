@@ -17,6 +17,7 @@
 	<h1>OpenEET.js</h1>
 	<input type="file" id="xmlFile">
 	<button id="btnSend" type="button">Send!</button>
+	<button id="btnLoadTemplates" type="button">Load templates</button>
 	<pre id="xmldata"></pre>
 
 <script>
@@ -27,6 +28,7 @@ $(document).ready(
 	function(){
 		$("#xmlFile").on("change", function(ev) { onFileChange(ev); } );
 		$("#btnSend").on("click",function() { sendRequest(xmlToSend); });
+		$("#btnLoadTemplates") .on("click",function() { loadTemplates(); });
 	});
 
 var xmlToSend=null;
@@ -37,10 +39,34 @@ function onFileChange(ev){
 	rdr.addEventListener("loadend",function(ev){
 		$("#xmldata").text(ev.target.result);
 		xmlToSend=ev.target.result;
+
+
 		//sendRequest(ev.target.result);
 	})
 	rdr.readAsText(file,"utf-8");
 }
+
+function loadTemplates(){
+	var xhrDigest = new XMLHttpRequest();
+	xhrDigest.open('GET', 'lib/data/digest-template', true);
+	xhrDigest.responseType = 'arraybuffer';
+	xhrDigest.onload = function(e) {
+	  // response is unsigned 8 bit integer
+	  var digestTemplate = new Uint8Array(this.response);
+	  var hash=crypto.subtle.digest("SHA-256",digestTemplate); 
+	  hash.then(
+	  	function onHash(h){
+	  		console.log("have hash");
+	  	},
+	  	function onCatch(e){
+	  		console.log("have error"+e);
+	  	})
+	};
+	xhrDigest.send();
+
+
+}
+
 
 function sendRequest(requestData){
 	console.log("sending");
