@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -823,7 +824,7 @@ public class EetRegisterRequest {
 	}
 
 	private static String formatAmount(double amount){
-		return String.format("%.2f", amount);
+		return String.format(Locale.US,"%.2f", amount);
 	}
 
 	public String formatPkp() {
