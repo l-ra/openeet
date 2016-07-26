@@ -836,7 +836,7 @@ public class EetRegisterRequest {
 	}
 
 	private static String formatAmount(double amount){
-		return String.format(Locale.US,"%.2f", amount);
+		return String.format(Locale.US, "%.2f", amount);
 	}
 
 	public String formatPkp() {
