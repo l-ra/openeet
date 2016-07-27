@@ -13,6 +13,15 @@ For details look at
 
 To register a sale it is as easy as this:
 
+## Windows XP & TLS1.1 problem
+To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not support TLS 1.0+](https://blogs.msdn.microsoft.com/kaushal/2011/10/02/support-for-ssltls-protocols-on-windows/). The problem canbe solved by SSL/TLS tunneling using stunnel. The tunneeling concept is described in following schema:
+
+```
+[aplikace]------http------>[stunnel]-------https/tls/1.1------->[EET Server]
+```
+You can use stunnel distribution tailored to EET needs available in this repo in the (stunnel-eet)[stunnel-eet/] folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
+
+
 Java:
 
 ```java
