@@ -1,5 +1,5 @@
 # stunnel to access EET endpoint
-For sources see (stunnel original distribution including sources)[https://www.stunnel.org/]
+For sources see [stunnel original distribution including sources](https://www.stunnel.org/)
 
 For stunnel licensing see LICENSE.md.
 
