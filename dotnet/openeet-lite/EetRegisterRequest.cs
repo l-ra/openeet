@@ -550,16 +550,20 @@ namespace openeet_lite
             return formatBkp(bkp);
         }
 
-        public static String formatBkp(byte[] _bkp)
+        public static string byte2hex(byte[] data)
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < _bkp.Length; i++)
+            for (int i = 0; i < data.Length; i++)
             {
-                sb.Append(String.Format("{0:X2}", _bkp[i]));
+                sb.Append(String.Format("{0:X2}", data[i]));
             }
-            Regex re = new Regex("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$");
+            return sb.ToString();
+        }
 
-            return re.Replace(sb.ToString().ToUpper(), @"$1-$2-$3-$4-$5"); ;
+        public static String formatBkp(byte[] _bkp)
+        {
+            Regex re = new Regex("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$");
+            return re.Replace(byte2hex(_bkp).ToUpper(), @"$1-$2-$3-$4-$5"); ;
         }
 
         public static byte[] parseBkp(String val)
@@ -605,6 +609,24 @@ namespace openeet_lite
         {
             try
             {
+                String sha1sum = templates.sha1sum;
+                StringReader rd = new StringReader(sha1sum);
+                Dictionary<String,String> hashes=new Dictionary<string,string>();
+
+                string ln;
+                while ((ln = rd.ReadLine()) != null)
+                {
+                    string[] fields=ln.Split(new string[]{" "},StringSplitOptions.RemoveEmptyEntries);
+                    hashes[fields[1]] = fields[0];
+                }
+
+                if (!byte2hex(SHA1.Create().ComputeHash(templates.template)).ToLower().Equals(hashes["template.xml"]))
+                    throw new ArgumentException("template.xml checksum verification failed") ;
+                if ( ! byte2hex(SHA1.Create().ComputeHash(templates.digest_template)).ToLower().Equals(hashes["digest-template"]) )
+                    throw new ArgumentException("digest-template checksum verification failed") ;
+                if (!byte2hex(SHA1.Create().ComputeHash(templates.signature_template)).ToLower().Equals(hashes["signature-template"]))
+                    throw new ArgumentException("signature-template checksum verification failed") ;
+
                 String xmlTemplate = UTF8Encoding.UTF8.GetString(templates.template);
                 String digestTemplate = UTF8Encoding.UTF8.GetString(templates.digest_template);
                 String signatureTemplate = UTF8Encoding.UTF8.GetString(templates.signature_template);

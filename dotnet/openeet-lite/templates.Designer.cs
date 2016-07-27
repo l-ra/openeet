@@ -71,6 +71,18 @@ namespace openeet_lite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 4b48f54e70b17d562dd26af37fd6af95bd7ef739  digest-template
+        ///78df1d563048085b2e870e51fd2a56d8571ec1e6  signature-template
+        ///d05446a22aaae64688019ba68af4efbaefd38dcd  template.xml
+        ///.
+        /// </summary>
+        internal static string sha1sum {
+            get {
+                return ResourceManager.GetString("sha1sum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] signature_template {
