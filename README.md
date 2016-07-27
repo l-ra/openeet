@@ -19,7 +19,7 @@ To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not 
 ```
 [aplikace]------http------>[stunnel]-------https/tls/1.1------->[EET Server]
 ```
-You can use stunnel distribution tailored to EET needs available in this repo in the [stunnel-eet](stunnel-eet/) folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
+You can use stunnel distribution tailored to EET needs available in this repo in the [stunnel-eet](stunnel-eet/win32/) folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
 
 
 Java:
