@@ -54,8 +54,11 @@ namespace tests
 		    //try send
 		    String requestBody=request.generateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
-
 		    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+
+            //via local stunnel
+            //String response = request.sendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
+
 		    //extract FIK
             if (response == null) throw new ApplicationException("response is null");
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
@@ -102,7 +105,11 @@ namespace tests
             Console.WriteLine("SOAP request created");
 
 		    //assertTrue(validateXmlDSig(signed, data.getCertificate()));
-		    String response=data.sendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+            String response=data.sendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+
+            //via local stunnel 
+            //String response=data.sendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
+            
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
             Console.WriteLine("FIK received:"+response.Substring(response.IndexOf("Potvrzeni fik=")+15,36));
         }
