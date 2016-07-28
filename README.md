@@ -4,6 +4,8 @@ Get the devel snapshot and !Try It!
 * Java [openeet-lite-shapshot-jar-20160701-0939.jar](releases/prerelease/openeet-lite-shapshot-jar-20160701-0939.jar) 
 * .NET [openeet-lite-shapshot-20160705-0835.dll](releases/prerelease/openeet-lite-shapshot-20160705-0835.dll) 
 
+[Windows TLS problem workaround](#windows-xp--tls11-problem)
+
 ## Java/C# implementation
 Java/C# implementation now works with EET playground v2. No extra dependencies besides the runtime, just the java runtime itself (1.4.2+) or .NET framework. No full release yet - use snapshot or source code. 
 
@@ -11,17 +13,8 @@ For details look at
 * Java implementation description [Java implementation description/](java/) 
 * .NET implementation description [.NET implementation description/](dotnet/) 
 
+
 To register a sale it is as easy as this:
-
-## Windows XP & TLS1.1 problem
-To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not support TLS 1.0+](https://blogs.msdn.microsoft.com/kaushal/2011/10/02/support-for-ssltls-protocols-on-windows/). The problem canbe solved by SSL/TLS tunneling using stunnel. The tunneeling concept is described in following schema:
-
-```
-[aplikace]------http------>[stunnel]-------https/tls/1.1------->[EET Server]
-```
-You can use stunnel distribution tailored to EET needs available in this repo in the [stunnel-eet](stunnel-eet/win32/) folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
-
-
 Java:
 
 ```java
@@ -99,6 +92,14 @@ public static void simpleRegistrationProcessTest(){
     Console.WriteLine("OK!"); //a bit brief :-) but enough
 }
 ```
+
+## Windows XP & TLS1.1 problem
+To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not support TLS 1.0+](https://blogs.msdn.microsoft.com/kaushal/2011/10/02/support-for-ssltls-protocols-on-windows/). The problem canbe solved by SSL/TLS tunneling using stunnel. The tunneeling concept is described in following schema:
+
+```
+[aplikace]------http------>[stunnel]-------https/tls/1.1------->[EET Server]
+```
+You can use stunnel distribution tailored to EET needs available in this repo in the [stunnel-eet](stunnel-eet/win32/) folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
 
 ##XMLDSig&SOAP&WS-Security approach for restricted devices
 As XMLDsig&SOAP&WSS are huge standards, it is hard to find fuully compliant implementation on restricted devices. I decided to work around this. The intention of of this work (for now) is to provide "light" implementation of the EET API clien.
