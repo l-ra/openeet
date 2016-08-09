@@ -104,6 +104,7 @@ public class EetRegisterRequestTest {
 		   .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
 		   .pkcs12password("eet")
 		   .build();
+		
 		assertNotNull(data);
 		String pkp=EetRegisterRequest.formatPkp(data.getPkp());
 		String bkp=EetRegisterRequest.formatBkp(data.getBkp());
@@ -115,7 +116,7 @@ public class EetRegisterRequestTest {
 	}
 	
 	@Test
-	public void simpleRegistrationProcessTest() throws MalformedURLException, IOException{
+	public void simpleRegistrationProcessTest() throws Exception {
 	    //set minimal business data & certificate with key loaded from pkcs12 file
 		EetRegisterRequest request=EetRegisterRequest.builder()
 		   .dic_popl("CZ1212121218")

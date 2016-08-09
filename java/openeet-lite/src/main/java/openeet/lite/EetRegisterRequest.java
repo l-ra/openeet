@@ -26,9 +26,6 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.BufferUnderflowException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -40,7 +37,6 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -48,7 +44,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.management.RuntimeErrorException;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 /**
  * Class implements everything what's needed to send sale registration request to the registration server. 
@@ -222,6 +220,8 @@ public class EetRegisterRequest {
 		protected Double _urceno_cerp_zuct;
 		protected Double _cerp_zuct;
 		protected Rezim _rezim=Rezim.STANDARDNI;
+		protected String _sslContextAlgorithm="TLSv1.1";
+		protected KeyStore _trustKeyStore;
 
 		protected byte[] _bkp;
 		protected byte[] _pkp;
@@ -236,8 +236,31 @@ public class EetRegisterRequest {
 			_key = val;
 			return this;
 		}
-
 		
+		
+		/**
+		 * Sets SSLContext.getInstance() algorithm. See JSSE reference for available algorithms.
+		 * @param for which algorithm the context will be instantiated. When not set, defaults to "TLSv1.1"; when explicitly 
+		 * set to null, default platform settings are used
+		 * @return
+		 */
+		public Builder sslContextAlgorithm(String sslContextAlgorithm){
+			_sslContextAlgorithm=sslContextAlgorithm;
+			return this;
+		}
+		
+		/**
+		 * Sets keystore for TrustManager. The keystore must be loaded. When not set defaults to keystore loaded 
+		 * from resources containing the right certificates for public EET service.
+		 * @param keyStore the key store containing certificates needed to trrust the web service endpoint. The key store usually 
+		 * contains root CA certificate and intermediate CA certificates.  
+		 * @return
+		 */
+		public Builder trustKeyStore(KeyStore keyStore){
+			_trustKeyStore=keyStore;
+			return this;
+		}
+
 		/**
 		 * Defaults to time of builder creation 
 		 * @param val
@@ -593,6 +616,8 @@ public class EetRegisterRequest {
 	protected byte[] pkp;
 	
 	protected PrivateKey key;
+	protected String sslContextAlgorithm;
+	protected KeyStore trustKeyStore;
 
 	protected EetRegisterRequest(Builder builder) {
 		certificate = builder._certificate;
@@ -625,6 +650,8 @@ public class EetRegisterRequest {
 		pkp = builder._pkp;
 		key= builder._key;
 		certificate = builder._certificate;
+		sslContextAlgorithm=builder._sslContextAlgorithm;
+		trustKeyStore=builder._trustKeyStore;
 		
 		if ( builder._pkcs12bytes!=null ){
 			if (builder._pkcs12password==null){
@@ -787,7 +814,7 @@ public class EetRegisterRequest {
 		return String.format("%s|%s|%s|%s|%s|%s",dic_popl, id_provoz, id_pokl, porad_cis, formatDate(dat_trzby),formatAmount(celk_trzba));
 	}
 	
-	public String formatDate(Date date){
+	public static String formatDate(Date date){
 		String ret= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date);
 		ret=ret.replaceFirst("\\+([0-9][0-9])([0-9][0-9])$","+$1:$2");
 		return ret;
@@ -844,11 +871,11 @@ public class EetRegisterRequest {
 	}
 
 	public static String formatPkp(byte[] _pkp) {
-		return Base64.getEncoder().encodeToString(_pkp);
+		return Base64.encodeToString(_pkp, Base64.NO_WRAP);
 	}
 
 	public static byte[] parsePkp(String _pkp) {
-		return Base64.getDecoder().decode(_pkp);
+		return Base64.decode(_pkp, Base64.NO_WRAP);
 	}
 
 
@@ -874,7 +901,7 @@ public class EetRegisterRequest {
 			digestTemplate=removeUnusedPlaceholders(digestTemplate);
 			MessageDigest md=MessageDigest.getInstance("SHA-256");
 			byte[] digestRaw=md.digest(digestTemplate.getBytes("utf-8"));
-			String digest=Base64.getEncoder().encodeToString(digestRaw);
+			String digest=Base64.encodeToString(digestRaw, Base64.NO_WRAP);
 			
 			signatureTemplate=replacePlaceholders(signatureTemplate, digest, null);
 			signatureTemplate=removeUnusedPlaceholders(signatureTemplate);
@@ -882,7 +909,7 @@ public class EetRegisterRequest {
 	        signatureEngine.initSign(key);
 	        signatureEngine.update(signatureTemplate.getBytes("UTF-8"));
 	        byte[] signatureRaw=signatureEngine.sign();
-	        String signature=Base64.getEncoder().encodeToString(signatureRaw);
+	        String signature=Base64.encodeToString(signatureRaw, Base64.NO_WRAP);
 	        
 			xmlTemplate=replacePlaceholders(xmlTemplate, digest, signature);
 			xmlTemplate=removeUnusedPlaceholders(xmlTemplate);
@@ -896,7 +923,7 @@ public class EetRegisterRequest {
 	
 	private String replacePlaceholders(String src, String digest, String signature){
 		try {
-			if (certificate!=null) src=src.replace("${certb64}",Base64.getEncoder().encodeToString(certificate.getEncoded()));
+			if (certificate!=null) src=src.replace("${certb64}",Base64.encodeToString(certificate.getEncoded(), Base64.NO_WRAP));
 			if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
 			if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
 			if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
@@ -976,9 +1003,22 @@ public class EetRegisterRequest {
 		return new String(streamData,"UTF-8");
 	}
 	
-	public String sendRequest(String requestBody, URL serviceUrl) throws IOException{
+	public String sendRequest(String requestBody, URL serviceUrl) throws Exception {
 		byte[] content=requestBody.getBytes("utf-8");
+
 		HttpURLConnection con=(HttpURLConnection)serviceUrl.openConnection();
+		if (con instanceof HttpsURLConnection){
+			HttpsURLConnection cons=(HttpsURLConnection)con;
+			if (sslContextAlgorithm!=null){
+				SSLContext sslCtx=SSLContext.getInstance(sslContextAlgorithm);
+				if (trustKeyStore!=null) 
+					sslCtx.init(null, new TrustManager[]{new EetTrustManager()}, null);
+				else 
+					sslCtx.init(null, new TrustManager[]{new EetTrustManager(trustKeyStore)}, null);
+				cons.setSSLSocketFactory(sslCtx.getSocketFactory());
+			}
+		}
+		
 		con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
 		con.setRequestProperty("Content-Length",String.format("%d", content.length));
 		con.setRequestProperty("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
