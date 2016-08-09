@@ -18,6 +18,7 @@ List of features:
 * generate valid signed SOAP message
 * send the request to the playground endpoint
 * receive response containing FIK
+* setup custom trust manager defaulting to included JKS with the right CA certificates
 
 
 # Build 
