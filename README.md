@@ -1,7 +1,8 @@
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
-* Java [openeet-lite-shapshot-20160805-0622.jar](releases/prerelease/openeet-lite-shapshot-20160805-0622.jar) 
+* Java 7[openeet-lite-java7-20160809-1422.jar](releases/prerelease/openeet-lite-java7-20160809-1422.jar) 
+* Java 8[openeet-lite-java8-20160809-1420.jar](releases/prerelease/openeet-lite-java8-20160809-1420.jar) 
 * .NET [openeet-lite-shapshot-20160705-0835.dll](releases/prerelease/openeet-lite-shapshot-20160705-0835.dll) 
 
 It is necessary to force git not to normalize line ends. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
