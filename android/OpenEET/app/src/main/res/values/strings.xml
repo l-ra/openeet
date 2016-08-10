@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OpenEET</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_done">Done</string>
+    <string name="title_activity_main">OpenEET</string>
+    <string name="title_register_sale">OpenEET</string>
+</resources>
