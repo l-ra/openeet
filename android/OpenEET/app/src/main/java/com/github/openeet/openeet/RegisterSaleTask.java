@@ -1,4 +1,4 @@
-package com.git.openeet.openeet;
+package com.github.openeet.openeet;
 
 import android.os.AsyncTask;
 import android.util.Log;

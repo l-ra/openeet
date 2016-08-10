@@ -1,4 +1,4 @@
-package com.git.openeet.openeet;
+package com.github.openeet.openeet;
 
 import org.junit.Test;
 

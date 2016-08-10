@@ -1,4 +1,4 @@
-package com.git.openeet.openeet;
+package com.github.openeet.openeet;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
