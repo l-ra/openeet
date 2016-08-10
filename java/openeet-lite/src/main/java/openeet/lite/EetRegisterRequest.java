@@ -191,14 +191,22 @@ public class EetRegisterRequest {
 	 *
 	 */
 	public static class Builder {
+		
+		//client setup
 		protected byte[] _pkcs12bytes;
 		protected char[] _pkcs12password;
 		protected PrivateKey _key;
 		protected X509Certificate _certificate;
+		protected String _sslContextAlgorithm="TLSv1.1";
+		protected KeyStore _trustKeyStore;
+		
+		//header
 		protected Date _dat_odesl=new Date();
-		protected PrvniZaslani _prvni_zaslani=PrvniZaslani.PRVNI;
-		protected UUID _uuid_zpravy=UUID.randomUUID();
-		protected Overeni _overeni=Overeni.PRODUKCNI;
+		protected PrvniZaslani _prvni_zaslani;
+		protected UUID _uuid_zpravy;
+		protected Overeni _overeni;		
+		
+		//data
 		protected String _dic_popl;
 		protected String _dic_poverujiciho;
 		protected String _id_provoz;
@@ -220,8 +228,6 @@ public class EetRegisterRequest {
 		protected Double _urceno_cerp_zuct;
 		protected Double _cerp_zuct;
 		protected Rezim _rezim=Rezim.STANDARDNI;
-		protected String _sslContextAlgorithm="TLSv1.1";
-		protected KeyStore _trustKeyStore;
 
 		protected byte[] _bkp;
 		protected byte[] _pkp;
@@ -262,7 +268,7 @@ public class EetRegisterRequest {
 		}
 
 		/**
-		 * Defaults to time of builder creation 
+		 * When not set defaults to time of soap requeste generation 
 		 * @param val
 		 * @return
 		 */
@@ -272,7 +278,7 @@ public class EetRegisterRequest {
 		}
 
 		/** 
-		 * Defaults to PrvniZaslani.PRVNI
+		 * 
 		 * @param val
 		 * @return
 		 */
@@ -292,7 +298,7 @@ public class EetRegisterRequest {
 		}
 
 		/**
-		 * Defaults to random UUID
+		 * when not set defaults to random UUID when soap request is generated
 		 * @param val
 		 * @return
 		 */
@@ -307,7 +313,7 @@ public class EetRegisterRequest {
 		}
 
 		/**
-		 * Defaults to PRODUKCNI
+		 * when not set, defaults to PRODUKCNI during soap request generation
 		 * @param val
 		 * @return
 		 */
@@ -353,7 +359,7 @@ public class EetRegisterRequest {
 		}
 
 		/**
-		 * Defaults to builder creation time
+		 * When not set defaults to builder creation time
 		 * @param val
 		 * @return
 		 */
@@ -620,11 +626,15 @@ public class EetRegisterRequest {
 	protected KeyStore trustKeyStore;
 
 	protected EetRegisterRequest(Builder builder) {
-		certificate = builder._certificate;
+
+		//header
 		dat_odesl = builder._dat_odesl;
 		prvni_zaslani = builder._prvni_zaslani;
 		uuid_zpravy = builder._uuid_zpravy;
 		overeni=builder._overeni;
+		
+		//data
+		certificate = builder._certificate;
 		dic_popl = builder._dic_popl;
 		dic_poverujiciho = builder._dic_poverujiciho;
 		id_provoz = builder._id_provoz;
@@ -879,7 +889,34 @@ public class EetRegisterRequest {
 	}
 
 
-	public String generateSoapRequest(){
+	/**
+	 * Uses header data from builder, when not set, generate defaults as documented in builder 
+	 * @return generated SOAP requesas stringt
+	 */
+	public String generateSoapRequest() {
+		return generateSoapRequest(dat_odesl!=null?dat_odesl:new Date(),
+								   prvni_zaslani!=null?prvni_zaslani:PrvniZaslani.PRVNI,
+								   uuid_zpravy!=null?uuid_zpravy.toString():UUID.randomUUID().toString(),
+								   overeni!=null?overeni:Overeni.PRODUKCNI);
+	}
+	
+	/**
+	 * Ignores header data from builder and sets according to params or default (if param is null)
+	 * @param dat_odesl_force if null, new Date is used
+	 * @param prvni_zaslani_force if null, PRVNI is used
+	 * @param uuid_zpravy_force if null random UUID is generated
+	 * @param overeni_force if null, PRODUKCNI is used
+	 * @return
+	 */
+	public String generateSoapRequest(Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force){
+		return generateSoapRequestInternal(dat_odesl_force!=null?dat_odesl_force:new Date(),
+				   prvni_zaslani_force!=null?prvni_zaslani_force:PrvniZaslani.PRVNI,
+				   uuid_zpravy_force!=null?uuid_zpravy_force.toString():UUID.randomUUID().toString(),
+				   overeni_force!=null?overeni_force:Overeni.PRODUKCNI);		
+	}
+	
+	
+	protected String generateSoapRequestInternal(Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force){
 		try {
 			String sha1sum=loadTemplateFromResource("/openeet/lite/templates/sha1sum.txt");
 			BufferedReader  br=new BufferedReader(new StringReader(sha1sum));
@@ -894,16 +931,14 @@ public class EetRegisterRequest {
 			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml",hashes.get("template.xml"));
 			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template",hashes.get("digest-template"));
 			String signatureTemplate=loadTemplateFromResource("/openeet/lite/templates/signature-template",hashes.get("signature-template"));
-			
-			
-			
-			digestTemplate=replacePlaceholders(digestTemplate, null, null);
+					
+			digestTemplate=replacePlaceholders(digestTemplate, null, null, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
 			digestTemplate=removeUnusedPlaceholders(digestTemplate);
 			MessageDigest md=MessageDigest.getInstance("SHA-256");
 			byte[] digestRaw=md.digest(digestTemplate.getBytes("utf-8"));
 			String digest=Base64.encodeToString(digestRaw, Base64.NO_WRAP);
 			
-			signatureTemplate=replacePlaceholders(signatureTemplate, digest, null);
+			signatureTemplate=replacePlaceholders(signatureTemplate, digest, null, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
 			signatureTemplate=removeUnusedPlaceholders(signatureTemplate);
 			Signature signatureEngine = Signature.getInstance("SHA256withRSA");
 	        signatureEngine.initSign(key);
@@ -911,7 +946,7 @@ public class EetRegisterRequest {
 	        byte[] signatureRaw=signatureEngine.sign();
 	        String signature=Base64.encodeToString(signatureRaw, Base64.NO_WRAP);
 	        
-			xmlTemplate=replacePlaceholders(xmlTemplate, digest, signature);
+			xmlTemplate=replacePlaceholders(xmlTemplate, digest, signature, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
 			xmlTemplate=removeUnusedPlaceholders(xmlTemplate);
 
 			return xmlTemplate;			
@@ -921,13 +956,22 @@ public class EetRegisterRequest {
 		}
 	}
 	
-	private String replacePlaceholders(String src, String digest, String signature){
+	private String replacePlaceholders(String src, String digest, String signature, Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force){
 		try {
+			
+			if (prvni_zaslani_force!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani_force.toString());
+			else if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
+			
+			if (dat_odesl_force!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl_force));
+			else if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
+			
+			if (uuid_zpravy_force!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy_force.toString());
+			else if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
+			
+			if (overeni_force!=null) src=src.replace("${overeni}",overeni_force.toString());
+			else if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
+
 			if (certificate!=null) src=src.replace("${certb64}",Base64.encodeToString(certificate.getEncoded(), Base64.NO_WRAP));
-			if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
-			if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
-			if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
-			if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
 			if (dic_popl!=null) src=src.replace("${dic_popl}",dic_popl);
 			if (dic_poverujiciho!=null) src=src.replace("${dic_poverujiciho}",dic_poverujiciho);
 			if (id_provoz!=null) src=src.replace("${id_provoz}",id_provoz);

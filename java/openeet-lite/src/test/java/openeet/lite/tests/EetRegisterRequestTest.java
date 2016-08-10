@@ -42,6 +42,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import openeet.lite.EetRegisterRequest;
+import openeet.lite.EetRegisterRequest.Overeni;
+import openeet.lite.EetRegisterRequest.PrvniZaslani;
 
 public class EetRegisterRequestTest {
 
@@ -150,7 +152,34 @@ public class EetRegisterRequestTest {
 		//ready to print online receipt
 	}
 
+	@Test
+	public void resendTest() throws Exception {
+		EetRegisterRequest data=EetRegisterRequest.builder()
+		   .dic_popl("CZ1212121218")
+		   .id_provoz("1")
+		   .id_pokl("POKLADNA01")
+		   .porad_cis("1")
+		   .dat_trzby("2016-06-30T08:43:28+02:00")
+		   .celk_trzba(100.0)
+		   .rezim(0)
+		   .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
+		   .pkcs12password("eet")
+		   .build();
+		
+		String first=data.generateSoapRequest(null,PrvniZaslani.PRVNI, null, Overeni.PRODUKCNI);
+		data.sendRequest(first, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
 
+		String resend1=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
+		data.sendRequest(resend1, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		
+		String resend2=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
+		data.sendRequest(resend2, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		
+	}
+
+	
+	
+	
 	/**
 	 * Utility function to validate XML Signature to do a self check
 	 * @param signed request 
