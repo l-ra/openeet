@@ -130,9 +130,9 @@ public final class SaleSqlHelper extends SQLiteOpenHelper  {
         return db.insert(Sale.TABLE_NAME,null,val);
     }
 
-    public void insertSend(EetRegisterRequest req){
-        SQLiteDatabase db=getWritableDatabase();
-
+    public void insertSend(EetRegisterRequest req) {
+        SQLiteDatabase db = getWritableDatabase();
+    }
 
     /*
     public void buildSale(EetRegisterRequest.Builder bldr,){
