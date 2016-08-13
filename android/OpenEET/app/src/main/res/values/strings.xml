@@ -1,7 +1,78 @@
 <resources>
     <string name="app_name">OpenEET</string>
     <string name="action_settings">Settings</string>
-    <string name="action_done">Done</string>
+    <string name="action_done">Registrovat</string>
     <string name="title_activity_main">OpenEET</string>
-    <string name="title_register_sale">OpenEET</string>
+    <string name="title_register_sale">Údaje tržby</string>
+
+
+    <string name="dic_popl">DIČ poplatníka</string>
+    <string name="dic_poverujiciho">DIČ pověřujícího</string>
+    <string name="id_provoz">ID provozovny</string>
+    <string name="id_pokl">ID pokladny</string>
+    <string name="porad_cis">Pořadové číslo</string>
+    <string name="dat_trzby">Datum tržby</string>
+    <string name="celk_trzba">Celková tržba</string>
+    <string name="zakl_nepodl_dph">Základe nepodléhající DPH</string>
+    <string name="zakl_dan1">Základ 1</string>
+    <string name="dan1">Daň 1</string>
+    <string name="zakl_dan2">Základ 2</string>
+    <string name="dan2">Daň 2</string>
+    <string name="zakl_dan3">Základ 3</string>
+    <string name="dan3">Daň 3</string>
+    <string name="cest_sluz">Služební cesta</string>
+    <string name="pouzit_zboz1">Použít zboží 1</string>
+    <string name="pouzit_zboz2">Použít zboží 2</string>
+    <string name="pouzit_zboz3">Použít zboží 3</string>
+    <string name="urceno_cerp_zuct">Určeno čerpání zůstatku</string>
+    <string name="cerp_zuct">Čerpání zůstatku</string>
+    <string name="rezim">Režim</string>
+
+<!--    dic_popl
+    dic_poverujiciho
+    id_provoz
+    id_pokl
+    porad_cis
+    dat_trzby
+    celk_trzba
+    zakl_nepodl_dph
+    zakl_dan1
+    dan1
+    zakl_dan2
+    dan2
+    zakl_dan3
+    dan3
+    cest_sluz
+    pouzit_zboz1
+    pouzit_zboz2
+    pouzit_zboz3
+    urceno_cerp_zuct
+    cerp_zuct
+    rezim
+
+
+    dic_popl;
+    dic_poverujiciho;
+    id_provoz;
+    id_pokl;
+    porad_cis;
+    dat_trzby;
+    celk_trzba;
+    zakl_nepodl_dph;
+    zakl_dan1;
+    dan1;
+    zakl_dan2;
+    dan2;
+    zakl_dan3;
+    dan3;
+    cest_sluz;
+    pouzit_zboz1;
+    pouzit_zboz2;
+    pouzit_zboz3;
+    urceno_cerp_zuct;
+    cerp_zuct;
+    rezim;
+
+-->
+
 </resources>

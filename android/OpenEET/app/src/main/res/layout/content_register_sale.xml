@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -10,67 +14,307 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.github.openeet.openeet.RegisterSale"
-    tools:showIn="@layout/activity_register_sale">
+    tools:showIn="@layout/activity_register_sale"
+    android:weightSum="1"
+    android:id="@+id/register_sale_main">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/lbl_dic_popl"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Základní registrace tržby"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/dic_popl"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
-        android:imeOptions="actionDone"
-        android:layout_width="wrap_content"
+        android:id="@+id/dic_popl"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dic"
-        android:enabled="true"
-        android:singleLine="true"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2"
-        android:text="CZ1212121218" />
+        android:hint="@string/dic_popl" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/lbl_dic_poverujiciho"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="DIČ"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/textView"
-        android:layout_marginTop="12dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/dic_poverujiciho"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Částka"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/dic"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/dic"
-        android:layout_alignEnd="@+id/dic"
-        android:layout_marginTop="12dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:id="@+id/dic_poverujiciho"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dic_poverujiciho" />
+
+    <TextView
+        android:id="@+id/lbl_id_provoz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/id_provoz"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/id_provoz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/id_provoz" />
+
+    <TextView
+        android:id="@+id/lbl_id_pokl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/id_pokl"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/id_pokl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/id_pokl" />
+
+    <TextView
+        android:id="@+id/lbl_porad_cis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/porad_cis"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/porad_cis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/porad_cis" />
+
+    <TextView
+        android:id="@+id/lbl_dat_trzby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dat_trzby"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/dat_trzby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dat_trzby" />
+
+    <TextView
+        android:id="@+id/lbl_celk_trzba"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/celk_trzba"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/celk_trzba"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/amount"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView3"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3" />
-</RelativeLayout>
+        android:hint="@string/celk_trzba" />
+
+    <TextView
+        android:id="@+id/lbl_zakl_nepodl_dph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zakl_nepodl_dph"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/zakl_nepodl_dph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/zakl_nepodl_dph" />
+
+    <TextView
+        android:id="@+id/lbl_zakl_dan1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zakl_dan1"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/zakl_dan1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/zakl_dan1" />
+
+    <TextView
+        android:id="@+id/lbl_dan1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dan1"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/dan1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/dan1" />
+
+    <TextView
+        android:id="@+id/lbl_zakl_dan2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zakl_dan2"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/zakl_dan2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/zakl_dan2" />
+
+    <TextView
+        android:id="@+id/lbl_dan2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dan2"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/dan2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/dan2" />
+
+    <TextView
+        android:id="@+id/lbl_zakl_dan3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zakl_dan3"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/zakl_dan3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/zakl_dan3" />
+
+    <TextView
+        android:id="@+id/lbl_dan3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dan3"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/dan3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/dan3" />
+
+    <TextView
+        android:id="@+id/lbl_cest_sluz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cest_sluz"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/cest_sluz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/cest_sluz" />
+
+    <TextView
+        android:id="@+id/lbl_pouzit_zboz1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pouzit_zboz1"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/pouzit_zboz1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/pouzit_zboz1" />
+
+    <TextView
+        android:id="@+id/lbl_pouzit_zboz2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pouzit_zboz2"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/pouzit_zboz2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/pouzit_zboz2" />
+
+    <TextView
+        android:id="@+id/lbl_pouzit_zboz3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pouzit_zboz3"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/pouzit_zboz3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/pouzit_zboz3" />
+
+    <TextView
+        android:id="@+id/lbl_urceno_cerp_zuct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/urceno_cerp_zuct"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/urceno_cerp_zuct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/urceno_cerp_zuct" />
+
+    <TextView
+        android:id="@+id/lbl_cerp_zuct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cerp_zuct"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/cerp_zuct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="@string/cerp_zuct" />
+
+    <TextView
+        android:id="@+id/lbl_rezim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rezim"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/rezim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/rezim" />
+
+
+</LinearLayout>
+
+</ScrollView>

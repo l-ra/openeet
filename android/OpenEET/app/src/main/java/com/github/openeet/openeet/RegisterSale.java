@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,9 +25,11 @@ public class RegisterSale extends AppCompatActivity {
         setContentView(R.layout.activity_register_sale);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        EditText amount=(EditText)findViewById(R.id.amount);
 
 
+        RegisterSaleTemplate template=RegisterSaleTemplate.getSimpleTemplate();
+        template.applyAll(findViewById(R.id.register_sale_main));
+        /*
         amount.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -43,7 +46,7 @@ public class RegisterSale extends AppCompatActivity {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         amount.requestFocus();
         imm.showSoftInput(amount, InputMethodManager.SHOW_FORCED);
-
+        */
 
         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //imm.showSoftInput(amount, InputMethodManager.SHOW_IMPLICIT);
@@ -74,8 +77,8 @@ public class RegisterSale extends AppCompatActivity {
     }
 
     protected void onDone(){
-        TextView dicView=(TextView) findViewById(R.id.dic);
-        TextView amountView=(TextView) findViewById(R.id.amount);
+        TextView dicView=(TextView) findViewById(R.id.dic_popl);
+        TextView amountView=(TextView) findViewById(R.id.celk_trzba);
         Intent resultIntent=new Intent();
         resultIntent.putExtra(RESULT, amountView.getText().toString());
         Log.i(LOGTAG,"finish activity");
