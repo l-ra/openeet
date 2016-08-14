@@ -35,7 +35,7 @@
         android:id="@+id/dic_popl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dic_popl" />
+        android:hint="@string/dic_popl_hint" />
 
     <TextView
         android:id="@+id/lbl_dic_poverujiciho"
@@ -49,7 +49,7 @@
         android:id="@+id/dic_poverujiciho"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dic_poverujiciho" />
+        android:hint="@string/dic_poverujiciho_hint" />
 
     <TextView
         android:id="@+id/lbl_id_provoz"
@@ -62,7 +62,7 @@
         android:id="@+id/id_provoz"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/id_provoz" />
+        android:hint="@string/id_provoz_hint" />
 
     <TextView
         android:id="@+id/lbl_id_pokl"
@@ -75,7 +75,7 @@
         android:id="@+id/id_pokl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/id_pokl" />
+        android:hint="@string/id_pokl_hint" />
 
     <TextView
         android:id="@+id/lbl_porad_cis"
@@ -88,7 +88,7 @@
         android:id="@+id/porad_cis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/porad_cis" />
+        android:hint="@string/porad_cis_hint" />
 
     <TextView
         android:id="@+id/lbl_dat_trzby"
@@ -101,7 +101,7 @@
         android:id="@+id/dat_trzby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dat_trzby" />
+        android:hint="@string/dat_trzby_hint" />
 
     <TextView
         android:id="@+id/lbl_celk_trzba"
@@ -115,7 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/celk_trzba" />
+        android:hint="@string/celk_trzba_hint" />
 
     <TextView
         android:id="@+id/lbl_zakl_nepodl_dph"
@@ -129,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/zakl_nepodl_dph" />
+        android:hint="@string/zakl_nepodl_dph_hint" />
 
     <TextView
         android:id="@+id/lbl_zakl_dan1"
@@ -143,7 +143,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/zakl_dan1" />
+        android:hint="@string/zakl_dan1_hint" />
 
     <TextView
         android:id="@+id/lbl_dan1"
@@ -157,7 +157,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/dan1" />
+        android:hint="@string/dan1_hint" />
 
     <TextView
         android:id="@+id/lbl_zakl_dan2"
@@ -171,7 +171,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/zakl_dan2" />
+        android:hint="@string/zakl_dan2_hint" />
 
     <TextView
         android:id="@+id/lbl_dan2"
@@ -185,7 +185,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/dan2" />
+        android:hint="@string/dan2_hint" />
 
     <TextView
         android:id="@+id/lbl_zakl_dan3"
@@ -199,7 +199,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/zakl_dan3" />
+        android:hint="@string/zakl_dan3_hint" />
 
     <TextView
         android:id="@+id/lbl_dan3"
@@ -213,7 +213,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/dan3" />
+        android:hint="@string/dan3_hint" />
 
     <TextView
         android:id="@+id/lbl_cest_sluz"
@@ -227,7 +227,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/cest_sluz" />
+        android:hint="@string/cest_sluz_hint" />
 
     <TextView
         android:id="@+id/lbl_pouzit_zboz1"
@@ -241,7 +241,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/pouzit_zboz1" />
+        android:hint="@string/pouzit_zboz1_hint" />
 
     <TextView
         android:id="@+id/lbl_pouzit_zboz2"
@@ -255,7 +255,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/pouzit_zboz2" />
+        android:hint="@string/pouzit_zboz2_hint" />
 
     <TextView
         android:id="@+id/lbl_pouzit_zboz3"
@@ -269,7 +269,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/pouzit_zboz3" />
+        android:hint="@string/pouzit_zboz3_hint" />
 
     <TextView
         android:id="@+id/lbl_urceno_cerp_zuct"
@@ -283,7 +283,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/urceno_cerp_zuct" />
+        android:hint="@string/urceno_cerp_zuct_hint" />
 
     <TextView
         android:id="@+id/lbl_cerp_zuct"
@@ -297,7 +297,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="@string/cerp_zuct" />
+        android:hint="@string/cerp_zuct_hint" />
 
     <TextView
         android:id="@+id/lbl_rezim"
@@ -310,7 +310,7 @@
         android:id="@+id/rezim"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/rezim" />
+        android:hint="@string/rezim_hint" />
 
 
 </LinearLayout>

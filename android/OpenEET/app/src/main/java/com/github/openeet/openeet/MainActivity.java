@@ -1,10 +1,15 @@
 package com.github.openeet.openeet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -12,15 +17,22 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import openeet.lite.EetSaleDTO;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String LOGTAG="MainActivity";
+
     private static String[] STRING_ARRAY0 = new String[]{};
     private static final int REGISTER_SALE=0;
 
-    final List<String> list = new ArrayList<String>();
+    final protected List<String> list = new ArrayList<String>();
+
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        broadcastReceiver=new MainBroadcastReceiver(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,14 +63,59 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
-            case REGISTER_SALE: RegisterSaleResult(resultCode,data);break;
+            case REGISTER_SALE: processRegisterSaleResult(resultCode,data);break;
         }
     }
 
-    protected void RegisterSaleResult(int resultCode, Intent data){
-        String amount=data.getStringExtra(RegisterSale.RESULT);
-        list.add("Registering:"+amount);
+    protected void processRegisterSaleResult(int resultCode, Intent data){
+        EetSaleDTO dtoSale=(EetSaleDTO)data.getSerializableExtra(RegisterSale.RESULT);
+        list.add("Registering:"+dtoSale);
         updateList(list);
-        new RegisterSaleTask().execute(amount);
+        new RegisterSaleTask(getApplicationContext()).execute(dtoSale);
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(LOGTAG,"onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(LOGTAG,"onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(LOGTAG,"onResume");
+        super.onResume();
+        registerBroadcastReceivers();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(LOGTAG,"onPause");
+        super.onPause();
+        unregisterBroadcastReceivers();
+    }
+
+    private void unregisterBroadcastReceivers() {
+        Log.d(LOGTAG,"unregister br. recv");
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(broadcastReceiver);
+    }
+
+    private void registerBroadcastReceivers() {
+        Log.d(LOGTAG,"register br. recv");
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver,RegisterSaleTask.getMatchAllFilter());
+    }
+
+    public void processBroadcast(Context context, Intent intent) {
+        Log.d(LOGTAG,"onReceive: "+intent.getAction());
+        if (intent.getAction().equals(RegisterSaleTask.ACTION_SALE_REGISTERED_SUCCES))
+            list.add("Registed FIK:"+intent.getStringExtra(RegisterSaleTask.EXTRA_FIK));
+        if (intent.getAction().equals(RegisterSaleTask.ACTION_SALE_REGISTERED_FAILURE))
+            list.add("Error reg:"+intent.getStringExtra(RegisterSaleTask.EXTRA_ERROR));
+        updateList(list);
     }
 }

@@ -28,6 +28,31 @@
     <string name="cerp_zuct">Čerpání zůstatku</string>
     <string name="rezim">Režim</string>
 
+    <!-- hints -->
+    <string name="dic_popl_hint"></string>
+    <string name="dic_poverujiciho_hint"></string>
+    <string name="id_provoz_hint"></string>
+    <string name="id_pokl_hint"></string>
+    <string name="porad_cis_hint"></string>
+    <string name="dat_trzby_hint"></string>
+    <string name="celk_trzba_hint"></string>
+    <string name="zakl_nepodl_dph_hint"></string>
+    <string name="zakl_dan1_hint"></string>
+    <string name="dan1_hint"></string>
+    <string name="zakl_dan2_hint"></string>
+    <string name="dan2_hint"></string>
+    <string name="zakl_dan3_hint"></string>
+    <string name="dan3_hint"></string>
+    <string name="cest_sluz_hint"></string>
+    <string name="pouzit_zboz1_hint"></string>
+    <string name="pouzit_zboz2_hint"></string>
+    <string name="pouzit_zboz3_hint"></string>
+    <string name="urceno_cerp_zuct_hint"></string>
+    <string name="cerp_zuct_hint"></string>
+    <string name="rezim_hint"></string>
+    
+    
+    
 <!--    dic_popl
     dic_poverujiciho
     id_provoz
