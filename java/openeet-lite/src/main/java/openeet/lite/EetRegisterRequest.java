@@ -186,7 +186,8 @@ public class EetRegisterRequest {
 	 * The Builder class is a tool for EetRegisterRequest creation. 
 	 * Some of the fields has default values. See each builder method for default values.
 	 * When a key property is set, PKP and BKP codes are computed during build phase.
-	 * When a certificate property is set it is possible to create SOAP request from the resulting EetRegisterRequest object      
+	 * When a certificate property is set it is possible to create SOAP request from the resulting EetRegisterRequest object
+	 * When null is passed to some of builder method, it is completely ignored like the method was not called      
 	 * @author rasekl
 	 *
 	 */
@@ -233,12 +234,14 @@ public class EetRegisterRequest {
 		protected byte[] _pkp;
 
 		public Builder certificate(X509Certificate val) {
+			if (val==null) return this;
 			_certificate = val;
 			return this;
 		}
 
 		
 		public Builder key(PrivateKey val) {
+			if (val==null) return this;
 			_key = val;
 			return this;
 		}
@@ -251,6 +254,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder sslContextAlgorithm(String sslContextAlgorithm){
+			if (sslContextAlgorithm==null) return this;
 			_sslContextAlgorithm=sslContextAlgorithm;
 			return this;
 		}
@@ -263,6 +267,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder trustKeyStore(KeyStore keyStore){
+			if (keyStore==null) return this;
 			_trustKeyStore=keyStore;
 			return this;
 		}
@@ -273,9 +278,17 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder dat_odesl(Date val) {
+			if (val==null) return this;
 			_dat_odesl = val;
 			return this;
 		}
+		
+		public Builder dat_odesl(String val) {
+			if (val==null) return this;
+			_dat_odesl = parseDate(val);
+			return this;
+		}
+		
 
 		/** 
 		 * 
@@ -283,6 +296,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder prvni_zaslani(PrvniZaslani val) {
+			if (val==null) return this;
 			_prvni_zaslani = val;
 			return this;
 		}
@@ -293,6 +307,7 @@ public class EetRegisterRequest {
 		}
 
 		public Builder prvni_zaslani(String val) {
+			if (val==null) return this;
 			_prvni_zaslani = PrvniZaslani.valueOf(val);
 			return this;
 		}
@@ -303,11 +318,13 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder uuid_zpravy(UUID val) {
+			if (val==null) return this;
 			_uuid_zpravy = val;
 			return this;
 		}
 
 		public Builder uuid_zpravy(String val) {
+			if (val==null) return this;
 			_uuid_zpravy = UUID.fromString(val);
 			return this;
 		}
@@ -318,6 +335,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder overeni(Overeni val) {
+			if (val==null) return this;
 			_overeni = val;
 			return this;
 		}
@@ -328,32 +346,38 @@ public class EetRegisterRequest {
 		}
 
 		public Builder overeni(String val) {
+			if (val==null) return this;
 			_overeni = Overeni.valueOf(val);
 			return this;
 		}
 		
 		
 		public Builder dic_popl(String val) {
+			if (val==null) return this;
 			_dic_popl = val;
 			return this;
 		}
 
 		public Builder dic_poverujiciho(String val) {
+			if (val==null) return this;
 			_dic_poverujiciho = val;
 			return this;
 		}
 
 		public Builder id_provoz(String val) {
+			if (val==null) return this;
 			_id_provoz = val;
 			return this;
 		}
 
 		public Builder id_pokl(String val) {
+			if (val==null) return this;
 			_id_pokl = val;
 			return this;
 		}
 
 		public Builder porad_cis(String val) {
+			if (val==null) return this;
 			_porad_cis = val;
 			return this;
 		}
@@ -364,151 +388,181 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder dat_trzby(Date val) {
+			if (val==null) return this;
 			_dat_trzby = val;
 			return this;
 		}
 
 		public Builder dat_trzby(String val) {
+			if (val==null) return this;
 			_dat_trzby = EetRegisterRequest.parseDate(val);
 			return this;
 		}
 
 		public Builder celk_trzba(Double val) {
+			if (val==null) return this;
 			_celk_trzba = val;
 			return this;
 		}
 
 		public Builder celk_trzba(String val) {
+			if (val==null) return this;
 			_celk_trzba = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder zakl_nepodl_dph(Double val) {
+			if (val==null) return this;
 			_zakl_nepodl_dph = val;
 			return this;
 		}
 
 		public Builder zakl_nepodl_dph(String val) {
+			if (val==null) return this;
 			_zakl_nepodl_dph = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder zakl_dan1(Double val) {
+			if (val==null) return this;
 			_zakl_dan1 = val;
 			return this;
 		}
 
 		public Builder zakl_dan1(String val) {
+			if (val==null) return this;
 			_zakl_dan1 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder dan1(Double val) {
+			if (val==null) return this;
 			_dan1 = val;
 			return this;
 		}
 
 		public Builder dan1(String val) {
+			if (val==null) return this;
 			_dan1 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder zakl_dan2(Double val) {
+			if (val==null) return this;
 			_zakl_dan2 = val;
 			return this;
 		}
 
 		public Builder zakl_dan2(String val) {
+			if (val==null) return this;
 			_zakl_dan2 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder dan2(Double val) {
+			if (val==null) return this;
 			_dan2 = val;
 			return this;
 		}
 
 		public Builder dan2(String val) {
+			if (val==null) return this;
 			_dan2 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder zakl_dan3(Double val) {
+			if (val==null) return this;
 			_zakl_dan3 = val;
 			return this;
 		}
 
 		public Builder zakl_dan3(String val) {
+			if (val==null) return this;
 			_zakl_dan3 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder dan3(Double val) {
+			if (val==null) return this;
 			_dan3 = val;
 			return this;
 		}
 
 		public Builder dan3(String val) {
+			if (val==null) return this;
 			_dan3 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder cest_sluz(Double val) {
+			if (val==null) return this;
 			_cest_sluz = val;
 			return this;
 		}
 
 		public Builder cest_sluz(String val) {
+			if (val==null) return this;
 			_cest_sluz = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder pouzit_zboz1(Double val) {
+			if (val==null) return this;
 			_pouzit_zboz1 = val;
 			return this;
 		}
 
 		public Builder pouzit_zboz1(String val) {
+			if (val==null) return this;
 			_pouzit_zboz1 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder pouzit_zboz2(Double val) {
+			if (val==null) return this;
 			_pouzit_zboz2 = val;
 			return this;
 		}
 
 		public Builder pouzit_zboz2(String val) {
+			if (val==null) return this;
 			_pouzit_zboz2 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder pouzit_zboz3(Double val) {
+			if (val==null) return this;
 			_pouzit_zboz3 = val;
 			return this;
 		}
 
 		public Builder pouzit_zboz3(String val) {
+			if (val==null) return this;
 			_pouzit_zboz3 = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder urceno_cerp_zuct(Double val) {
+			if (val==null) return this;
 			_urceno_cerp_zuct = val;
 			return this;
 		}
 
 		public Builder urceno_cerp_zuct(String val) {
+			if (val==null) return this;
 			_urceno_cerp_zuct = Double.valueOf(val);
 			return this;
 		}
 
 		public Builder cerp_zuct(Double val) {
+			if (val==null) return this;
 			_cerp_zuct = val;
 			return this;
 		}
 
 		public Builder cerp_zuct(String val) {
+			if (val==null) return this;
 			_cerp_zuct = Double.valueOf(val);
 			return this;
 		}
@@ -519,6 +573,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder rezim(Rezim val) {
+			if (val==null) return this;
 			_rezim = val;
 			return this;
 		}
@@ -529,6 +584,7 @@ public class EetRegisterRequest {
 		}
 
 		public Builder rezim(String val) {
+			if (val==null) return this;
 			_rezim = Rezim.fromString(val);
 			return this;
 		}
@@ -539,6 +595,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder bkp(byte[] val) {
+			if (val==null) return this;
 			_bkp = val;
 			return this;
 		}
@@ -549,9 +606,48 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder bkp(String val) {
+			if (val==null) return this;
 			_bkp=EetRegisterRequest.parseBkp(val);
 			return this;
 		}
+		
+		public Builder fromDTO(EetSaleDTO dto){
+			if (dto==null) return this;
+			this
+		    .dic_popl(dto.dic_popl)
+		    .dic_poverujiciho(dto.dic_poverujiciho)
+		    .id_provoz(dto.id_provoz)
+		    .id_pokl(dto.id_pokl)
+		    .porad_cis(dto.porad_cis)
+		    .dat_trzby(dto.dat_trzby)
+		    .celk_trzba(dto.celk_trzba)
+		    .zakl_nepodl_dph(dto.zakl_nepodl_dph)
+		    .zakl_dan1(dto.zakl_dan1)
+		    .dan1(dto.dan1)
+		    .zakl_dan2(dto.zakl_dan2)
+		    .dan2(dto.dan2)
+		    .zakl_dan3(dto.zakl_dan3)
+		    .dan3(dto.dan3)
+		    .cest_sluz(dto.cest_sluz)
+		    .pouzit_zboz1(dto.pouzit_zboz1)
+		    .pouzit_zboz2(dto.pouzit_zboz2)
+		    .pouzit_zboz3(dto.pouzit_zboz3)
+		    .urceno_cerp_zuct(dto.urceno_cerp_zuct)
+		    .cerp_zuct(dto.cerp_zuct)
+		    .rezim(dto.rezim);			
+			return this;
+		}
+		
+		public Builder fromDTO(EetHeaderDTO dto){
+			if (dto==null) return this;
+			this
+		    .dat_odesl(dto.dat_odesl)
+			.prvni_zaslani(dto.prvni_zaslani)
+			.uuid_zpravy(dto.uuid_zpravy)
+			.overeni(dto.overeni);
+			return this;
+		}
+
 
 		/**
 		 * Computed when private key available during nuild() call
@@ -559,6 +655,7 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder pkp(byte[] val) {
+			if (val==null) return this;
 			_pkp = val;
 			return this;
 		}
@@ -569,19 +666,23 @@ public class EetRegisterRequest {
 		 * @return
 		 */
 		public Builder pkcs12(String p12Filename) throws IOException{
+			if (p12Filename==null) return this;
 			return pkcs12(loadStream(new FileInputStream(p12Filename),null));
 		}
 		
 		public Builder pkcs12(byte[] p12bytes){
+			if (p12bytes==null) return this;
 			_pkcs12bytes=p12bytes;
 			return this;
 		}
 
 		public Builder pkcs12password(String password){
+			if (password==null) return this;
 			return pkcs12password(password.toCharArray());
 		}
 		
 		public Builder pkcs12password(char[] password){
+			if (password==null) return this;
 			_pkcs12password=password;
 			return this;
 		}
@@ -1107,5 +1208,40 @@ public class EetRegisterRequest {
 		}
 		
 		if (key==null || certificate==null) throw new IllegalArgumentException("key and/or certificate still missing after p12 processing");
+	}
+	
+	public EetSaleDTO getSaleDTO(){
+		EetSaleDTO dto=new EetSaleDTO();
+		dto.dic_popl=dic_popl;
+		dto.dic_poverujiciho=dic_poverujiciho;
+		dto.id_provoz=id_provoz;
+		dto.id_pokl=id_pokl;
+		dto.porad_cis=porad_cis;
+		dto.dat_trzby=formatDate(dat_trzby);
+		dto.celk_trzba=formatAmount(celk_trzba);
+		dto.zakl_nepodl_dph=formatAmount(zakl_nepodl_dph);
+		dto.zakl_dan1=formatAmount(zakl_dan1);
+		dto.dan1=formatAmount(dan1);
+		dto.zakl_dan2=formatAmount(zakl_dan2);
+		dto.dan2=formatAmount(dan2);
+		dto.zakl_dan3=formatAmount(zakl_dan3);
+		dto.dan3=formatAmount(dan3);
+		dto.cest_sluz=formatAmount(cest_sluz);
+		dto.pouzit_zboz1=formatAmount(pouzit_zboz1);
+		dto.pouzit_zboz2=formatAmount(pouzit_zboz2);
+		dto.pouzit_zboz3=formatAmount(pouzit_zboz3);
+		dto.urceno_cerp_zuct=formatAmount(urceno_cerp_zuct);
+		dto.cerp_zuct=formatAmount(cerp_zuct);
+		dto.rezim=rezim.toString();		
+		return dto;
+	}
+	
+	public EetHeaderDTO getEetHeaderDTO(){
+		EetHeaderDTO dto=new EetHeaderDTO();
+	    dto.dat_odesl=formatDate(dat_odesl);
+		dto.prvni_zaslani=prvni_zaslani.toString();
+		dto.uuid_zpravy=uuid_zpravy.toString();
+		dto.overeni=overeni.toString();
+		return dto;
 	}
 }
