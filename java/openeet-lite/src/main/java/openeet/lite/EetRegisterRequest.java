@@ -991,7 +991,8 @@ public class EetRegisterRequest {
 
 
 	/**
-	 * Uses header data from builder, when not set, generate defaults as documented in builder 
+	 * Uses header data from builder, when not set, generate defaults as documented in builder
+	 *  Sets lastHeader accordingly. 
 	 * @return generated SOAP requesas stringt
 	 */
 	public String generateSoapRequest() {
@@ -1001,8 +1002,23 @@ public class EetRegisterRequest {
 								   overeni!=null?overeni:Overeni.PRODUKCNI);
 	}
 	
+	
 	/**
-	 * Ignores header data from builder and sets according to params or default (if param is null)
+	 * Same as <pre>generateSoapRequest(Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force).</pre>
+	 *  Sets lastHeader accordingly.
+	 * @param header
+	 * @return
+	 */
+	public String generateSoapRequest(EetHeaderDTO header){
+		return generateSoapRequest(parseDate(header.dat_odesl), 
+				                   PrvniZaslani.valueOf(header.prvni_zaslani),
+				                   header.uuid_zpravy, 
+				                   Overeni.valueOf(header.overeni));
+	}
+	
+	
+	/**
+	 * Ignores header data from builder and sets according to params or default (if param is null). Sets lastHeader accordingly.
 	 * @param dat_odesl_force if null, new Date is used
 	 * @param prvni_zaslani_force if null, PRVNI is used
 	 * @param uuid_zpravy_force if null random UUID is generated
@@ -1017,8 +1033,25 @@ public class EetRegisterRequest {
 	}
 	
 	
+	/**
+	 * Returns last header data used to generate soap request. The value is rewiriten each time "generateSoapRequest" is called.
+	 * Be careful when multithreading. The value is not thread safe - it is per EetRequestInstance and can be rewritten by another therad.
+	 * @return
+	 */
+	public EetHeaderDTO getLastHeader(){
+		return lastHeader;
+	}
+	
+	protected EetHeaderDTO lastHeader;
+	
 	protected String generateSoapRequestInternal(Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force){
 		try {
+			lastHeader=new EetHeaderDTO();
+			lastHeader.dat_odesl=formatDate(dat_odesl_force);
+			lastHeader.prvni_zaslani=prvni_zaslani_force.toString();
+			lastHeader.uuid_zpravy=uuid_zpravy_force;
+			lastHeader.overeni=overeni_force.toString();
+			
 			String sha1sum=loadTemplateFromResource("/openeet/lite/templates/sha1sum.txt");
 			BufferedReader  br=new BufferedReader(new StringReader(sha1sum));
 			String ln;
