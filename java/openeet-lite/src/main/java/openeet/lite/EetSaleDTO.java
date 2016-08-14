@@ -35,4 +35,8 @@ public class EetSaleDTO implements Serializable {
     public String bkp;
     public String pkp;
     
+    @Override
+    public String toString() {
+    	return String.format("%s|%s|%s|%s|%s|%s",dic_popl, id_provoz, id_pokl, porad_cis, dat_trzby,celk_trzba);
+    }   
 }
