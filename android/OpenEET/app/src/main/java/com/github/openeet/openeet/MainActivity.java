@@ -3,13 +3,15 @@ package com.github.openeet.openeet;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOGTAG="MainActivity";
 
     private static String[] STRING_ARRAY0 = new String[]{};
+    private static EetSaleDTO[] EET_SALE_DTO0 = new EetSaleDTO[]{};
+
     private static final int REGISTER_SALE=0;
 
-    final protected List<String> list = new ArrayList<String>();
+    final protected List<EetSaleDTO> list = new ArrayList<EetSaleDTO>();
 
     private BroadcastReceiver broadcastReceiver;
 
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        updateList(list);
+        updateList();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,10 +56,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    protected void updateList(List<String> list) {
-        String[] items = list.toArray(STRING_ARRAY0);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, items);
+    protected void updateList() {
+        SaleService.SaleEntry[] items=SaleService.getInstance().getLastRegistered();
+        ArrayAdapter<SaleService.SaleEntry> adapter = new SaleListArrayAdapter(this ,items);
         ListView salesList = (ListView) findViewById(R.id.salesList);
         salesList.setAdapter(adapter);
     }
@@ -69,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void processRegisterSaleResult(int resultCode, Intent data){
         EetSaleDTO dtoSale=(EetSaleDTO)data.getSerializableExtra(RegisterSale.RESULT);
-        list.add("Registering:"+dtoSale);
-        updateList(list);
         new RegisterSaleTask(getApplicationContext()).execute(dtoSale);
     }
 
@@ -112,10 +113,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void processBroadcast(Context context, Intent intent) {
         Log.d(LOGTAG,"onReceive: "+intent.getAction());
-        if (intent.getAction().equals(RegisterSaleTask.ACTION_SALE_REGISTERED_SUCCES))
-            list.add("Registed FIK:"+intent.getStringExtra(RegisterSaleTask.EXTRA_FIK));
-        if (intent.getAction().equals(RegisterSaleTask.ACTION_SALE_REGISTERED_FAILURE))
-            list.add("Error reg:"+intent.getStringExtra(RegisterSaleTask.EXTRA_ERROR));
-        updateList(list);
+        updateList();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_retry_register:
+                new RetryRegisterSalesTask(getBaseContext()).execute("");
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
