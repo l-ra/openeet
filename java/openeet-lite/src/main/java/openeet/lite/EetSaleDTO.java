@@ -1,13 +1,16 @@
 package openeet.lite;
 
+import java.io.Serializable;
+
 /**
  * DTO for sale data - no checks, no verifications, just a data holder. 
  * All data is expected in the form usable for corresponding builder method in EetRegisterRequest.
  * @author rasekl
  *
  */
-public class EetSaleDTO {
-	
+public class EetSaleDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	public String dic_popl;
     public String dic_poverujiciho;
     public String id_provoz;
