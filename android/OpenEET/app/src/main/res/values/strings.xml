@@ -73,6 +73,12 @@
     cerp_zuct;
     rezim;
 
+    dat_odesl;
+	prvni_zaslani;
+	uuid_zpravy;
+	overeni;
+
+
 -->
 
 </resources>

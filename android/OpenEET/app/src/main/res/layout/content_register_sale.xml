@@ -24,8 +24,6 @@
     android:orientation="vertical"
     >
 
-
-
     <TextView
         android:id="@+id/lbl_dic_popl"
         android:layout_width="match_parent"
