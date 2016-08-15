@@ -35,12 +35,14 @@ public class SaleService {
             error=false;
             fik=null;
             saleData=null;
+            inProgress=false;
         }
         public EetSaleDTO saleData;
         public boolean registered;
         public boolean error;
         public String fik;
         public List<SaleRegisterAttempt> attempts;
+        public boolean inProgress;
     }
 
     private static SaleService service=new SaleService();

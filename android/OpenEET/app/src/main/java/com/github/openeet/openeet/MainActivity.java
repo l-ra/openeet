@@ -16,7 +16,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.security.Provider;
+import java.security.Security;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import openeet.lite.EetSaleDTO;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //listProviders();
         broadcastReceiver=new MainBroadcastReceiver(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,6 +58,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(registerSaleIntent,REGISTER_SALE);
             }
         });
+    }
+
+    private void listProviders() {
+        try {
+            Provider p[] = Security.getProviders();
+            for (int i = 0; i < p.length; i++) {
+                Log.d(LOGTAG,p[i].toString());
+                for (Enumeration e = p[i].keys(); e.hasMoreElements();)
+                    Log.d(LOGTAG,"      " + e.nextElement().toString());
+            }
+        } catch (Exception e) {
+            Log.e(LOGTAG,"error listing providers/algs");
+        }
     }
 
     protected void updateList() {
