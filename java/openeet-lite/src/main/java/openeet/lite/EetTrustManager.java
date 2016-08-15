@@ -46,7 +46,8 @@ public class EetTrustManager implements X509TrustManager {
     
     protected void initWithKeyStore(KeyStore ks) {
     	try {
-	        TrustManagerFactory tmf = TrustManagerFactory.getInstance("PKIX");
+    		//x509 covers both PKIX & X509
+	        TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
 	        tmf.init(ks);
 	
 	        TrustManager tms [] = tmf.getTrustManagers();
@@ -59,7 +60,7 @@ public class EetTrustManager implements X509TrustManager {
 	        }
     	}
     	catch (Exception e){
-        	throw new RuntimeException("failed to init with keystore",e);
+    		throw new RuntimeException("failed to init with keystore",e);
     	}
     	throw new RuntimeException("failed to finnd suitable trust manager");
     }
