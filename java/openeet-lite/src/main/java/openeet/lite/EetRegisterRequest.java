@@ -46,6 +46,7 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
 /**
@@ -199,6 +200,7 @@ public class EetRegisterRequest {
 		protected PrivateKey _key;
 		protected X509Certificate _certificate;
 		protected String _sslContextAlgorithm="TLSv1.1";
+		protected String[] _sslEnabledProtocols=new String[] {"TLSv1.1", "TLSv1.2"};
 		protected KeyStore _trustKeyStore;
 		
 		//header
@@ -256,6 +258,16 @@ public class EetRegisterRequest {
 		public Builder sslContextAlgorithm(String sslContextAlgorithm){
 			if (sslContextAlgorithm==null) return this;
 			_sslContextAlgorithm=sslContextAlgorithm;
+			return this;
+		}
+		
+		/**
+		 * Set of enabled protocols enabled on socket created for communication.
+		 * @param val  When not set, defaults to "TLSv1.1"; when explicitly set to null, default platform setting is used.
+		 * @return builder
+		 */
+		public Builder sslEnabledProtocols(String[] val){
+			_sslEnabledProtocols=val;
 			return this;
 		}
 		
@@ -724,6 +736,7 @@ public class EetRegisterRequest {
 	
 	protected PrivateKey key;
 	protected String sslContextAlgorithm;
+	protected String[] sslEnabledProtocols;
 	protected KeyStore trustKeyStore;
 
 	protected EetRegisterRequest(Builder builder) {
@@ -762,6 +775,7 @@ public class EetRegisterRequest {
 		key= builder._key;
 		certificate = builder._certificate;
 		sslContextAlgorithm=builder._sslContextAlgorithm;
+		sslEnabledProtocols=builder._sslEnabledProtocols;
 		trustKeyStore=builder._trustKeyStore;
 		
 		if ( builder._pkcs12bytes!=null ){
@@ -1193,7 +1207,9 @@ public class EetRegisterRequest {
 					sslCtx.init(null, new TrustManager[]{new EetTrustManager()}, null);
 				else 
 					sslCtx.init(null, new TrustManager[]{new EetTrustManager(trustKeyStore)}, null);
-				cons.setSSLSocketFactory(sslCtx.getSocketFactory());
+				SSLSocketFactory sslSocketFactory=sslCtx.getSocketFactory();
+				if (sslEnabledProtocols!=null) sslSocketFactory=new SSLSocketFactoryTLS11(sslSocketFactory,sslEnabledProtocols);
+				cons.setSSLSocketFactory(sslSocketFactory);
 			}
 		}
 		
