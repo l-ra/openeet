@@ -30,7 +30,6 @@ public class RegisterSale extends AppCompatActivity {
 
         RegisterSaleTemplate template=RegisterSaleTemplate.getSimpleTemplate();
         template.applyAll(findViewById(R.id.register_sale_main));
-
     }
 
     @Override
