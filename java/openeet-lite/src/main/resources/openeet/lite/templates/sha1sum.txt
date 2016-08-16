@@ -1,3 +1,3 @@
-4b48f54e70b17d562dd26af37fd6af95bd7ef739  digest-template
+71dc87ca77b0587383c8ba4c5504d095debf3919  digest-template
 78df1d563048085b2e870e51fd2a56d8571ec1e6  signature-template
-d05446a22aaae64688019ba68af4efbaefd38dcd  template.xml
+9cdbfa5d22ddd24d47db73ea51b36260293299f7  template.xml

@@ -20,6 +20,52 @@
               <ds:Transform 
                     Algorithm="http://www.w3.org/2002/06/xmldsig-filter2" 
                     xmlns:ds-xpath="http://www.w3.org/2002/06/xmldsig-filter2"
+                    xmlns:eet3="http://fs.mfcr.cz/eet/schema/v3">
+                  <ds-xpath:XPath Filter="subtract">//eet3:Trzba</ds-xpath:XPath>
+                  <!--subtraction of the whole business data allows (for now) 
+                  to tackle with the business part withouth need to re-sign.
+                  This sage can be concidered as a security attack on API because 
+                  the message is received as signed but in fact business data 
+                  are excluded from the signature.
+                  XMLDSig dark corners :-)
+                   -->
+              </ds:Transform>              
+              <ds:Transform Algorithm='http://www.w3.org/2001/10/xml-exc-c14n#'/>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+            <ds:DigestValue>${digest}</ds:DigestValue><!--computed by xmldig engine -->
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue></ds:SignatureValue><!--computed by xmldig engine -->
+        <ds:KeyInfo Id="TheKeyInfo">
+          <wsse:SecurityTokenReference wsu:Id="TheSecurityTokenReference">
+            <wsse:Reference URI="#TheCert" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+    </wsse:Security>
+  </SOAP-ENV:Header>
+  <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
+  <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
+    <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v3">
+      <Hlavicka dat_odesl="${dat_odesl}" prvni_zaslani="${prvni_zaslani}" uuid_zpravy="${uuid_zpravy}" overeni="${overeni}"/>
+      <Data dic_popl="${dic_popl}" dic_poverujiciho="${dic_poverujiciho}" id_provoz="${id_provoz}" id_pokl="${id_pokl}" porad_cis="${porad_cis}" dat_trzby="${dat_trzby}" celk_trzba="${celk_trzba}" zakl_nepodl_dph="${zakl_nepodl_dph}" zakl_dan1="${zakl_dan1}" dan1="${dan1}" zakl_dan2="${zakl_dan2}" dan2="${dan2}" zakl_dan3="${zakl_dan3}" dan3="${dan3}" cest_sluz="${cest_sluz}" pouzit_zboz1="${pouzit_zboz1}" pouzit_zboz2="${pouzit_zboz2}" pouzit_zboz3="${pouzit_zboz3}" urceno_cerp_zuct="${urceno_cerp_zuct}" cerp_zuct="${cerp_zuct}" rezim="${rezim}"/>
+      <KontrolniKody>
+        <pkp cipher="RSA2048" digest="SHA256" encoding="base64">${pkp}</pkp>
+        <bkp digest="SHA1" encoding="base16">${bkp}</bkp>
+      </KontrolniKody>
+    </Trzba>
+  </soap:Body>
+  </soap:Body>
+</soap:Envelope>
+
+
+
+<ds:Reference URI="#TheBody">
+            <ds:Transforms>
+              <ds:Transform 
+                    Algorithm="http://www.w3.org/2002/06/xmldsig-filter2" 
+                    xmlns:ds-xpath="http://www.w3.org/2002/06/xmldsig-filter2"
                     xmlns:eet2="http://fs.mfcr.cz/eet/schema/v2">
                   <ds-xpath:XPath Filter="subtract">//eet2:Trzba</ds-xpath:XPath>
                   <!--subtraction of the whole business data allows (for now) 
@@ -35,35 +81,3 @@
             <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
             <ds:DigestValue></ds:DigestValue><!--computed by xmldig engine -->
           </ds:Reference>
-        </ds:SignedInfo>
-        <ds:SignatureValue></ds:SignatureValue><!--computed by xmldig engine -->
-        <ds:KeyInfo Id="TheKeyInfo">
-          <wsse:SecurityTokenReference wsu:Id="TheSecurityTokenReference">
-            <wsse:Reference URI="#TheCert" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
-          </wsse:SecurityTokenReference>
-        </ds:KeyInfo>
-      </ds:Signature>
-    </wsse:Security>
-  </SOAP-ENV:Header>
-  <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
-    <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v2">
-      <Hlavicka 
-        dat_odesl="2016-06-15T09:08:44+02:00" 
-        prvni_zaslani="false" 
-        uuid_zpravy="9edeb22b-4234-4047-869c-3a76f86c20d3"/>
-      <Data 
-        celk_trzba="34113.00" cerp_zuct="679.00" cest_sluz="5460.00" 
-        dat_trzby="2016-01-05T00:30:12+01:00" dic_popl="CZ1212121218" 
-        id_pokl="/5546/RO24" id_provoz="273" porad_cis="0/6460/ZQ42" 
-        pouzit_zboz1="784.00" pouzit_zboz2="967.00" pouzit_zboz3="189.00" 
-        rezim="0" urceno_cerp_zuct="324.00" 
-        zakl_dan1="-820.92" zakl_dan2="-3538.20" zakl_dan3="9756.46" 
-        dan1="-172.39" dan2="-530.73" dan3="975.65" 
-        zakl_nepodl_dph="3036.00"/>
-      <KontrolniKody>
-        <pkp cipher="RSA2048" digest="SHA256" encoding="base64">lncmU7IdeWbscoTzTykEZ7NdATPtAH3t3i0mpNbAx3oquNJ7ML3UghGDDHncKLyfpnR+zCIltifxCx7k18X/9ZQVRMh5/42kTTPHlTR9x8y8i3zcK00+5znfgW/ofIT+mZUkJQ2dztxGmrVTJeYvXCrKX5qH+zwPpkdAAbc3DjhC+meMA8U+FY9MpqYZd0x7AzWSUI5gmrBxMThPZnzn3nonpFLwRI+WcGndnWzzLPf16CnJW3LJoYojGxzBC0peaEnDcWbr9WGeW+OFBv2MHrglip5RWugp+xat4g1jgWiMWyDA2TF6yY6ybtD1axygRfqqbmPMPKSX7Wl3xi4C3g==</pkp>
-        <bkp digest="SHA1" encoding="base16">F7370733-DF026DD5-704477C8-6AEA6E34-4CB34D92</bkp>
-      </KontrolniKody>
-    </Trzba>
-  </soap:Body>
-</soap:Envelope>
