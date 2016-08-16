@@ -1,6 +1,13 @@
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
+EET API v3
+* Java 7 [openeet-lite-java7-20160816-2123.jar](releases/prerelease/openeet-lite-java7-20160816-2123.jar) 
+* Java 8 [openeet-lite-java7-20160816-2119.jar](releases/prerelease/openeet-lite-java7-20160816-2119.jar)
+* .NET - comming soon 
+* [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
+
+EET API v2 - not maintained any more
 * Java 7 [openeet-lite-java7-20160809-1422.jar](releases/prerelease/openeet-lite-java7-20160809-1422.jar) 
 * Java 8 [openeet-lite-java8-20160809-1420.jar](releases/prerelease/openeet-lite-java8-20160809-1420.jar) 
 * .NET [openeet-lite-shapshot-20160705-0835.dll](releases/prerelease/openeet-lite-shapshot-20160705-0835.dll) 
@@ -50,7 +57,7 @@ public void simpleRegistrationProcessTest() throws MalformedURLException, IOExce
 	String requestBody=request.generateSoapRequest();
 	assertNotNull(requestBody);
 
-	String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+	String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 	//extract FIK
 	assertNotNull(response);
 	assertTrue(response.contains("Potvrzeni fik="));
@@ -88,7 +95,7 @@ public static void simpleRegistrationProcessTest(){
     String requestBody=request.generateSoapRequest();
     if (requestBody == null) throw new ApplicationException("SOAP request is null");
 
-    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3);
     //extract FIK
     if (response == null) throw new ApplicationException("response is null");
     if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");

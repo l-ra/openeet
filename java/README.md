@@ -64,7 +64,7 @@ public void simpleRegistrationProcessTest()
 	assertNotNull(requestBody);
 
 	String response=request.sendRequest(requestBody, 
-		      new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		      new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 	//extract FIK
 	assertNotNull(response);
 	assertTrue(response.contains("Potvrzeni fik="));
