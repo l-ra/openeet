@@ -117,7 +117,7 @@ public class EetRegisterRequestTest {
 		String signed=data.generateSoapRequest();
 		assertNotNull(data.getLastHeader());
 		assertTrue(validateXmlDSig(signed, data.getCertificate()));
-		data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		data.sendRequest(signed, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 	}
 	
 	@Test
@@ -152,7 +152,7 @@ public class EetRegisterRequestTest {
 		assertNotNull(request.getLastHeader());
 
 
-		String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 		//extract FIK
 		assertNotNull(response);
 		assertTrue(response.contains("Potvrzeni fik="));
@@ -174,13 +174,13 @@ public class EetRegisterRequestTest {
 		   .build();
 		
 		String first=data.generateSoapRequest(null,PrvniZaslani.PRVNI, null, Overeni.PRODUKCNI);
-		data.sendRequest(first, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		data.sendRequest(first, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 
 		String resend1=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
-		data.sendRequest(resend1, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		data.sendRequest(resend1, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 		
 		String resend2=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
-		data.sendRequest(resend2, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
+		data.sendRequest(resend2, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
 		
 	}
 
