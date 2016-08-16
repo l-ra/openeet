@@ -996,7 +996,7 @@ public class EetRegisterRequest {
 			throw new IllegalArgumentException("Wrong format, hexdump expected:"+val);
 		
 		for (int i=0; i<20; i++){
-			_bkp[i]=(byte) Integer.parseInt(val.substring(i*2,i*2+1), 16);
+			_bkp[i]=(byte) Integer.parseInt(val.substring(i*2,i*2+2), 16);
 		}
 		return _bkp;  
 	}

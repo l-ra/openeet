@@ -41,11 +41,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import openeet.lite.EetHeaderDTO;
 import openeet.lite.EetRegisterRequest;
 import openeet.lite.EetRegisterRequest.Overeni;
 import openeet.lite.EetRegisterRequest.PrvniZaslani;
+import openeet.lite.EetSaleDTO;
 
 public class EetRegisterRequestTest {
+
+	private static final String FIK_PATTERN ="eet:Potvrzeni fik=\"";
 
 	static PrivateKey key;
 	static X509Certificate cert;
@@ -161,27 +165,53 @@ public class EetRegisterRequestTest {
 
 	@Test
 	public void resendTest() throws Exception {
-		EetRegisterRequest data=EetRegisterRequest.builder()
-		   .dic_popl("CZ1212121218")
-		   .id_provoz("1")
-		   .id_pokl("POKLADNA01")
-		   .porad_cis("1")
-		   .dat_trzby("2016-06-30T08:43:28+02:00")
-		   .celk_trzba(100.0)
-		   .rezim(0)
-		   .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
-		   .pkcs12password("eet")
-		   .build();
 		
-		String first=data.generateSoapRequest(null,PrvniZaslani.PRVNI, null, Overeni.PRODUKCNI);
-		data.sendRequest(first, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
+		EetSaleDTO dto=new EetSaleDTO();
+		dto.dic_popl="CZ1212121218";
+		dto.celk_trzba="123.80";
+		dto.id_provoz="1";
+		dto.id_pokl="aaaaaaaa";
+		dto.porad_cis="1";
+		
+		EetRegisterRequest.Builder builder=EetRegisterRequest.builder()
+			.fromDTO(dto)
+		    .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
+		    .pkcs12password("eet");
+		
+        EetRegisterRequest request=builder.build();
+        EetSaleDTO dto1=request.getSaleDTO();
+        
+        String soapRequest1=request.generateSoapRequest(null, EetRegisterRequest.PrvniZaslani.PRVNI, null,null);
+        EetHeaderDTO header1=request.getLastHeader();
 
-		String resend1=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
-		data.sendRequest(resend1, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
+        //String soapResponse=request.sendRequest(soapRequest1, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
+        
+        //if (soapResponse.contains(FIK_PATTERN)) {
+        //    int fikIdx=soapResponse.indexOf(FIK_PATTERN)+FIK_PATTERN.length();
+        //    String fik=soapResponse.substring(fikIdx,fikIdx+39);
+        //}
+        
+        
+		EetRegisterRequest.Builder builder2=EetRegisterRequest.builder()
+				.fromDTO(dto1)
+			    .pkcs12(loadStream(EetRegisterRequestTest.class.getResourceAsStream("/01000003.p12")))
+			    .pkcs12password("eet");
 		
-		String resend2=data.generateSoapRequest(null,PrvniZaslani.OPAKOVANE, null, Overeni.PRODUKCNI);
-		data.sendRequest(resend2, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
-		
+        EetRegisterRequest request2=builder2.build();
+        EetSaleDTO dto2=request.getSaleDTO();
+
+        String soapRequest2=request2.generateSoapRequest(null, EetRegisterRequest.PrvniZaslani.PRVNI, null,null);
+        EetHeaderDTO header2=request2.getLastHeader();
+        
+        String soapResponse2=request.sendRequest(soapRequest2, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
+        
+        if (soapResponse2.contains(FIK_PATTERN)) {
+            int fikIdx=soapResponse2.indexOf(FIK_PATTERN)+FIK_PATTERN.length();
+            String fik=soapResponse2.substring(fikIdx,fikIdx+39);
+        }
+        else {
+        	throw new IllegalStateException();
+        }
 	}
 
 	
