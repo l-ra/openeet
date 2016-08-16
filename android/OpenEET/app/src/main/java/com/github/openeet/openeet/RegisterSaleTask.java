@@ -37,7 +37,14 @@ public class RegisterSaleTask extends AsyncTask <EetSaleDTO,Integer, String> {
 
     @Override
     protected String doInBackground(EetSaleDTO... dtoSales) {
-        SaleService.getInstance().registerSale(dtoSales[0],new SaleService.SaleServiceListener() {
+        EetSaleDTO sale=dtoSales[0];
+
+        //FIXME from settings
+        if (sale.id_pokl==null) sale.id_pokl="an-"+ Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        sale.id_provoz="1";
+        sale.porad_cis=String.format("%08x",System.currentTimeMillis());
+
+        SaleService.getInstance().registerSale(sale,new SaleService.SaleServiceListener() {
             @Override
             public void saleDataUpdated() {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
