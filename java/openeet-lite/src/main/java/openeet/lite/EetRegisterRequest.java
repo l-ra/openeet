@@ -960,6 +960,7 @@ public class EetRegisterRequest {
 	}
 	
 	public static String formatBkp(byte[] _bkp){
+		if (_bkp==null) return null;
 		String sb = byte2hex(_bkp);
 		return sb.toString().toUpperCase().replaceFirst("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$","$1-$2-$3-$4-$5");
 	}
@@ -996,6 +997,7 @@ public class EetRegisterRequest {
 	}
 
 	public static String formatPkp(byte[] _pkp) {
+		if (_pkp==null) return null;
 		return Base64.encodeToString(_pkp, Base64.NO_WRAP);
 	}
 
@@ -1281,7 +1283,10 @@ public class EetRegisterRequest {
 		dto.pouzit_zboz3=pouzit_zboz3!=null?formatAmount(pouzit_zboz3):null;
 		dto.urceno_cerp_zuct=urceno_cerp_zuct!=null?formatAmount(urceno_cerp_zuct):null;
 		dto.cerp_zuct=cerp_zuct!=null?formatAmount(cerp_zuct):null;
-		dto.rezim=rezim.toString();		
+		dto.rezim=rezim.toString();
+		dto.bkp=formatBkp();
+		dto.pkp=formatPkp();
+		
 		return dto;
 	}
 	
