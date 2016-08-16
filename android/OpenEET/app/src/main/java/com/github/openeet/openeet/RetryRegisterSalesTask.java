@@ -30,8 +30,12 @@ public class RetryRegisterSalesTask extends AsyncTask <String ,Integer, String> 
 
     @Override
     protected String doInBackground(String... dummy) {
-        SaleService.getInstance().retryUnfinished();
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
+        SaleService.getInstance().retryUnfinished(new SaleService.SaleServiceListener() {
+            @Override
+            public void saleDataUpdated() {
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
+            }
+        });
         return null;
     }
 }

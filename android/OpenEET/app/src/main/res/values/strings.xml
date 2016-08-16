@@ -111,5 +111,7 @@
     <string name="icon_exchange">&#xf0ec;</string>
     <string name="icon_done">&#xf046;</string>
     <string name="icon_error">&#xf071;</string>
+    <string name="icon_gears">&#xf085;</string>
+
 
 </resources>

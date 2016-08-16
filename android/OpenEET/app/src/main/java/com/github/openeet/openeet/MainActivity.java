@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void processRegisterSaleResult(int resultCode, Intent data){
-        if (resultCode==RESULT_OK) {
+        if (resultCode==RESULT_OK && data!=null) {
             EetSaleDTO dtoSale = (EetSaleDTO) data.getSerializableExtra(RegisterSale.RESULT);
             new RegisterSaleTask(getApplicationContext()).execute(dtoSale);
         }

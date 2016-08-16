@@ -5,7 +5,11 @@ import android.util.Log;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadFactory;
 
 import openeet.lite.EetHeaderDTO;
 import openeet.lite.EetRegisterRequest;
@@ -17,9 +21,16 @@ import openeet.lite.Main;
  */
 public class SaleService {
     private static final String LOGTAG="SaleService";
-    private static final SaleEntry[] SALE_ENTRY_ARRAY0=new SaleEntry[]{};
+
+    public interface SaleServiceListener {
+        void saleDataUpdated();
+    }
 
     public static class SaleRegisterAttempt {
+        public SaleRegisterAttempt(){
+            start=new Date();
+        }
+        public Date start;
         public String soapRequest;
         public String soapResponse;
         public EetHeaderDTO header;
@@ -37,6 +48,26 @@ public class SaleService {
             saleData=null;
             inProgress=false;
         }
+        public SaleRegisterAttempt startAttempt(){
+            SaleRegisterAttempt ret=new SaleRegisterAttempt();
+            attempts.add(ret);
+            inProgress=true;
+            currentAttempt=ret;
+            return ret;
+        }
+
+        public void finishAttempt(boolean registered, boolean error, String fik, String info, Throwable throwable){
+            this.registered=registered;
+            this.error=error;
+            this.fik=fik;
+            currentAttempt.fik=fik;
+            currentAttempt.info=info;
+            currentAttempt.throwable=throwable;
+            inProgress=false;
+            currentAttempt=null;
+        }
+
+        public SaleRegisterAttempt currentAttempt;
         public EetSaleDTO saleData;
         public boolean registered;
         public boolean error;
@@ -46,21 +77,39 @@ public class SaleService {
     }
 
     private static SaleService service=new SaleService();
-
-    private List<SaleEntry> sales;
-
     public static SaleService getInstance(){
         return service;
     }
 
+    private List<SaleEntry> sales;
+    private Set<SaleServiceListener> listeners;
+
     public SaleService(){
         sales=new ArrayList<SaleEntry>();
+        listeners=new HashSet<SaleServiceListener>();
     }
 
-    public void registerSale(EetSaleDTO dto){
+    protected void addListener(SaleServiceListener listener){
+        listeners.add(listener);
+    }
+
+    protected void removeListener(SaleServiceListener listener){
+        listeners.remove(listener);
+    }
+
+    private void notifyListeners(){
+        for (SaleServiceListener listener: listeners ) {
+            listener.saleDataUpdated();
+        }
+    }
+
+    public void registerSale(EetSaleDTO dto, SaleServiceListener listener){
+        addListener(listener);
         SaleEntry entry=new SaleEntry();
-        SaleRegisterAttempt attempt=new SaleRegisterAttempt();
         entry.saleData=dto;
+        entry.startAttempt();
+        sales.add(entry);
+        notifyListeners();
         try {
             long startTime=System.currentTimeMillis();
             Log.i(LOGTAG,"started registration for sale:"+dto);
@@ -80,14 +129,15 @@ public class SaleService {
             EetRegisterRequest request=builder.build();
             entry.saleData=request.getSaleDTO();
             Log.d(LOGTAG,"RegisterRequest built:"+entry.saleData.toString());
+            notifyListeners();
 
             String requestBody=request.generateSoapRequest();
-            attempt.soapRequest=requestBody;
-            attempt.header=request.getLastHeader();
+            entry.currentAttempt.soapRequest=requestBody;
+            entry.currentAttempt.header=request.getLastHeader();
 
             long prepareTime=System.currentTimeMillis();
             String response=request.sendRequest(requestBody, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-            attempt.soapResponse=response;
+            entry.currentAttempt.soapResponse=response;
             //Log.d(LOGTAG,"response received: \n"+response);
             //System.out.printf("===== BEGIN EET RESPONSE =====\n%s\n===== END EET RESPONSE =====\n",response);
             long registeredTime=System.currentTimeMillis();
@@ -98,38 +148,33 @@ public class SaleService {
                 String fik=response.substring(fikIdx,fikIdx+39);
                 String msg=String.format("prepare time: %d, sedning time: %d, fik: %s",(prepareTime-startTime),(registeredTime-prepareTime),fik);
                 Log.d(LOGTAG, msg);
-                entry.fik=fik;
-                attempt.fik=fik;
-                attempt.info=msg;
-                entry.registered=true;
-                entry.error=false;
-                entry.attempts.add(attempt);
-                sales.add(entry);
+                entry.finishAttempt(true,false,fik,msg, null);
             }
             else {
                 //FIXME: better error handling
                 Log.e(LOGTAG, "fik not found in response");
-                entry.error=true;
-                entry.registered=false;
-                entry.attempts.add(attempt);
-                sales.add(entry);
+                entry.finishAttempt(false,false,null,"fik not found in response", null);
             }
+            notifyListeners();
         }
         catch (Exception e) {
             Log.e(LOGTAG, "exception while regfistering",e);
-            entry.registered=false;
-            attempt.throwable=e;
-            entry.attempts.add(attempt);
-            sales.add(entry);
+            entry.finishAttempt(false,true,null,"exception while registering",e);
+            notifyListeners();
         }
+        //FIXME maybe ad to finally would be better
+        removeListener(listener);
     }
 
-    public void retryUnfinished(){
+    public void retryUnfinished(SaleServiceListener listener){
+        addListener(listener);
         for (int i=0; i<sales.size(); i++){
             SaleService.SaleEntry entry=sales.get(i);
             if (!entry.registered && !entry.error){
+                entry.startAttempt();
+                notifyListeners();
                 long startTime=System.currentTimeMillis();
-                SaleService.SaleRegisterAttempt attempt=new SaleRegisterAttempt();
+
                 try {
                     EetRegisterRequest.Builder builder=EetRegisterRequest.builder();
                     builder
@@ -139,12 +184,12 @@ public class SaleService {
                     EetRegisterRequest request=builder.build();
 
                     String soapRequest=request.generateSoapRequest(null, EetRegisterRequest.PrvniZaslani.OPAKOVANE, null,null);
-                    attempt.header=request.getLastHeader();
-                    attempt.soapRequest=soapRequest;
+                    entry.currentAttempt.header=request.getLastHeader();
+                    entry.currentAttempt.soapRequest=soapRequest;
                     long prepareTime=System.currentTimeMillis();
 
                     String soapResponse=request.sendRequest(soapRequest, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2"));
-                    attempt.soapResponse=soapResponse;
+                    entry.currentAttempt.soapResponse=soapResponse;
                     long registeredTime=System.currentTimeMillis();
                     String fikPattern="eet2:Potvrzeni fik=\"";
                     if (soapResponse.contains(fikPattern)) {
@@ -152,32 +197,28 @@ public class SaleService {
                         String fik=soapResponse.substring(fikIdx,fikIdx+39);
                         String msg=String.format("prepare time: %d, sedning time: %d, fik: %s",(prepareTime-startTime),(registeredTime-prepareTime),fik);
                         Log.d(LOGTAG, msg);
-                        entry.fik=fik;
-                        attempt.fik=fik;
-                        attempt.info=msg;
-                        entry.registered=true;
-                        entry.error=false;
-                        entry.attempts.add(attempt);
+                        entry.finishAttempt(true,false,fik,msg,null);
+                        notifyListeners();
                     }
                     else {
                         //FIXME: better error handling
                         Log.e(LOGTAG, "fik not found in response");
-                        entry.error=true;
-                        entry.registered=false;
-                        entry.attempts.add(attempt);
+                        entry.finishAttempt(false,false,null,"fik not found in response",null);
+                        notifyListeners();
                     }
                 }
                 catch (Exception e){
                     Log.e(LOGTAG, "exception while regfistering",e);
-                    entry.registered=false;
-                    attempt.throwable=e;
-                    entry.attempts.add(attempt);
+                    entry.finishAttempt(false,true,null,"exception while registering",e);
+                    notifyListeners();
                 }
             }
         }
+        //FIXME maybe ad to finally would be better
+        removeListener(listener);
     }
 
     public SaleEntry[] getLastRegistered() {
-        return sales.toArray(SALE_ENTRY_ARRAY0);
+        return sales.toArray(new SaleEntry[sales.size()]);
     }
 }

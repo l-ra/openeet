@@ -37,8 +37,12 @@ public class RegisterSaleTask extends AsyncTask <EetSaleDTO,Integer, String> {
 
     @Override
     protected String doInBackground(EetSaleDTO... dtoSales) {
-        SaleService.getInstance().registerSale(dtoSales[0]);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RegisterSaleTask.ACTION_SALE_REGISTERED_CHANGE));
+        SaleService.getInstance().registerSale(dtoSales[0],new SaleService.SaleServiceListener() {
+            @Override
+            public void saleDataUpdated() {
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
+            }
+        });
         return null;
     }
 }
