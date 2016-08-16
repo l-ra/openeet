@@ -646,7 +646,9 @@ public class EetRegisterRequest {
 		    .pouzit_zboz3(dto.pouzit_zboz3)
 		    .urceno_cerp_zuct(dto.urceno_cerp_zuct)
 		    .cerp_zuct(dto.cerp_zuct)
-		    .rezim(dto.rezim);			
+		    .rezim(dto.rezim)	
+			.bkp(dto.bkp)
+			.pkp(dto.pkp);
 			return this;
 		}
 		
@@ -669,6 +671,17 @@ public class EetRegisterRequest {
 		public Builder pkp(byte[] val) {
 			if (val==null) return this;
 			_pkp = val;
+			return this;
+		}
+		
+		/**
+		 * PKP formated according to EET spec
+		 * @param val
+		 * @return
+		 */
+		public Builder pkp(String val){
+			if (val==null) return this;
+			_pkp=parsePkp(val);
 			return this;
 		}
 
