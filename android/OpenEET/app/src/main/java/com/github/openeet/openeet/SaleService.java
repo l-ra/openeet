@@ -22,7 +22,7 @@ import openeet.lite.Main;
  */
 public class SaleService {
     private static final String LOGTAG="SaleService";
-    private static final String FIK_PATTERN ="eet2:Potvrzeni fik=\"";
+    private static final String FIK_PATTERN ="eet:Potvrzeni fik=\"";
 
     public interface SaleServiceListener {
         void saleDataUpdated();
@@ -144,7 +144,8 @@ public class SaleService {
                     .pkcs12password("eet");
 
             EetRegisterRequest request=builder.build();
-            entry.saleData=request.getSaleDTO();
+            if (firstAttempt)
+                entry.saleData=request.getSaleDTO();
             notifyListeners();
 
             String soapRequest;
@@ -188,7 +189,6 @@ public class SaleService {
 
     private void writeStringToFile(String data, String filename){
         try {
-
             File appdir = new File(Environment.getExternalStorageDirectory(), "openeet");
             if (!appdir.exists()) appdir.mkdir();
             File outFile=new File(appdir,String.format("%x016-%s",System.currentTimeMillis(),filename));
