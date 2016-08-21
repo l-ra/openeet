@@ -51,10 +51,9 @@
     <string name="urceno_cerp_zuct_hint"></string>
     <string name="cerp_zuct_hint"></string>
     <string name="rezim_hint"></string>
-    
-    
-    
-<!--    dic_popl
+
+
+    <!--    dic_popl
     dic_poverujiciho
     id_provoz
     id_pokl
@@ -112,6 +111,10 @@
     <string name="icon_done">&#xf046;</string>
     <string name="icon_error">&#xf071;</string>
     <string name="icon_gears">&#xf085;</string>
+    <string name="title_activity_main_activity_new">MainActivityNew</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
 </resources>

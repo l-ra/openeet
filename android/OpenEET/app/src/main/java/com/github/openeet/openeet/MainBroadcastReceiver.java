@@ -9,9 +9,9 @@ import android.content.Intent;
  */
 public class MainBroadcastReceiver extends BroadcastReceiver {
 
-    protected MainActivity mainActivity;
+    protected MainActivityNew mainActivity;
 
-    protected MainBroadcastReceiver(MainActivity mainActivity){
+    protected MainBroadcastReceiver(MainActivityNew mainActivity){
         this.mainActivity=mainActivity;
     }
 
