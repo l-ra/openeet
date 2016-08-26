@@ -36,7 +36,7 @@
             <ds:DigestValue>${digest}</ds:DigestValue><!--computed by xmldig engine -->
           </ds:Reference>
         </ds:SignedInfo>
-        <ds:SignatureValue></ds:SignatureValue><!--computed by xmldig engine -->
+        <ds:SignatureValue>${signature}</ds:SignatureValue><!--computed by xmldig engine -->
         <ds:KeyInfo Id="TheKeyInfo">
           <wsse:SecurityTokenReference wsu:Id="TheSecurityTokenReference">
             <wsse:Reference URI="#TheCert" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
@@ -45,7 +45,6 @@
       </ds:Signature>
     </wsse:Security>
   </SOAP-ENV:Header>
-  <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
   <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
     <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v3">
       <Hlavicka dat_odesl="${dat_odesl}" prvni_zaslani="${prvni_zaslani}" uuid_zpravy="${uuid_zpravy}" overeni="${overeni}"/>
@@ -56,28 +55,7 @@
       </KontrolniKody>
     </Trzba>
   </soap:Body>
-  </soap:Body>
 </soap:Envelope>
 
 
 
-<ds:Reference URI="#TheBody">
-            <ds:Transforms>
-              <ds:Transform 
-                    Algorithm="http://www.w3.org/2002/06/xmldsig-filter2" 
-                    xmlns:ds-xpath="http://www.w3.org/2002/06/xmldsig-filter2"
-                    xmlns:eet2="http://fs.mfcr.cz/eet/schema/v2">
-                  <ds-xpath:XPath Filter="subtract">//eet2:Trzba</ds-xpath:XPath>
-                  <!--subtraction of the whole business data allows (for now) 
-                  to tackle with the business part withouth need to re-sign.
-                  This sage can be concidered as a security attack on API because 
-                  the message is received as signed but in fact business data 
-                  are excluded from the signature.
-                  XMLDSig dark corners :-)
-                   -->
-              </ds:Transform>
-              <ds:Transform Algorithm='http://www.w3.org/2001/10/xml-exc-c14n#'/>
-            </ds:Transforms>
-            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-            <ds:DigestValue></ds:DigestValue><!--computed by xmldig engine -->
-          </ds:Reference>
