@@ -59,7 +59,8 @@ public class SaleListArrayAdapter extends ArrayAdapter<SaleService.SaleEntry> {
         }
         else {
             if (entry.registered) {
-                icon.setText(R.string.icon_done);
+                if (entry.offline) icon.setText(R.string.icon_done_offline);
+                else if (!entry.offline) icon.setText(R.string.icon_done_online);
                 secondLine.setText(String.format("fik: %s",entry.fik));
             } else {
                 if (entry.error) {

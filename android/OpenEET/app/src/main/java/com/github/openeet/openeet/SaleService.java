@@ -211,6 +211,7 @@ public class SaleService {
             if (entry.registered) return; //already registered
 
             entry.startAttempt();
+            if (!firstAttempt) store.saveSaleEntry(entry);
             notifyListeners(bkpList);
             EetRegisterRequest.Builder builder = EetRegisterRequest.builder()
                     .fromDTO(entry.saleData)

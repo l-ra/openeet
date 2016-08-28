@@ -143,6 +143,9 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny účtenky s chybou",3000).show();
         } else if (id == R.id.nav_settings) {
             Snackbar.make(findViewById(R.id.content_main_activity),"Nastavení není implementováno",3000).show();
+        } else if (id == R.id.nav_about) {
+            Intent showAboutIntent = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(showAboutIntent);
         }
         updateList();
 

@@ -66,4 +66,8 @@ public abstract class SaleStore {
 
     abstract public SaleService.SaleEntry[] findError(int offset, int limit, LimitType type) throws SaleStoreException;
 
+    abstract public void clearStore() throws SaleStoreException;
+
+    abstract public void removeSale(String bkp) throws SaleStoreException;
+
 }

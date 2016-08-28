@@ -5,6 +5,8 @@ import android.os.Environment;
 import android.support.v7.util.SortedList;
 import android.util.Log;
 
+import com.github.openeet.openeet.data.SaleSqlHelper;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -215,4 +217,18 @@ public class SaleStoreFileImpl extends  SaleStore {
         Arrays.sort(ret,new DatTrzbyComparator());
         return ret;
     }
+
+    @Override
+    public void clearStore() throws SaleStoreException {
+        Map<String,SaleService.SaleEntry> empty=new HashMap<String,SaleService.SaleEntry>();
+        save(empty,BY_BKP);
+    }
+
+    @Override
+    public void removeSale(String bkp) throws SaleStoreException {
+        Map<String,SaleService.SaleEntry> all=load(BY_BKP);
+        all.remove(bkp);
+        save(all,BY_BKP);
+    }
+
 }
