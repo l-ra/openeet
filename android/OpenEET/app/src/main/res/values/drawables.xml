@@ -5,4 +5,8 @@
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+    <item name="ic_media_next" type="drawable">@android:drawable/ic_media_next</item>
+    <item name="pointer_spot_touch" type="drawable">@android:drawable/presence_invisible</item>
+
+
 </resources>

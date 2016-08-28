@@ -3,34 +3,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_last_receipts"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Poslední účtenky" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_online_receipts"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Online registrované účtenky" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_offline_receipts"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Offline registrované účtenky" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_unregistereg_receipts"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Offline neodeslané účtenky" />
+        <item
+            android:id="@+id/nav_error_receipts"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Chybné účtenky" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Nastavení" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
 
 </menu>

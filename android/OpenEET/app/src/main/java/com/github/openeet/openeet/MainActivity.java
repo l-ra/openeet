@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,17 @@ import openeet.lite.EetSaleDTO;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String LOGTAG="MainActivityNew";
+    private static final String LOGTAG="MainActivity";
+
+    private enum ListViewContent {
+        ALL,
+        ONLINE,
+        OFFLINE,
+        UNREGISTERED,
+        ERROR
+    }
+
+    private ListViewContent listViewContent=ListViewContent.ALL;
 
     private static final int REGISTER_SALE=0;
 
@@ -115,19 +126,25 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_last_receipts) {
+            listViewContent=ListViewContent.ALL;
+            Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny všechny účtenky",3000).show();
+        } else if (id == R.id.nav_offline_receipts) {
+            listViewContent=ListViewContent.OFFLINE;
+            Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny offline registrované účtenky",3000).show();
+        } else if (id == R.id.nav_online_receipts) {
+            listViewContent=ListViewContent.ONLINE;
+            Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny online registrované účtenky",3000).show();
+        } else if (id == R.id.nav_unregistereg_receipts) {
+            listViewContent=ListViewContent.UNREGISTERED;
+            Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny pouze místně uložené účtenky",3000).show();
+        } else if (id == R.id.nav_error_receipts) {
+            listViewContent=ListViewContent.ERROR;
+            Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny účtenky s chybou",3000).show();
+        } else if (id == R.id.nav_settings) {
+            Snackbar.make(findViewById(R.id.content_main_activity),"Nastavení není implementováno",3000).show();
         }
+        updateList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -148,7 +165,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     protected void updateList() {
-        SaleService.SaleEntry[] items=SaleService.getInstance().getLastRegistered();
+        SaleStore store=SaleStore.getInstance(getBaseContext().getApplicationContext());
+        SaleService.SaleEntry[] items=null;
+
+        try {
+            switch (listViewContent) {
+                case ALL:
+                    items = store.findAll(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+                case ONLINE:
+                    items = store.findOnline(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+                case OFFLINE:
+                    items = store.findOffline(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+                case UNREGISTERED:
+                    items = store.findUnregistered(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+                case ERROR:
+                    items = store.findError(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+                default:
+                    items = store.findAll(-1, -1, SaleStore.LimitType.COUNT);
+                    break;
+            }
+        }
+        catch (Exception e){
+            Snackbar.make(findViewById(R.id.content_main_activity),"Chyba úložiště",3000).show();
+        }
+
         ArrayAdapter<SaleService.SaleEntry> adapter = new SaleListArrayAdapter(this ,items);
         ListView salesList = (ListView) findViewById(R.id.salesList);
         salesList.setAdapter(adapter);
@@ -164,7 +209,7 @@ public class MainActivity extends AppCompatActivity
     protected void processRegisterSaleResult(int resultCode, Intent data){
         if (resultCode==RESULT_OK && data!=null) {
             EetSaleDTO dtoSale = (EetSaleDTO) data.getSerializableExtra(RegisterSale.RESULT);
-            new RegisterSaleTask(getApplicationContext()).execute(dtoSale);
+            new RegisterSaleTask(getBaseContext()).execute(dtoSale);
         }
     }
 
