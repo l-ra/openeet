@@ -4,13 +4,13 @@ It registers predefined sale to playground for now. You can try
 [the OpenEET app on Google Play](https://play.google.com/store/apps/details?id=com.github.openeet.openeet) 
 
 Current features:
-* no persistence !
+* silly (but working) persistence !
 * online/offline registration
-* registers to playground v2
+* show sales registered using the app
+* registers to playground v3
 
 Planned features:
 * register sale in several modes (simple, simple dph, advanced)
 * send text/image/pdf receipt via android sharing
-* show sales registered using the app
 * export sales in csv format
 * print recepit
