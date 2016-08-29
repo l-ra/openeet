@@ -103,7 +103,59 @@ public static void simpleRegistrationProcessTest(){
     Console.WriteLine("OK!"); //a bit brief :-) but enough
 }
 ```
+Delphi:
+```delphi
+Uses ... JclDotNet;
 
+procedure TSDIAppForm.Button2Click(Sender: TObject);
+var
+  Host: TJclClrHost;
+  Obj: OleVariant;
+  date:tdatetime;  pkp:string;
+  odpoved,xml:widestring;
+  f:textfile;
+begin
+ try
+   Host := TJclClrHost.Create('v4.0.30319');
+   Host.Start();
+   Obj := Host.DefaultAppDomain
+        .CreateInstancefrom('openeet-lite.dll',
+        'openeet_lite.Builder')
+        .UnWrap();
+   obj.dat_trzby(now);//2016-08-29T08:43:28+02:00');
+   obj.dic_popl('CZ1212121218');
+   obj.id_provoz('1');
+   obj.id_pokl('POKLADNA01');
+   obj.porad_cis('1');
+   obj.celk_trzba(100.0);
+   obj.rezim(0);
+   obj.pkcs12('01000003.p12');
+   obj.pkcs12password('eet');
+   obj.build;
+   pkp:=obj.build.FormatPkp;
+   xml:=obj.build.generateSoapRequest;
+   assignfile(f,'test.xml');
+   rewrite(f);
+   writeln(f,xml);
+   closefile(f);
+   odpoved:=obj.build.sendRequest(xml, 'https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3');
+   assignfile(f,'odpoved.xml');
+   rewrite(f);
+   writeln(f,odpoved);
+   closefile(f);
+   Host.Stop();
+   Host.Free;
+  Except
+     on E : Exception do
+     begin
+       ShowMessage('Exception class name = '+E.ClassName + ' ' + 'Exception message = '+E.Message);
+     end;
+  end;
+end;
+
+
+
+```
 ## Windows XP & TLS1.1 problem
 To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not support TLS 1.0+](https://blogs.msdn.microsoft.com/kaushal/2011/10/02/support-for-ssltls-protocols-on-windows/). The problem canbe solved by SSL/TLS tunneling using stunnel. The tunneeling concept is described in following schema:
 
