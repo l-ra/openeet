@@ -42,9 +42,7 @@ public class SaleService {
      * Class representing single attempt to send a sale. In fact wraps the header part of the EET registration message which is represented by EetHeaderDTO
      */
     public static class SaleRegisterAttempt implements Serializable {
-        public SaleRegisterAttempt(){
-            startTime=System.currentTimeMillis();
-        }
+        public static final long serialVersionUID = 1L;
         public String soapRequest;
         public String soapResponse;
         public EetHeaderDTO header;
@@ -60,6 +58,7 @@ public class SaleService {
      * Class representing ale to be registered. In fact it wraps the business data part of the EET registrayion message which is represented by EetSaleDTO
      */
     public static class SaleEntry implements Serializable {
+        public static final long serialVersionUID = 1L;
         public SaleEntry(){
             attempts=new ArrayList<SaleRegisterAttempt>();
             registered=false;
