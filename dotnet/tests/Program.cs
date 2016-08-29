@@ -54,7 +54,7 @@ namespace tests
 		    //try send
 		    String requestBody=request.generateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
-		    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+		    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel
             //String response = request.sendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
@@ -105,7 +105,7 @@ namespace tests
             Console.WriteLine("SOAP request created");
 
 		    //assertTrue(validateXmlDSig(signed, data.getCertificate()));
-            String response=data.sendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+            String response=data.sendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel 
             //String response=data.sendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
