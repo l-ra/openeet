@@ -194,12 +194,15 @@ public class MainActivity extends AppCompatActivity
             }
         }
         catch (Exception e){
+            Log.e(LOGTAG,"Error while updating data from storaqe",e);
             Snackbar.make(findViewById(R.id.content_main_activity),"Chyba úložiště",3000).show();
         }
 
-        ArrayAdapter<SaleService.SaleEntry> adapter = new SaleListArrayAdapter(this ,items);
-        ListView salesList = (ListView) findViewById(R.id.salesList);
-        salesList.setAdapter(adapter);
+        if (items!=null) {
+            ArrayAdapter<SaleService.SaleEntry> adapter = new SaleListArrayAdapter(this, items);
+            ListView salesList = (ListView) findViewById(R.id.salesList);
+            salesList.setAdapter(adapter);
+        }
     }
 
     @Override
