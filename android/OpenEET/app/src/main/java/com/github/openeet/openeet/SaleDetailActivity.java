@@ -11,15 +11,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.webkit.WebView;
 import android.widget.TextView;
 
 public class SaleDetailActivity extends AppCompatActivity {
+    public static final String LOGCAT="SaleDetailActivity";
 
     public static final String EXTRA_SALE_ENTRY="com.github.openeet.openeet.SaleDetailActivity.ExtraSaleEntry";
 
@@ -41,6 +44,8 @@ public class SaleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_sale_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -57,6 +62,8 @@ public class SaleDetailActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        SaleService.SaleEntry entry=(SaleService.SaleEntry)getIntent().getSerializableExtra(EXTRA_SALE_ENTRY);
+
         FloatingActionButton fab_print = (FloatingActionButton) findViewById(R.id.fab_print);
         fab_print.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +79,6 @@ public class SaleDetailActivity extends AppCompatActivity {
                 Snackbar.make(view, "Start share", Snackbar.LENGTH_LONG).show();
             }
         });
-
-
-
     }
 
 
@@ -112,7 +116,7 @@ public class SaleDetailActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static ReceiptFragment newInstance() {
+        public static ReceiptFragment newInstance(Bundle params) {
             ReceiptFragment fragment = new ReceiptFragment();
             return fragment;
         }
@@ -138,8 +142,9 @@ public class SaleDetailActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static LogFragment newInstance() {
+        public static LogFragment newInstance(Bundle params) {
             LogFragment fragment = new LogFragment();
+            fragment.setArguments(params);
             return fragment;
         }
 
@@ -147,6 +152,15 @@ public class SaleDetailActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sale_detail_log, container, false);
+            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
+            if(entry!=null) {
+                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
+                String html = String.format("<h4 style='color: blue;'>Log</h4><p>FIK:%s</p>", entry.fik);
+                logWebView.loadData(html, "text/html", "utf-8");
+            }
+            else {
+                Log.e(LOGCAT,"No entry data arived");
+            }
             return rootView;
         }
     }
@@ -163,8 +177,10 @@ public class SaleDetailActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static TechFragment newInstance() {
+        public static TechFragment newInstance(Bundle params) {
+            Log.d(LOGCAT,"Techragment.newInstance");
             TechFragment fragment = new TechFragment();
+            fragment.setArguments(params);
             return fragment;
         }
 
@@ -172,6 +188,8 @@ public class SaleDetailActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sale_detail_tech, container, false);
+            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
+
             return rootView;
         }
     }
@@ -191,11 +209,11 @@ public class SaleDetailActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return ReceiptFragment.newInstance();
+                    return ReceiptFragment.newInstance(getIntent().getExtras());
                 case 1:
-                    return LogFragment.newInstance();
+                    return LogFragment.newInstance(getIntent().getExtras());
                 case 2:
-                    return TechFragment.newInstance();
+                    return TechFragment.newInstance(getIntent().getExtras());
             }
             return null;
         }
@@ -219,4 +237,6 @@ public class SaleDetailActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
 }
