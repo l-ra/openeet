@@ -39,6 +39,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.openeet.openeet.MainActivity" />
         </activity>
+        <activity
+            android:name=".SaleDetailActivity"
+            android:label="@string/title_activity_sale_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.openeet.openeet.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -69,22 +69,28 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
-
         updateList();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Adding item", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-                //list.add(new Date().toString());
-                //updateList(list);
                 Intent registerSaleIntent = new Intent(MainActivity.this, RegisterSale.class);
                 startActivityForResult(registerSaleIntent,REGISTER_SALE);
             }
         });
+
+        ListView salesList = (ListView) findViewById(R.id.salesList);
+        salesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SaleService.SaleEntry entry=(SaleService.SaleEntry) adapterView.getItemAtPosition(i);
+                Intent detail=new Intent(MainActivity.this, SaleDetailActivity.class);
+                detail.putExtra(SaleDetailActivity.EXTRA_SALE_ENTRY, entry);
+                startActivity(detail);
+            }
+        });
+
+
     }
 
     @Override
