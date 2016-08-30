@@ -125,6 +125,15 @@ public class SaleDetailActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sale_detail_receipt, container, false);
+            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
+            if(entry!=null) {
+                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
+                String html = String.format("<h4 style='color: green;'>Úctenka</h4><p>FIK:%s</p>", entry.fik);
+                logWebView.loadData(html, "text/html", "utf-8");
+            }
+            else {
+                Log.e(LOGCAT,"No entry data arived");
+            }
             return rootView;
         }
     }
@@ -188,7 +197,16 @@ public class SaleDetailActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sale_detail_tech, container, false);
+
             SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
+            if(entry!=null) {
+                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
+                String html = String.format("<h4 style='color: blue;'>Technická diagnostika</h4><p>FIK:%s</p>", entry.fik);
+                logWebView.loadData(html, "text/html", "utf-8");
+            }
+            else {
+                Log.e(LOGCAT,"No entry data arived");
+            }
 
             return rootView;
         }
