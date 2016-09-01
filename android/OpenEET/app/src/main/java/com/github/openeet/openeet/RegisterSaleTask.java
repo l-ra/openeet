@@ -6,9 +6,11 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 
 import openeet.lite.EetRegisterRequest;
@@ -20,7 +22,6 @@ import openeet.lite.Main;
  */
 public class RegisterSaleTask extends AsyncTask <EetSaleDTO,Integer, String> {
     private static final String LOGTAG="RegisterSaleTask";
-    public static final String ACTION_SALE_REGISTERED_CHANGE="com.github.openeet.openeet.action.SaleRegisteredChange";
 
 
     private Context context;
@@ -31,7 +32,7 @@ public class RegisterSaleTask extends AsyncTask <EetSaleDTO,Integer, String> {
 
     public static IntentFilter getMatchAllFilter(){
         IntentFilter ret=new IntentFilter();
-        ret.addAction(ACTION_SALE_REGISTERED_CHANGE);
+        ret.addAction(MainBroadcastReceiver.ACTION_SALE_REGISTERED_CHANGE);
         return ret;
     }
 
@@ -44,10 +45,14 @@ public class RegisterSaleTask extends AsyncTask <EetSaleDTO,Integer, String> {
         sale.id_provoz="1";
         sale.porad_cis=String.format("%08x",System.currentTimeMillis());
 
-        SaleService.getInstance().registerSale(sale,new SaleService.SaleServiceListener() {
+        SaleStore store=SaleStore.getInstance(context.getApplicationContext());
+        SaleService.getInstance(store).registerSale(sale,new SaleService.SaleServiceListener() {
             @Override
-            public void saleDataUpdated() {
-                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
+            public void saleDataUpdated(String[] bkpList) {
+                Intent broadcast=new Intent(MainBroadcastReceiver.ACTION_SALE_REGISTERED_CHANGE);
+                if (bkpList!=null)
+                    broadcast.putExtra(MainBroadcastReceiver.ACTION_SALE_EXTRA_BKP_LIST,bkpList);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(broadcast);
             }
         });
         return null;

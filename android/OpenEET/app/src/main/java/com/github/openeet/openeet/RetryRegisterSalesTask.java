@@ -13,7 +13,7 @@ import openeet.lite.EetSaleDTO;
  */
 public class RetryRegisterSalesTask extends AsyncTask <String ,Integer, String> {
     private static final String LOGTAG="RegisterSaleTask";
-    public static final String ACTION_SALE_REGISTERED_CHANGE="com.github.openeet.openeet.action.SaleRegisteredChange";
+
 
 
     private Context context;
@@ -24,16 +24,20 @@ public class RetryRegisterSalesTask extends AsyncTask <String ,Integer, String> 
 
     public static IntentFilter getMatchAllFilter(){
         IntentFilter ret=new IntentFilter();
-        ret.addAction(ACTION_SALE_REGISTERED_CHANGE);
+        ret.addAction(MainBroadcastReceiver.ACTION_SALE_REGISTERED_CHANGE);
         return ret;
     }
 
     @Override
     protected String doInBackground(String... dummy) {
-        SaleService.getInstance().retryUnfinished(new SaleService.SaleServiceListener() {
+        SaleStore store=SaleStore.getInstance(context.getApplicationContext());
+        SaleService.getInstance(store).retryUnfinished(new SaleService.SaleServiceListener() {
             @Override
-            public void saleDataUpdated() {
-                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(RetryRegisterSalesTask.ACTION_SALE_REGISTERED_CHANGE));
+            public void saleDataUpdated(String[] bkpList) {
+                Intent broadcast=new Intent(MainBroadcastReceiver.ACTION_SALE_REGISTERED_CHANGE);
+                if (bkpList!=null)
+                    broadcast.putExtra(MainBroadcastReceiver.ACTION_SALE_EXTRA_BKP_LIST, bkpList);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(broadcast);
             }
         });
         return null;

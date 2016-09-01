@@ -51,10 +51,9 @@
     <string name="urceno_cerp_zuct_hint"></string>
     <string name="cerp_zuct_hint"></string>
     <string name="rezim_hint"></string>
-    
-    
-    
-<!--    dic_popl
+
+
+    <!--    dic_popl
     dic_poverujiciho
     id_provoz
     id_pokl
@@ -109,9 +108,23 @@
 
 
     <string name="icon_exchange">&#xf0ec;</string>
-    <string name="icon_done">&#xf046;</string>
+    <string name="icon_done_online">&#xf14a;</string>
+    <string name="icon_done_offline">&#xf046;</string>
     <string name="icon_error">&#xf071;</string>
     <string name="icon_gears">&#xf085;</string>
+    <string name="title_activity_main_activity_new">MainActivityNew</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_about">O aplikaci</string>
+    <string name="about_text_intro">Aplikace poskytující základní funkcionalitu registrace účtenek v systému EET.</string>
+    <string name="about_text_github_link">https://github.com/l-ra/openeet/</string>
+    <string name="about_text_copyrigth">Copyright © 2016 Luděk Rašek</string>
+    <string name="about_text_detail">Aplikace je poskytována zdarma a bez jakékoli záruky a to včetně zdrojového kódu pod Apache licencí. Pokud vám v aplikaci něco chybí nebo něco nefunguje, napište podnět do hodnocení na Play Store, nebo zadejte issue na github.</string>
+    <string name="about_text_title">OpenEET Aplikace</string>
+    <string name="about_text_version">Verze:</string>
+    <string name="title_activity_sale_detail">Detail účtenky</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 
 </resources>

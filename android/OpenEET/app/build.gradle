@@ -8,8 +8,8 @@ android {
         applicationId "com.github.openeet.openeet"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 7
-        versionName "0.7"
+        versionCode 9
+        versionName "0.8.1"
     }
     buildTypes {
         release {
@@ -24,6 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:design:24.1.1'
+    compile 'org.jtwig:jtwig-core:5.58'
     //compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile files('libs/openeet-lite-java7.jar')
 }

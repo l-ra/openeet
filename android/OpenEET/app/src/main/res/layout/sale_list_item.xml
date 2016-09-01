@@ -35,9 +35,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/icon_exchange"
         android:id="@+id/sale_item_icon"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_gravity="center_horizontal|center_vertical"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
