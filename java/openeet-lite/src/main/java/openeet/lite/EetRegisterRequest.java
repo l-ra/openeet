@@ -202,6 +202,7 @@ public class EetRegisterRequest {
 		protected String _sslContextAlgorithm="TLSv1.1";
 		protected String[] _sslEnabledProtocols=new String[] {"TLSv1.1", "TLSv1.2"};
 		protected KeyStore _trustKeyStore;
+		protected int _connectionTimeout, _readTimeout; 
 		
 		//header
 		protected Date _dat_odesl=new Date();
@@ -298,6 +299,24 @@ public class EetRegisterRequest {
 		public Builder dat_odesl(String val) {
 			if (val==null) return this;
 			_dat_odesl = parseDate(val);
+			return this;
+		}
+		
+		/**
+		 * Set connection timeout to request.
+		 * @param connectionTimeout timeout in ms
+		 */
+		public Builder connectionTimeout(int connectionTimeout){
+			_connectionTimeout = connectionTimeout;
+			return this;
+		}
+		
+		/**
+		 * Set reat timeout to request.
+		 * @param readTimeout timeout in ms 
+		 */
+		public Builder readTimeout(int readTimeout){
+			_readTimeout = readTimeout;
 			return this;
 		}
 		
@@ -751,6 +770,9 @@ public class EetRegisterRequest {
 	protected String sslContextAlgorithm;
 	protected String[] sslEnabledProtocols;
 	protected KeyStore trustKeyStore;
+	
+	protected int connectionTimeout;
+	protected int readTimeout;
 
 	protected EetRegisterRequest(Builder builder) {
 
@@ -790,6 +812,9 @@ public class EetRegisterRequest {
 		sslContextAlgorithm=builder._sslContextAlgorithm;
 		sslEnabledProtocols=builder._sslEnabledProtocols;
 		trustKeyStore=builder._trustKeyStore;
+		
+		connectionTimeout = builder._connectionTimeout;
+		readTimeout = builder._readTimeout;
 		
 		if ( builder._pkcs12bytes!=null ){
 			if (builder._pkcs12password==null){
@@ -1235,6 +1260,8 @@ public class EetRegisterRequest {
 		con.setDoOutput(true);
 		con.setDoInput(true);
 		con.setRequestMethod("POST");
+		con.setConnectTimeout(connectionTimeout);
+		con.setReadTimeout(readTimeout);
 		
 		OutputStream os=con.getOutputStream();
 		os.write(content);
