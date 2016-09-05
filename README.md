@@ -14,6 +14,11 @@ EET API v2 - not maintained any more
 
 It is necessary to force git not to normalize line ends. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
 
+There are also other projects implementing EET API client (not related to OpenEET implementation in this repository):
+* https://github.com/ondrejnov/eet (PHP, MIT license)
+* https://github.com/novakmi/eetlite (Groovy, MIT license)
+* https://github.com/mirus77/DelphiEET (Delphi, MIT license)
+* https://github.com/todvora/eet-client (Java, MIT license)
 
 [Windows TLS problem workaround](#windows-xp--tls11-problem)
 
