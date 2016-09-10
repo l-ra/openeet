@@ -1,7 +1,7 @@
 ﻿/*
  * Copyright 2016 Luděk Rašek and other contributors as 
  * indicated by the @author tags.
- *
+ * Upravil Vlastimil Čoček 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -182,7 +182,7 @@ namespace openeet_lite
 			return this;
 		}
 
-		public Builder dat_trzby(String val) {
+		public Builder dat_trzbys(String val) { // v delphi lze vlozit datum v textovem tvaru
 			_dat_trzby = EetRegisterRequest.parseDate(val);
 			return this;
 		}
@@ -364,7 +364,7 @@ namespace openeet_lite
 		 * @param val hex splitted into 5 groups containing 8 digits
 		 * @return
 		 */
-		public Builder bkp(String val) {
+		public Builder bkps(String val) {// v delphi lze vlozit bkp v textovem tvaru
 			_bkp=EetRegisterRequest.parseBkp(val);
 			return this;
 		}
@@ -378,6 +378,11 @@ namespace openeet_lite
 			_pkp = val;
 			return this;
 		}
+		public Builder pkps(String val) {// v delphi lze vlozit pkp v textovem tvaru
+			_pkp=EetRegisterRequest.parsePkp(val);
+			return this;
+		}
+
 
 		/** 
 		 * file is loaded immediately
