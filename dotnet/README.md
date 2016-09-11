@@ -1,5 +1,5 @@
 # Work In Progress
-Even if working well with playground of the EET system, this is still work in progress.
+Even if working well with v3 of the playground of the EET system, this is still work in progress.
 
 Any contribution is welcomed!
 
@@ -58,7 +58,7 @@ public static void simpleRegistrationProcessTest(){
     String requestBody=request.generateSoapRequest();
     if (requestBody == null) throw new ApplicationException("SOAP request is null");
 
-    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v2");
+    String response=request.sendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
     //extract FIK
     if (response == null) throw new ApplicationException("response is null");
     if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
