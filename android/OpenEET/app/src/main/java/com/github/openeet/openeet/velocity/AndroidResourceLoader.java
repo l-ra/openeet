@@ -26,7 +26,7 @@ public class AndroidResourceLoader extends FileResourceLoader {
     }
 
     public InputStream getResourceStream(String templateName) {
-        return assets.;
+        return null; //assets.;
     }
 
     public boolean  isSourceModified(Resource resource) {
@@ -34,6 +34,6 @@ public class AndroidResourceLoader extends FileResourceLoader {
     }
 
     public boolean  resourceExists(String templateName) {
-        return resources.getIdentifier(templateName, "raw", this.packageName) != 0;
+        return false;//resources.getIdentifier(templateName, "raw", this.packageName) != 0;
     }
 }

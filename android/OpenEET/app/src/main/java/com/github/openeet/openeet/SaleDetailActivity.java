@@ -160,7 +160,7 @@ public class SaleDetailActivity extends AppCompatActivity {
 
         private String formatReceipt(SaleService.SaleEntry entry) {
             try {
-                setupVelocity(getResources());
+                //setupVelocity(getResources());
                 VelocityContext context = new VelocityContext();
                 context.put("sale",entry);
                 context.put("test","Shit");
