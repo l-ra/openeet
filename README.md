@@ -4,13 +4,8 @@ Open source light implementation of EET client library (Java, C#, UNIX shell). W
 EET API v3
 * Java 7 [openeet-lite-java7-20160816-2123.jar](releases/prerelease/openeet-lite-java7-20160816-2123.jar) 
 * Java 8 [openeet-lite-java7-20160816-2119.jar](releases/prerelease/openeet-lite-java7-20160816-2119.jar)
-* .NET - comming soon 
+* .NET [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) 
 * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
-
-EET API v2 - not maintained any more
-* Java 7 [openeet-lite-java7-20160809-1422.jar](releases/prerelease/openeet-lite-java7-20160809-1422.jar) 
-* Java 8 [openeet-lite-java8-20160809-1420.jar](releases/prerelease/openeet-lite-java8-20160809-1420.jar) 
-* .NET [openeet-lite-shapshot-20160705-0835.dll](releases/prerelease/openeet-lite-shapshot-20160705-0835.dll) 
 
 It is necessary to force git not to normalize line ends. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
 
