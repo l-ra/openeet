@@ -1,5 +1,7 @@
 package com.github.openeet.openeet;
 
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Base64DataException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.webkit.WebView;
-import android.widget.TextView;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
+import java.io.StringWriter;
+
+import openeet.lite.Base64;
 
 public class SaleDetailActivity extends AppCompatActivity {
     public static final String LOGCAT="SaleDetailActivity";
@@ -36,6 +46,15 @@ public class SaleDetailActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private static void setupVelocity(AssetManager assetManager) throws Exception {
+        Velocity.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, "com.github.openeet.openeet.velocity.Logger");
+        Velocity.setProperty("resource.loader", "android");
+        Velocity.setProperty("android.resource.loader.class", "com.github.openeet.openeet.velocity.AndroidResourceLoader");
+        Velocity.setProperty("android.content.res.AssetManager",assetManager);
+        Velocity.init();
+    }
+
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -44,7 +63,6 @@ public class SaleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_sale_detail);
 
@@ -118,6 +136,7 @@ public class SaleDetailActivity extends AppCompatActivity {
          */
         public static ReceiptFragment newInstance(Bundle params) {
             ReceiptFragment fragment = new ReceiptFragment();
+            fragment.setArguments(params);
             return fragment;
         }
 
@@ -127,14 +146,42 @@ public class SaleDetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_sale_detail_receipt, container, false);
             SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
             if(entry!=null) {
-                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
-                String html = String.format("<h4 style='color: green;'>Úctenka</h4><p>FIK:%s</p>", entry.fik);
-                logWebView.loadData(html, "text/html", "utf-8");
+                WebView logWebView = (WebView) rootView.findViewById(R.id.receipt_web_view);
+                String html = formatReceipt(entry);
+                // String html = String.format("<html><head><meta charset='utf-8'></head><body><h4 style='color: green;'>Účtenka</h4><p>FIK:%s</p><body><html>", entry.fik);
+                if (html!=null)
+                    logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
             }
             else {
                 Log.e(LOGCAT,"No entry data arived");
             }
             return rootView;
+        }
+
+        private String formatReceipt(SaleService.SaleEntry entry) {
+            try {
+                setupVelocity(getResources());
+                VelocityContext context = new VelocityContext();
+                context.put("sale",entry);
+                context.put("test","Shit");
+                Template template = Velocity.getTemplate("receipt");
+                StringWriter sw = new StringWriter();
+                template.merge(context, sw);
+            }
+            catch (Exception e){
+                Log.e(LOGCAT, "template exception", e);
+            }
+            return null;
+        }
+    }
+
+    private static String string2base64(String s){
+        try {
+            return Base64.encodeToString(s.getBytes("utf-8"), Base64.NO_WRAP);
+        }
+        catch (Exception e){
+            Log.e(LOGCAT,"exception whit encoding",e);
+            return null;
         }
     }
 
@@ -165,7 +212,7 @@ public class SaleDetailActivity extends AppCompatActivity {
             if(entry!=null) {
                 WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
                 String html = String.format("<h4 style='color: blue;'>Log</h4><p>FIK:%s</p>", entry.fik);
-                logWebView.loadData(html, "text/html", "utf-8");
+                logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
             }
             else {
                 Log.e(LOGCAT,"No entry data arived");
@@ -200,9 +247,9 @@ public class SaleDetailActivity extends AppCompatActivity {
 
             SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
             if(entry!=null) {
-                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
+                WebView logWebView = (WebView) rootView.findViewById(R.id.techWebView);
                 String html = String.format("<h4 style='color: blue;'>Technická diagnostika</h4><p>FIK:%s</p>", entry.fik);
-                logWebView.loadData(html, "text/html", "utf-8");
+                logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
             }
             else {
                 Log.e(LOGCAT,"No entry data arived");
