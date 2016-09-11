@@ -54,6 +54,18 @@ public class SaleService {
         long startTime;
         long startSendingTime;
         long finishTime;
+
+        public SaleRegisterAttempt(){
+            startTime=System.currentTimeMillis();
+        }
+
+        public String getInfo(){
+            return info;
+        }
+
+        public long getStartTime(){
+            return startTime;
+        }
     }
 
     /**
@@ -99,6 +111,27 @@ public class SaleService {
         public String fik;
         public List<SaleRegisterAttempt> attempts;
         public boolean inProgress;
+
+        public boolean isInProgress(){
+            return inProgress;
+        }
+
+        public String getFik(){
+            return fik;
+        }
+
+        public SaleRegisterAttempt[] getAttempts(){
+            return attempts.toArray(new SaleRegisterAttempt[attempts.size()]);
+        }
+
+        public String getBkp(){
+            return saleData.bkp;
+        }
+
+        public String getPkp(){
+            return saleData.pkp;
+        }
+
     }
 
     /**

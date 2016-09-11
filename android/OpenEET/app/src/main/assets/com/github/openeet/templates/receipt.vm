@@ -4,10 +4,17 @@
 <meta charset="utf-8">
 </head>
 <html>
+<img style="position: float; float: right" src="img/logo.png">
 <h1>Účtenka</h1>
-<img src="img/logo.png">
-<p>bkp:$sale.saleData.bkp</p>
-<p>bkp:$sale.registered</p>
-<p>shit?:$test</p>
+<p>inProgress:$sale.inProgress</p>
+<p>fik:$sale.fik</p>
+#foreach ( $att in $sale.attempts )
+<hr>
+<p>${foreach.count}: $att.startTime</p>
+#end
+BKP:<br>
+$sale.bkp
+PKP:<br>
+$sale.pkp
 </html>
 </html>

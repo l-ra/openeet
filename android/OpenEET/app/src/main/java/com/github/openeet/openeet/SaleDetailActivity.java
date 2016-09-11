@@ -46,11 +46,13 @@ public class SaleDetailActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static void setupVelocity(AssetManager assetManager) throws Exception {
+    private static void setupVelocity(AssetManager assetManager) {
         Velocity.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, "com.github.openeet.openeet.velocity.Logger");
         Velocity.setProperty("resource.loader", "android");
         Velocity.setProperty("android.resource.loader.class", "com.github.openeet.openeet.velocity.AndroidResourceLoader");
         Velocity.setProperty("android.content.res.AssetManager",assetManager);
+        Velocity.setProperty("android.content.res.AssetManager.path","com/github/openeet/templates");
+
         Velocity.init();
     }
 
@@ -63,6 +65,8 @@ public class SaleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setupVelocity(getAssets());
 
         setContentView(R.layout.activity_sale_detail);
 
@@ -148,9 +152,13 @@ public class SaleDetailActivity extends AppCompatActivity {
             if(entry!=null) {
                 WebView logWebView = (WebView) rootView.findViewById(R.id.receipt_web_view);
                 String html = formatReceipt(entry);
-                // String html = String.format("<html><head><meta charset='utf-8'></head><body><h4 style='color: green;'>Účtenka</h4><p>FIK:%s</p><body><html>", entry.fik);
-                if (html!=null)
-                    logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
+                if (html!=null) {
+                    //logWebView.loadDataWithBaseURL("file://android_assets/com/github/openeet/templates", string2base64(html), "text/html; charset=utf-8", "base64", null);
+                    logWebView.loadDataWithBaseURL("file:///android_asset/com/github/openeet/templates/", (html), "text/html; charset=utf-8", "base64", null);
+                }
+                else {
+                    logWebView.loadData(string2base64("<h1>Template Erroe</h1>"), "text/html; charset=utf-8", "base64");
+                }
             }
             else {
                 Log.e(LOGCAT,"No entry data arived");
@@ -160,13 +168,12 @@ public class SaleDetailActivity extends AppCompatActivity {
 
         private String formatReceipt(SaleService.SaleEntry entry) {
             try {
-                //setupVelocity(getResources());
                 VelocityContext context = new VelocityContext();
                 context.put("sale",entry);
-                context.put("test","Shit");
-                Template template = Velocity.getTemplate("receipt");
+                Template template = Velocity.getTemplate("receipt.vm","utf-8");
                 StringWriter sw = new StringWriter();
                 template.merge(context, sw);
+                return sw.toString();
             }
             catch (Exception e){
                 Log.e(LOGCAT, "template exception", e);
