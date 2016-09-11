@@ -261,7 +261,7 @@ public class SaleService {
             notifyListeners(bkpList);
         }
         catch (Exception e) {
-            Log.e(LOGTAG, "exception while regfistering",e);
+            Log.e(LOGTAG, "exception while registering",e);
             entry.finishAttempt(false,false,true,null,"exception while registering",e);
             try { store.saveSaleEntry(entry); } catch (SaleStoreException ex) { Log.e(LOGTAG,"errorsaving entry",ex);}
             notifyListeners(bkpList);
