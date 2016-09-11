@@ -2,6 +2,7 @@ package openeet.lite;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -11,8 +12,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class EetResponse {
+public class EetResponse implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String errCode;
 	private String errText;
 	private String uuid;
