@@ -16,6 +16,7 @@ import java.util.Set;
 
 import openeet.lite.EetHeaderDTO;
 import openeet.lite.EetRegisterRequest;
+import openeet.lite.EetResponse;
 import openeet.lite.EetSaleDTO;
 import openeet.lite.Main;
 
@@ -42,10 +43,11 @@ public class SaleService {
      * Class representing single attempt to send a sale. In fact wraps the header part of the EET registration message which is represented by EetHeaderDTO
      */
     public static class SaleRegisterAttempt implements Serializable {
-        public static final long serialVersionUID = 1L;
+        public static final long serialVersionUID = 2L;
         public String soapRequest;
         public String soapResponse;
         public EetHeaderDTO header;
+        public EetResponse response;
         public String fik;
         public Throwable throwable;
         public String info;
@@ -239,6 +241,7 @@ public class SaleService {
 
             String soapResponse=request.sendRequest(soapRequest, new URL("https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3"));
             entry.currentAttempt.soapResponse=soapResponse;
+            entry.currentAttempt.response=new EetResponse(soapResponse);
             entry.currentAttempt.startSendingTime=System.currentTimeMillis();
             //writeStringToFile(soapResponse,"response");
             store.saveSaleEntry(entry);
