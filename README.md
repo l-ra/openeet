@@ -118,18 +118,18 @@ begin
  try
    Host := TJclClrHost.Create('v4.0.30319');
    Host.Start();
-   Obj := Host.DefaultAppDomain
+   Obj := Host.DefaultAppDomain       //spojeni s DLL
         .CreateInstancefrom('openeet-lite.dll',
         'openeet_lite.Builder')
         .UnWrap();
-   obj.dat_trzby(now);//2016-08-29T08:43:28+02:00');
+   obj.dat_trzbys('2016-09-12T08:43:28+02:00');   //moznost zadat datum v textovem tvaru
    obj.dic_popl('CZ1212121218');
    obj.id_provoz('1');
    obj.id_pokl('POKLADNA01');
    obj.porad_cis('1');
    obj.celk_trzba(100.0);
    obj.rezim(0);
-   obj.pkcs12('01000003.p12');
+   obj.pkcs12s('01000003.p12');       // upravena moznost zadani nazvu souboru s p12
    obj.pkcs12password('eet');
    obj.build;
    pkp:=obj.build.FormatPkp;
