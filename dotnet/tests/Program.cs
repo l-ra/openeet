@@ -35,7 +35,7 @@ namespace tests
 		       .id_provoz("1")
 		       .id_pokl("POKLADNA01")
 		       .porad_cis("1")
-		       .dat_trzby("2016-06-30T08:43:28+02:00")
+		       .dat_trzbys("2016-09-12T08:43:28+02:00")
 		       .celk_trzba(100.0)
 		       .rezim(0)
                .pkcs12(TestData._01000003)
@@ -81,7 +81,7 @@ namespace tests
 		       .id_provoz("1")
 		       .id_pokl("POKLADNA01")
 		       .porad_cis("1")
-		       .dat_trzby("2016-06-30T08:43:28+02:00")
+		       .dat_trzbys("2016-09-12T08:43:28+02:00")
 		       .celk_trzba(100.0)
 		       .pkcs12(TestData._01000003)
 		       .pkcs12password("eet")
@@ -113,9 +113,13 @@ namespace tests
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
             Console.WriteLine("FIK received:"+response.Substring(response.IndexOf("Potvrzeni fik=")+15,36));
         }
-
+        
+        
+        
+        
+            
         static void Main(string[] args)
-        {
+        {   
             //signAndSend();
             simpleRegistrationProcessTest(); 
             Console.WriteLine("Press any key to finish ...");
