@@ -58,8 +58,14 @@ namespace tests
 
             //via local stunnel
             //String response = request.sendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
-
-		    //extract FIK
+         
+            /*
+            zde by to chtelo dodelat kontrolu jestli prijata zprava nebyla zmenena, jestli souhlasi podpis zpravy
+            mauzete to nekdo doplnit ?
+            
+            
+            */
+	    //extract FIK
             if (response == null) throw new ApplicationException("response is null");
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
 		    //ready to print online receipt
