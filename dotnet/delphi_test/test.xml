@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <wsse:Security 
+          xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" 
+          xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+          soap:mustUnderstand="1">
+      <wsse:BinarySecurityToken 
+            EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" 
+            ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" 
+            wsu:Id="TheCert">MIID6zCCAtOgAwIBAgIEAQAAAzANBgkqhkiG9w0BAQsFADBYMQswCQYDVQQGEwJDWjEaMBgGA1UEAwwRR0ZSIEVFVCB0ZXN0IENBIDExLTArBgNVBAoMJEdlbmVyw6FsbsOtIGZpbmFuxI1uw60gxZllZGl0ZWxzdHbDrTAeFw0xNjA1MTkxMjQ1MDJaFw0xODA1MTkxMjQ1MDJaMFMxCzAJBgNVBAYTAkNaMRUwEwYDVQQDDAxDWjEyMTIxMjEyMTgxFzAVBgNVBAoMDk9zb2JhIEZ5emlja8OhMRQwEgYDVQQFEwtUMDAwMDAwMDAwMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMt0eW9n+RB0PSawKSJbtAg3j7e1I5p7P9OvEj0n9raEMI496Zuw7s4VaE8JEX4iowjWhlPIOPljDiAXX6HgZzH4PDps0rFm388KZxj7Ek/ZLyyh5jRovc0Yccfgm3i2huBepk7ZtifZXOZzDEDT0CZsxRpypZJp9PK6SOdj2zPIc11F+prwsGQCDAZsRtama5/W5qn2YUWjjk+4c5Zu3TcknC7bcp1dg7RJ9yMtNiYPY7LNV3uWQhAXZVFpmOpbfYwT1F8H3/UrWDSJ5zrHshICPreMyZ0skU9SUANQ8QQKE6lSlgSs59YaeEmCyGtpttVjN+iR/L9M9FRtq3ZhZz0CAwEAAaOBwTCBvjAeBgNVHREEFzAVgRNlcG9kcG9yYUBmcy5tZmNyLmN6MB8GA1UdIwQYMBaAFHpa/A3L7DamDdppGWaMm++Cw6k0MB0GA1UdDgQWBBQbyTbuGBZdorOZZm7usMraGAJ2STBMBgNVHSAERTBDMEEGCmCGSAFlAwIBMAIwMzAxBggrBgEFBQcCAjAlGiNUZW50byBjZXJ0aWZpa2F0IEpFIFBPVVpFIFRFU1RPVkFDSTAOBgNVHQ8BAf8EBAMCBsAwDQYJKoZIhvcNAQELBQADggEBAC3L8Bm7ZlWui9xWrjM00SlvCokpc2ldGCxNvj4hANaISoLRdPVZAPeLd1X4KsRyxOIazR5oq3EKVZV1ZP3sCF4QFL+SqurkPiBbIrrbABDLyDpf/8DIfyA1x/+zNpN9ul9j9Ca1739P4L1x3wpQcYhEuvSrTiLztndlJb69LXgYZOFfqcBSRedRuMwRdtux9OWkkZjrd9wNHTCDOIfOPaPRRoq5IPHP32shsXaTLvhsT7ktvR5Fr/SQ8CkWq3U6tdcOQRN35ZWyYSyOd5/vkJqK773R/gAeBUE80gpLMdqgVj8HaD7RlHrYyYJEVUI9gbctTfUIJW/9LZ3K78JLXXg=</wsse:BinarySecurityToken>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="TheSignature">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="soap"/>
+          </ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+          <ds:Reference URI="#TheBody">
+            <ds:Transforms>
+              <ds:Transform Algorithm='http://www.w3.org/2001/10/xml-exc-c14n#'/>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+            <ds:DigestValue>wujQgVwg09IBjI+E+ckFvkqm35yDAtXXX1fL/2/g1ug=</ds:DigestValue><!--computed by xmldig engine -->
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>gPrviub2MV8VutH8rmph7r4cAG45GqpM/RuKL5OMX82mld+2PTltLkpPgzUlWmDbBOVhlK0ojuQUUsRWfv3qcDWuZQbaSgUjiMA5ego7dUi9J9gIrlZnhjKD71rlTgfQYTGC4Q1vHR1P4OCfRelj6y2XP3RQvXP+IvkhzhLsjU7KpJ3C6hEdAy3Ro0apevIA6hffJMTNFKZntmzpewn5cZvQgSw8vgpJ2v94I1+qq7lN8uz1niDLFO29iOP0MJJS7yxva7Qy8GJq7e835TVUapRmuXDAO6UoB90ztJQWmw3G+P0RZ2VV7JDqxtOlBKr4gYFYyKGd0ENRLlZrd7Kv+w==</ds:SignatureValue><!--computed by xmldig engine -->
+        <ds:KeyInfo Id="TheKeyInfo">
+          <wsse:SecurityTokenReference wsu:Id="TheSecurityTokenReference">
+            <wsse:Reference URI="#TheCert" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+    </wsse:Security>
+  </SOAP-ENV:Header>
+  <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
+    <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v3">
+      <Hlavicka dat_odesl="2016-09-12T14:09:35+02:00" prvni_zaslani="true" uuid_zpravy="f582b3e5-51c3-4a6d-aaac-5dc25a0cb7b4" overeni="false"/>
+      <Data dic_popl="CZ1212121218" id_provoz="1" id_pokl="POKLADNA01" porad_cis="1" dat_trzby="2016-09-12T08:43:28+02:00" celk_trzba="100.00" rezim="0"/>
+      <KontrolniKody>
+        <pkp cipher="RSA2048" digest="SHA256" encoding="base64">Jf+WCAtq4tHKusR6p8bjrCRmYfPamK931YwpOCfMKseQ9DuYNxzokY/AuQ00N5iR+nKE0nIxyVJCjN/pjzL89X18PSksgdRXOmTbLnJWxTlJuVw0TlVCzQxOup4XLgjS2AMtyoaB7dhrbcPcPw8nvnqKJ1EDfu/NFZgx7AEqvh6gANxXMQ94SmoAsULiwACC5ysZlpvp8Y9+/Rlhqw9qqR/xEp2afNBqVefoYx7FLx3zemsB1kng1aT1Y6zyQWODxwtseAxINoqtazNogFapv03fJjlDdQFKrSuXoOmbuxpVERQtPCx1myqxMM8UGXiIUk1LIZpyvELW+piC318eMw==</pkp>
+        <bkp digest="SHA1" encoding="base16">6E641682-28C7AAFE-6DC214F9-7955D85C-1087402B</bkp>
+      </KontrolniKody>
+    </Trzba>
+  </soap:Body>
+</soap:Envelope>
+
