@@ -135,8 +135,8 @@ namespace openeet_lite
 		}
 
 		public Builder overeni(bool val) {
-			if (val) _overeni=Overeni.PRODUKCNI;
-            else _overeni=Overeni.OVEROVACI;
+			if (val) _overeni=Overeni.OVEROVACI;
+   else _overeni = Overeni.PRODUKCNI;
 			return this;
 		}
 
