@@ -389,7 +389,7 @@ namespace openeet_lite
 		 * @param p12Filename
 		 * @return
 		 */
-		public Builder pkcs12(String p12Filename) {
+		public Builder pkcs12s(String p12Filename) {// v delphi lze vlozit nazev souboru 'xxxxxx.p12'
 			return pkcs12(File.ReadAllBytes(p12Filename));
 		}
 		
