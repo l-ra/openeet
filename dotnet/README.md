@@ -38,7 +38,7 @@ public static void simpleRegistrationProcessTest(){
        .id_provoz("1")
        .id_pokl("POKLADNA01")
        .porad_cis("1")
-       .dat_trzby("2016-06-30T08:43:28+02:00")
+       .dat_trzbys("2016-06-30T08:43:28+02:00")
        .celk_trzba(100.0)
        .rezim(0)
        .pkcs12(TestData._01000003)
