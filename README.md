@@ -4,7 +4,7 @@ Open source light implementation of EET client library (Java, C#, UNIX shell). W
 EET API v3
 * Java 7 [openeet-lite-java7-20160816-2123.jar](releases/prerelease/openeet-lite-java7-20160816-2123.jar) 
 * Java 8 [openeet-lite-java7-20160816-2119.jar](releases/prerelease/openeet-lite-java7-20160816-2119.jar)
-* .NET [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) 
+* .NET [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) - from now (2016-09-13) .NET implementation will not progress in this repo - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
 * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
 
 It is necessary to force git not to normalize line ends. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
@@ -14,7 +14,7 @@ There are also other projects implementing EET API client (not related to OpenEE
 * https://github.com/novakmi/eetlite (Groovy, MIT license)
 * https://github.com/mirus77/DelphiEET (Delphi, MIT license)
 * https://github.com/todvora/eet-client (Java, MIT license)
-* 
+* https://github.com/vlastikcocek/openeet/tree/master/dotnet - fork of this repo focussed on the .NET/C# implementation
 
 [Windows TLS problem workaround](#windows-xp--tls11-problem)
 
