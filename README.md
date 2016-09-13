@@ -14,6 +14,7 @@ There are also other projects implementing EET API client (not related to OpenEE
 * https://github.com/novakmi/eetlite (Groovy, MIT license)
 * https://github.com/mirus77/DelphiEET (Delphi, MIT license)
 * https://github.com/todvora/eet-client (Java, MIT license)
+* 
 
 [Windows TLS problem workaround](#windows-xp--tls11-problem)
 
