@@ -133,20 +133,13 @@ namespace openeet_lite
 			_overeni = val;
 			return this;
 		}
-
-		public Builder overeni(bool val) {
-			if (val) _overeni=Overeni.PRODUKCNI;
-            else _overeni=Overeni.OVEROVACI;
-			return this;
-		}
-
-        /*
-		public Builder overeni(String val) {
-			_overeni = Overeni.valueOf(val);
-			return this;
-		}
-		*/
 		
+		public Builder overeni(bool val) {
+		   if (val) _overeni=Overeni.OVEROVACI;
+		   else _overeni = Overeni.PRODUKCNI;
+		      return this;
+		}
+
 		public Builder dic_popl(String val) {
 			_dic_popl = val;
 			return this;
