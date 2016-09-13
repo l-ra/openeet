@@ -1,16 +1,14 @@
 # Forked for .NET
 [This repo was forked and you can find more .NET foccused repo](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
+I this repo I will fix reported bugs and I will try to keep the basic code working in case of protocol change. No functionality will be added at the moment (I may change mind in the future :-)).
 
 # Work In Progress
 Even if working well with v3 of the playground of the EET system, this is still work in progress.
 
-Any contribution is welcomed!
-
-
 # C# implementation of core EET functionalities
 Based on Java implementation now works for generating valid signed SOAP request.
 
-!!WARNING!! I am not C# native, the code could be ugly it can even can harm your c#ist eyes.
+!!WARNING!! I am not C# native, the code could be ugly it can even can harm your c#ish eyes.
 But still... the code works for me. 
 
 Look at tests project for example how to use the main class EetRegisterRequest.
@@ -69,9 +67,3 @@ public static void simpleRegistrationProcessTest(){
     Console.WriteLine("OK!"); //a bit brief :-) but enough
 }
 ```
-
-# Plans
-
-* releas & publish nuget package
-* certificate management utilities - create cert request, get certificate and key ready to use (depends on including CA services in the playground)
-* basic offline processing - mainly in the point of view of request structure manipulation (what remains unchanged when resending)
