@@ -1,3 +1,6 @@
+# Forked for .NET
+[This repo was forked and you can find more .NET foccused repo](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
+
 # Work In Progress
 Even if working well with v3 of the playground of the EET system, this is still work in progress.
 
