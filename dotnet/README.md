@@ -1,6 +1,7 @@
 # Forked for .NET
 [This repo was forked and you can find more .NET foccused repo](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
-I this repo I will fix reported bugs and I will try to keep the basic code working in case of protocol change. No functionality will be added at the moment (I may change mind in the future :-)).
+
+In this repo I will fix reported bugs and I will try to keep the basic code working in case of protocol change. No functionality will be added at the moment (I may change mind in the future :-)).
 
 # Work In Progress
 Even if working well with v3 of the playground of the EET system, this is still work in progress.
