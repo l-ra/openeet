@@ -972,7 +972,7 @@ public class EetRegisterRequest {
 	public String formatToBeSignedData() {
 		if (dic_popl == null || id_provoz==null || id_pokl==null || porad_cis==null || dat_trzby==null || celk_trzba==null ) 
 			throw new NullPointerException(
-					String.format("missing some of _dic_popl(%s), _id_provoz(%s), _id_pokl(%s), _porad_cis(%s), _celk_trzba(%s)",
+					String.format("missing some of _dic_popl(%s), _id_provoz(%s), _id_pokl(%s), _porad_cis(%s), _dat_trzby(%s), _celk_trzba(%s)",
 							dic_popl, id_provoz, id_pokl, porad_cis, dat_trzby,celk_trzba));
 		return String.format("%s|%s|%s|%s|%s|%s",dic_popl, id_provoz, id_pokl, porad_cis, formatDate(dat_trzby),formatAmount(celk_trzba));
 	}
