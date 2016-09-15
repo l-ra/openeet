@@ -3,3 +3,6 @@
 ################################################################################
 
 /dotnet/tests/bin/Debug
+/dotnet/tests/obj/Debug
+/dotnet/openeet-lite/bin/Debug
+/dotnet/openeet-lite/obj/Debug
