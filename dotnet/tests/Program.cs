@@ -59,21 +59,21 @@ namespace tests
             }.Build();
 
             //for receipt printing in online mode
-            String bkp = request.FormatBkp();
+            string bkp = request.FormatBkp();
             if (bkp == null) throw new ApplicationException("BKP is null");
 
             //for receipt printing in offline mode
-            String pkp = request.FormatPkp();
+            string pkp = request.FormatPkp();
             if (pkp == null) throw new ApplicationException("PKP is null");
             //the receipt can be now stored for offline processing
 
             //try send
-            String requestBody = request.GenerateSoapRequest();
+            string requestBody = request.GenerateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
-            String response = request.SendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
+            string response = request.SendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel
-            //String response = request.SendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
+            //string  response = request.SendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
 
             // TODO
             //zde by to chtelo dodelat kontrolu jestli prijata zprava nebyla zmenena, jestli souhlasi podpis zpravy
@@ -110,24 +110,24 @@ namespace tests
                 throw new Exception("failed - data null");
             Console.WriteLine("business data created");
 
-            String pkp = EetRegisterRequest.FormatPkp(data.Pkp);
-            String bkp = EetRegisterRequest.FormatBkp(data.Bkp);
-            String expectedPkp = "Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==";
-            String expectedBkp = "AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199";
+            string pkp = EetRegisterRequest.FormatPkp(data.Pkp);
+            string bkp = EetRegisterRequest.FormatBkp(data.Bkp);
+            string expectedPkp = "Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==";
+            string expectedBkp = "AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199";
             if (!pkp.Equals(expectedPkp))
                 throw new Exception("failed - PKP differs");
             if (!bkp.Equals(expectedBkp))
                 throw new Exception("failed - BKP differs");
             Console.WriteLine("Codes validated");
 
-            String signed = data.GenerateSoapRequest();
+            string signed = data.GenerateSoapRequest();
             Console.WriteLine("SOAP request created");
 
             //assertTrue(validateXmlDSig(signed, data.getCertificate()));
-            String response = data.SendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
+            string response = data.SendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel 
-            //String response=data.SendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
+            //string  response=data.SendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
 
             if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
             Console.WriteLine("FIK received:" + response.Substring(response.IndexOf("Potvrzeni fik=") + 15, 36));

@@ -36,36 +36,228 @@ namespace openeet_lite
 
         #region Properties
 
+        //TODO: Add comments
         public byte[] Pkcs12 { get; set; }
         public string Pkcs12password { get; set; }
         public RSACryptoServiceProvider Key { get; set; }
         public X509Certificate2 Certificate { get; set; }
+
+        /// <summary>
+        /// Gets or sets Datum a cas odeslani zpravy na server.
+        /// </summary>
+        /// <value>
+        /// The dat odesl.
+        /// </value>
         public DateTime DatOdesl { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani.
+        /// </summary>
+        /// <value>
+        /// Prvni zaslani.
+        /// </value>
         public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.PRVNI;
+
+        /// <summary>
+        /// Gets or sets UUID zpravy. Identifikator zpravy, ne e-trzbu.
+        /// </summary>
+        /// <value>
+        /// UUID zpravy.
+        /// </value>
         public Guid UuidZpravy { get; set; } = Guid.NewGuid();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu.
+        /// </summary>
+        /// <value>
+        /// Prvni zaslani.
+        /// </value>
         public OvereniEnum? Overeni { get; set; } = OvereniEnum.PRODUKCNI;
+
+        /// <summary>
+        /// Gets or sets DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.
+        /// </summary>
+        /// <value>
+        /// DIC poplatnika
+        /// </value>
         public string DicPopl { get; set; }
+
+        /// <summary>
+        /// Gets or sets DIC poverene osoby, ktera odesila nahradou za poplatnika (DIC poplatnika).
+        /// </summary>
+        /// <value>
+        /// DIC poverujici osoby.
+        /// </value>
         public string DicPoverujiciho { get; set; }
+
+        /// <summary>
+        /// Gets or sets Identifikace provozovny, ktera byla pridelena portalem EET.
+        /// </summary>
+        /// <value>
+        /// Identifikace provozovny.
+        /// </value>
         public string IdProvoz { get; set; }
+
+        /// <summary>
+        /// Gets or sets Unikatni ID zarizeni, ktere odesila uctenku online.
+        /// </summary>
+        /// <value>
+        /// Identifier pokladny.
+        /// </value>
         public string IdPokl { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets poradove cislo dokladu.
+        /// </summary>
+        /// <value>
+        /// Poradove cislo dokladu.
+        /// </value>
         public string PoradCis { get; set; }
+
+        /// <summary>
+        /// Gets or sets datum provedeni trzby.
+        /// </summary>
+        /// <value>
+        /// Datum provedeni trzby.
+        /// </value>
         public DateTime DatTrzby { get; set; } = DateTime.Now;
+
+
+        /// <summary>
+        /// Gets or sets Celkova castka trzby v Kc.
+        /// </summary>
+        /// <value>
+        /// Celkova castka trzby v Kc.
+        /// </value>
         public double? CelkTrzba { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka nepodlehajici zdaneni.
+        /// </summary>
+        /// <value>
+        /// Celkova castka nepodlehajici zdaneni
+        /// </value>
         public double? ZaklNepodlDph { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane se zakladni sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane se zakladni sazbou DPH.
+        /// </value>
         public double? ZaklDan1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v zakladni sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v zakladni sazbe.
+        /// </value>
         public double? Dan1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// </value>
         public double? ZaklDan2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v prvni snizene sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v prvni snizene sazbe.
+        /// </value>
         public double? Dan2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// </value>
         public double? ZaklDan3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v druhe snizene sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v druhe snizene sazbe.
+        /// </value>
         public double? Dan3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka DPH pro cestovni sluzbu.
+        /// </summary>
+        /// <value>
+        /// Celkova castka DPH pro cestovni sluzbu.
+        /// </value>
         public double? CestSluz { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
         public double? PouzitZboz1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
         public double? PouzitZboz2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
         public double? PouzitZboz3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// </summary>
+        /// <value>
+        /// Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// </value>
         public double? UrcenoCerpZuct { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// </summary>
+        /// <value>
+        /// Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// </value>
         public double? CerpZuct { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim.
+        /// </summary>
+        /// <value>
+        /// Rezim trzby.
+        /// </value>
         public RezimEnum? Rezim { get; set; } = RezimEnum.STANDARDNI;
+
+        /// <summary>
+        /// Gets or sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP.
+        /// </summary>
+        /// <value>
+        /// Bezpecnostni kod poplatnika.
+        /// </value>
         public byte[] Bkp { get; set; }
+
+        /// <summary>
+        /// Gets or sets Podpisovy kod poplatnika. Jedna se o podpis vybranych dat.
+        /// </summary>
+        /// <value>
+        /// Podpisovy kod poplatnika.
+        /// </value>
         public byte[] Pkp { get; set; }
 
         #endregion
@@ -475,40 +667,229 @@ namespace openeet_lite
     public class EetRegisterRequest
     {
         public X509Certificate2 Certificate { get; private set; }
-        public DateTime DatOdesl { get; private set; }
-        public PrvniZaslaniEnum? PrvniZaslani { get; private set; }
-        public Guid UuidZpravy { get; private set; }
-        public OvereniEnum? Overeni { get; private set; }
-        public string DicPopl { get; private set; }
-        public string DicPoverujiciho { get; private set; }
-        public string IdProvoz { get; private set; }
-        public string IdPokl { get; private set; }
-        public string PoradCis { get; private set; }
-        public DateTime DatTrzby { get; private set; }
-        public double? CelkTrzba { get; private set; }
-        public double? ZaklNepodlDph { get; private set; }
-        public double? ZaklDan1 { get; private set; }
-        public double? Dan1 { get; private set; }
-        public double? ZaklDan2 { get; private set; }
-        public double? Dan2 { get; private set; }
-        public double? ZaklDan3 { get; private set; }
-        public double? Dan3 { get; private set; }
-        public double? CestSluz { get; private set; }
-        public double? PouzitZboz1 { get; private set; }
-        public double? PouzitZboz2 { get; private set; }
-        public double? PouzitZboz3 { get; private set; }
-        public double? UrcenoCerpZuct { get; private set; }
-        public double? CerpZuct { get; private set; }
-        public RezimEnum? Rezim { get; private set; }
 
-        public byte[] Bkp { get; private set; }
-        public byte[] Pkp { get; private set; }
+        /// <summary>
+        /// Gets or sets Datum a cas odeslani zpravy na server.
+        /// </summary>
+        /// <value>
+        /// The dat odesl.
+        /// </value>
+        public DateTime DatOdesl { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani.
+        /// </summary>
+        /// <value>
+        /// Prvni zaslani.
+        /// </value>
+        public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.PRVNI;
+
+        /// <summary>
+        /// Gets or sets UUID zpravy. Identifikator zpravy, ne e-trzbu.
+        /// </summary>
+        /// <value>
+        /// UUID zpravy.
+        /// </value>
+        public Guid UuidZpravy { get; set; } = Guid.NewGuid();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu.
+        /// </summary>
+        /// <value>
+        /// Prvni zaslani.
+        /// </value>
+        public OvereniEnum? Overeni { get; set; } = OvereniEnum.PRODUKCNI;
+
+        /// <summary>
+        /// Gets or sets DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.
+        /// </summary>
+        /// <value>
+        /// DIC poplatnika
+        /// </value>
+        public string DicPopl { get; set; }
+
+        /// <summary>
+        /// Gets or sets DIC poverene osoby, ktera odesila nahradou za poplatnika (DIC poplatnika).
+        /// </summary>
+        /// <value>
+        /// DIC poverujici osoby.
+        /// </value>
+        public string DicPoverujiciho { get; set; }
+
+        /// <summary>
+        /// Gets or sets Identifikace provozovny, ktera byla pridelena portalem EET.
+        /// </summary>
+        /// <value>
+        /// Identifikace provozovny.
+        /// </value>
+        public string IdProvoz { get; set; }
+
+        /// <summary>
+        /// Gets or sets Unikatni ID zarizeni, ktere odesila uctenku online.
+        /// </summary>
+        /// <value>
+        /// Identifier pokladny.
+        /// </value>
+        public string IdPokl { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets poradove cislo dokladu.
+        /// </summary>
+        /// <value>
+        /// Poradove cislo dokladu.
+        /// </value>
+        public string PoradCis { get; set; }
+
+        /// <summary>
+        /// Gets or sets datum provedeni trzby.
+        /// </summary>
+        /// <value>
+        /// Datum provedeni trzby.
+        /// </value>
+        public DateTime DatTrzby { get; set; } = DateTime.Now;
+
+
+        /// <summary>
+        /// Gets or sets Celkova castka trzby v Kc.
+        /// </summary>
+        /// <value>
+        /// Celkova castka trzby v Kc.
+        /// </value>
+        public double? CelkTrzba { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka nepodlehajici zdaneni.
+        /// </summary>
+        /// <value>
+        /// Celkova castka nepodlehajici zdaneni
+        /// </value>
+        public double? ZaklNepodlDph { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane se zakladni sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane se zakladni sazbou DPH.
+        /// </value>
+        public double? ZaklDan1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v zakladni sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v zakladni sazbe.
+        /// </value>
+        public double? Dan1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// </value>
+        public double? ZaklDan2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v prvni snizene sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v prvni snizene sazbe.
+        /// </value>
+        public double? Dan2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// </value>
+        public double? ZaklDan3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Celkova DPH v druhe snizene sazbe.
+        /// </summary>
+        /// <value>
+        /// Celkova DPH v druhe snizene sazbe.
+        /// </value>
+        public double? Dan3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka DPH pro cestovni sluzbu.
+        /// </summary>
+        /// <value>
+        /// Celkova castka DPH pro cestovni sluzbu.
+        /// </value>
+        public double? CestSluz { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
+        public double? PouzitZboz1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
+        public double? PouzitZboz2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </summary>
+        /// <value>
+        /// Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// </value>
+        public double? PouzitZboz3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// </summary>
+        /// <value>
+        /// Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// </value>
+        public double? UrcenoCerpZuct { get; set; }
+
+        /// <summary>
+        /// Gets or sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// </summary>
+        /// <value>
+        /// Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// </value>
+        public double? CerpZuct { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim.
+        /// </summary>
+        /// <value>
+        /// Rezim trzby.
+        /// </value>
+        public RezimEnum? Rezim { get; set; } = RezimEnum.STANDARDNI;
+
+        /// <summary>
+        /// Gets or sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP.
+        /// </summary>
+        /// <value>
+        /// Bezpecnostni kod poplatnika.
+        /// </value>
+        public byte[] Bkp { get; set; }
+
+        /// <summary>
+        /// Gets or sets Podpisovy kod poplatnika. Jedna se o podpis vybranych dat.
+        /// </summary>
+        /// <value>
+        /// Podpisovy kod poplatnika.
+        /// </value>
+        public byte[] Pkp { get; set; }
 
         public RSACryptoServiceProvider Key { get; private set; }
 
         internal EetRegisterRequest(EetRequestBuilder eetRequestBuilder)
         {
-            Certificate = eetRequestBuilder.Certificate;
             DatOdesl = eetRequestBuilder.DatOdesl;
             PrvniZaslani = eetRequestBuilder.PrvniZaslani;
             UuidZpravy = eetRequestBuilder.UuidZpravy;
@@ -586,8 +967,6 @@ namespace openeet_lite
                 throw new ArgumentException("error while computing codes", e);
             }
         }
-
-
 
         /**
          * Formats data to form ready to be signed for PKP computation based on data in this object 
