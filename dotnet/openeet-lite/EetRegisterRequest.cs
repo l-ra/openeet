@@ -953,6 +953,12 @@ namespace openeet_lite
     /// </summary>
     public class EetRegisterRequest
     {
+        /// <summary>
+        /// Gets or sets the X509 Certificate.
+        /// </summary>
+        /// <value>
+        /// The certificate.
+        /// </value>
         public X509Certificate2 Certificate { get; private set; }
 
         /// <summary>
@@ -1173,8 +1179,19 @@ namespace openeet_lite
         /// </value>
         public byte[] Pkp { get; set; }
 
+        /// <summary>
+        /// Gets or sets the RSA Key
+        /// </summary>
+        /// <value>
+        /// The key.
+        /// </value>
         public RSACryptoServiceProvider Key { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EetRegisterRequest"/> class.
+        /// </summary>
+        /// <param name="eetRequestBuilder">The eet request builder.</param>
+        /// <exception cref="ArgumentException">Found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.</exception>
         internal EetRegisterRequest(EetRequestBuilder eetRequestBuilder)
         {
             DatOdesl = eetRequestBuilder.DatOdesl;
@@ -1211,7 +1228,7 @@ namespace openeet_lite
             {
                 if (eetRequestBuilder.Pkcs12Password == null)
                 {
-                    throw new ArgumentException("found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.");
+                    throw new ArgumentException("Found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.");
                 }
                 LoadP12(eetRequestBuilder.Pkcs12, eetRequestBuilder.Pkcs12Password);
             }
