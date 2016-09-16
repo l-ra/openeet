@@ -41,7 +41,7 @@ namespace tests
                .SetCelkTrzba(100.0)
                .SetRezim(0)
                .SetPkcs12(TestData._01000003)
-               .SetPkcs12password("eet")
+               .SetPkcs12Password("eet")
                .Build();*/
 
 
@@ -55,7 +55,7 @@ namespace tests
                 CelkTrzba = 100.0,
                 Rezim = 0,
                 Pkcs12 = TestData._01000003,
-                Pkcs12password = "eet"
+                Pkcs12Password = "eet"
             }.Build();
 
             //for receipt printing in online mode
@@ -103,7 +103,7 @@ namespace tests
                .SetDatTrzbys("2016-09-12T08:43:28+02:00")
                .SetCelkTrzba(100.0)
                .SetPkcs12(TestData._01000003)
-               .SetPkcs12password("eet")
+               .SetPkcs12Password("eet")
                .SetRezim(0)
                .Build();
             if (data == null)

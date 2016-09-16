@@ -18,28 +18,103 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Net;
+// ReSharper disable MemberInitializerValueIgnored
 
 namespace openeet_lite
 {
-    public enum PrvniZaslaniEnum { PRVNI = 1, OPAKOVANE = 0 }
-    public enum OvereniEnum { OVEROVACI = 1, PRODUKCNI = 0 }
-    public enum RezimEnum { STANDARDNI = 0, ZJEDNODUSENY = 1 }
+    /// <summary>
+    /// Jedna se o prvni zaslani nebo opakovane zaslani...
+    /// </summary>
+    public enum PrvniZaslaniEnum
+    {
+        /// <summary>
+        /// Prvni zaslani
+        /// </summary>
+        /// 
+        Prvni = 1,
 
+        /// <summary>
+        /// Opakovane zaslani pro pripad, ze z prvniho neodesla odpoved
+        /// </summary>
+        Opakovane = 0
+    }
+
+    /// <summary>
+    /// Jedna se o overovaci zpravu...
+    /// </summary>
+    public enum OvereniEnum
+    {
+        /// <summary>
+        /// Je to overovaci zprava
+        /// </summary>
+        Overovaci = 1,
+
+        /// <summary>
+        /// The produkcni
+        /// </summary>
+        Produkcni = 0
+    }
+
+    /// <summary>
+    /// Standardni rezim nebo zjednoduseny rezim.
+    /// </summary>
+    public enum RezimEnum
+    {
+
+        /// <summary>
+        /// Standardni rezim
+        /// </summary>
+        Standardni = 0,
+
+        /// <summary>
+        /// Zjednoduseny rezim
+        /// </summary>
+        Zjednoduseny = 1
+    }
+
+    /// <summary>
+    /// Request Builder
+    /// </summary>
     public class EetRequestBuilder
     {
 
         #region Properties
 
-        //TODO: Add comments
+        /// <summary>
+        /// Gets or sets the byte form PKCS12 certificate.
+        /// </summary>
+        /// <value>
+        /// The PKCS12.
+        /// </value>
         public byte[] Pkcs12 { get; set; }
-        public string Pkcs12password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the PKCS12 password.
+        /// </summary>
+        /// <value>
+        /// The PKCS12 password.
+        /// </value>
+        public string Pkcs12Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the RSA Key
+        /// </summary>
+        /// <value>
+        /// The key.
+        /// </value>
         public RSACryptoServiceProvider Key { get; set; }
+
+        /// <summary>
+        /// Gets or sets the X509 Certificate.
+        /// </summary>
+        /// <value>
+        /// The certificate.
+        /// </value>
         public X509Certificate2 Certificate { get; set; }
 
         /// <summary>
@@ -56,7 +131,7 @@ namespace openeet_lite
         /// <value>
         /// Prvni zaslani.
         /// </value>
-        public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.PRVNI;
+        public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.Prvni;
 
         /// <summary>
         /// Gets or sets UUID zpravy. Identifikator zpravy, ne e-trzbu.
@@ -72,7 +147,7 @@ namespace openeet_lite
         /// <value>
         /// Prvni zaslani.
         /// </value>
-        public OvereniEnum? Overeni { get; set; } = OvereniEnum.PRODUKCNI;
+        public OvereniEnum? Overeni { get; set; } = OvereniEnum.Produkcni;
 
         /// <summary>
         /// Gets or sets DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.
@@ -123,7 +198,6 @@ namespace openeet_lite
         /// </value>
         public DateTime DatTrzby { get; set; } = DateTime.Now;
 
-
         /// <summary>
         /// Gets or sets Celkova castka trzby v Kc.
         /// </summary>
@@ -133,10 +207,10 @@ namespace openeet_lite
         public double? CelkTrzba { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkova castka nepodlehajici zdaneni.
+        /// Gets or sets Celkova castka nepodlehajici zdaneni v Kc.
         /// </summary>
         /// <value>
-        /// Celkova castka nepodlehajici zdaneni
+        /// Celkova castka nepodlehajici zdaneni v Kc.
         /// </value>
         public double? ZaklNepodlDph { get; set; }
 
@@ -149,90 +223,90 @@ namespace openeet_lite
         public double? ZaklDan1 { get; set; }
 
         /// <summary>
-        /// Gets or sets the Celkova DPH v zakladni sazbe.
+        /// Gets or sets the Celkova DPH v zakladni sazbe v Kc.
         /// </summary>
         /// <value>
-        /// Celkova DPH v zakladni sazbe.
+        /// Celkova DPH v zakladni sazbe v Kc.
         /// </value>
         public double? Dan1 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// Gets or sets Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.
         /// </summary>
         /// <value>
-        /// Celkovy zaklad dane s prvni snizenou sazbou DPH.
+        /// Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.
         /// </value>
         public double? ZaklDan2 { get; set; }
 
         /// <summary>
-        /// Gets or sets the Celkova DPH v prvni snizene sazbe.
+        /// Gets or sets the Celkova DPH v prvni snizene sazbe v Kc.
         /// </summary>
         /// <value>
-        /// Celkova DPH v prvni snizene sazbe.
+        /// Celkova DPH v prvni snizene sazbe v Kc.
         /// </value>
         public double? Dan2 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// Gets or sets Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.
         /// </summary>
         /// <value>
-        /// Celkovy zaklad dane s druhou snizenou sazbou DPH.
+        /// Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.
         /// </value>
         public double? ZaklDan3 { get; set; }
 
         /// <summary>
-        /// Gets or sets the Celkova DPH v druhe snizene sazbe.
+        /// Gets or sets the Celkova DPH v druhe snizene sazbe v Kc.
         /// </summary>
         /// <value>
-        /// Celkova DPH v druhe snizene sazbe.
+        /// Celkova DPH v druhe snizene sazbe v Kc.
         /// </value>
         public double? Dan3 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkova castka DPH pro cestovni sluzbu.
+        /// Gets or sets Celkova castka DPH pro cestovni sluzbu v Kc.
         /// </summary>
         /// <value>
-        /// Celkova castka DPH pro cestovni sluzbu.
+        /// Celkova castka DPH pro cestovni sluzbu v Kc.
         /// </value>
         public double? CestSluz { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Gets or sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </summary>
         /// <value>
-        /// Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </value>
         public double? PouzitZboz1 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Gets or sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </summary>
         /// <value>
-        /// Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </value>
         public double? PouzitZboz2 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Gets or sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </summary>
         /// <value>
-        /// Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi.
+        /// Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
         /// </value>
         public double? PouzitZboz3 { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// Gets or sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.
         /// </summary>
         /// <value>
-        /// Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani.
+        /// Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.
         /// </value>
         public double? UrcenoCerpZuct { get; set; }
 
         /// <summary>
-        /// Gets or sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// Gets or sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.
         /// </summary>
         /// <value>
-        /// Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby.
+        /// Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.
         /// </value>
         public double? CerpZuct { get; set; }
 
@@ -242,7 +316,7 @@ namespace openeet_lite
         /// <value>
         /// Rezim trzby.
         /// </value>
-        public RezimEnum? Rezim { get; set; } = RezimEnum.STANDARDNI;
+        public RezimEnum? Rezim { get; set; } = RezimEnum.Standardni;
 
         /// <summary>
         /// Gets or sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP.
@@ -264,397 +338,607 @@ namespace openeet_lite
 
         #region Public Methods
 
+        /// <summary>
+        /// Sets X509 certificate.
+        /// </summary>
+        /// <param name="val">X509 certificate.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCertificate(X509Certificate2 val)
         {
             Certificate = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets RSA key.
+        /// </summary>
+        /// <param name="val">RSA key.</param>
+        /// <returns>This builder.</returns>
         public EetRequestBuilder SetKey(RSACryptoServiceProvider val)
         {
             Key = val;
             return this;
         }
 
-
-        /**
-		 * Defaults to time of eetRequestBuilder creation 
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets Datum a cas odeslani zpravy na server.
+        /// </summary>
+        /// <param name="val">Datum a cas odeslani zpravy na server.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDatOdesl(DateTime val)
         {
             DatOdesl = val;
             return this;
         }
 
-        /** 
-		 * Defaults to PrvniZaslani.PRVNI
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani. Default je Prvni.
+        /// </summary>
+        /// <param name="val">Value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPrvniZaslani(PrvniZaslaniEnum val)
         {
             PrvniZaslani = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani. Default je Prvni.
+        /// </summary>
+        /// <param name="val">Value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPrvniZaslani(bool val)
         {
-            PrvniZaslani = val ? PrvniZaslaniEnum.PRVNI : PrvniZaslaniEnum.OPAKOVANE;
+            PrvniZaslani = val ? PrvniZaslaniEnum.Prvni : PrvniZaslaniEnum.Opakovane;
             return this;
         }
 
-        /*
-		public EetRequestBuilder prvni_zaslani(string val) {
-			_prvni_zaslani = PrvniZaslani.valueOf(val);
-			return this;
-		}
-        */
-
-        /**
-		 * Defaults to random UUID
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets UUID zpravy. Identifikator zpravy, ne e-trzbu. Default is Randomly generated GUID.
+        /// </summary>
+        /// <param name="val">Identifikator zpravy, ne e-trzbu. Default is Randomly generated GUID.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetUuidZpravy(Guid val)
         {
             UuidZpravy = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets UUID zpravy. Identifikator zpravy, ne e-trzbu. Default is Randomly generated GUID.
+        /// </summary>
+        /// <param name="val">Identifikator zpravy, ne e-trzbu. Default is Randomly generated GUID.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetUuidZpravy(string val)
         {
             UuidZpravy = new Guid(val);
             return this;
         }
 
-        /**
-		 * Defaults to PRODUKCNI
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets Value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu. Default je Produkcni.
+        /// </summary>
+        /// <param name="val">Value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetOvereni(OvereniEnum val)
         {
             Overeni = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu. Default je Produkcni.
+        /// </summary>
+        /// <param name="val">Value indicating whether is zprava overovaciho typu nebo jestli se jedna o ostrou zpravu.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetOvereni(bool val)
         {
-            Overeni = val ? OvereniEnum.OVEROVACI : OvereniEnum.PRODUKCNI;
+            Overeni = val ? OvereniEnum.Overovaci : OvereniEnum.Produkcni;
             return this;
         }
 
-        /*
-		public EetRequestBuilder overeni(string val) {
-			_overeni = Overeni.valueOf(val);
-			return this;
-		}
-		*/
-
+        /// <summary>
+        /// Sets DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.
+        /// </summary>
+        /// <param name="val">DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDicPopl(string val)
         {
             DicPopl = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets DIC poverene osoby, ktera odesila nahradou za poplatnika (DIC poplatnika).
+        /// </summary>
+        /// <param name="val">DIC poverene osoby, ktera odesila nahradou za poplatnika (DIC poplatnika).</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDicPoverujiciho(string val)
         {
             DicPoverujiciho = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Identifikace provozovny, ktera byla pridelena portalem EET.
+        /// </summary>
+        /// <param name="val">Identifikace provozovny, ktera byla pridelena portalem EET.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetIdProvoz(string val)
         {
             IdProvoz = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Unikatni ID zarizeni, ktere odesila uctenku online.
+        /// </summary>
+        /// <param name="val">Unikatni ID zarizeni, ktere odesila uctenku online.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetIdPokl(string val)
         {
             IdPokl = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets poradove cislo dokladu.
+        /// </summary>
+        /// <param name="val">Poradove cislo dokladu.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPoradCis(string val)
         {
             PoradCis = val;
             return this;
         }
 
-        /**
-		 * Defaults to eetRequestBuilder creation time
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets datum provedeni trzby.
+        /// </summary>
+        /// <param name="val">Datum provedeni trzby.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDatTrzby(DateTime val)
         {
             DatTrzby = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets datum provedeni trzby.
+        /// </summary>
+        /// <param name="val">Datum provedeni trzby.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDatTrzbys(string val)
         { // v delphi lze vlozit datum v textovem tvaru
             DatTrzby = EetRegisterRequest.ParseDate(val);
             return this;
         }
 
+
+        /// <summary>
+        /// Sets Celkova castka trzby v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka trzby v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCelkTrzba(double val)
         {
             CelkTrzba = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka trzby v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka trzby v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCelkTrzba(string val)
         {
             CelkTrzba = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka nepodlehajici zdaneni v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka nepodlehajici zdaneni v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklNepodlDph(double val)
         {
             ZaklNepodlDph = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka nepodlehajici zdaneni v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka nepodlehajici zdaneni v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklNepodlDph(string val)
         {
             ZaklNepodlDph = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane se zakladni sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane se zakladni sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan1(double val)
         {
             ZaklDan1 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane se zakladni sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane se zakladni sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan1(string val)
         {
             ZaklDan1 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v zakladni sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v zakladni sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan1(double val)
         {
             Dan1 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v zakladni sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v zakladni sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan1(string val)
         {
             Dan1 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan2(double val)
         {
             ZaklDan2 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane s prvni snizenou sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan2(string val)
         {
             ZaklDan2 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v prvni snizene sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v prvni snizene sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan2(double val)
         {
             Dan2 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v prvni snizene sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v prvni snizene sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan2(string val)
         {
             Dan2 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan3(double val)
         {
             ZaklDan3 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane s druhou snizenou sazbou DPH v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetZaklDan3(string val)
         {
             ZaklDan3 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v druhe snizene sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v druhe snizene sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan3(double val)
         {
             Dan3 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova DPH v druhe snizene sazbe v Kc.
+        /// </summary>
+        /// <param name="val">Celkova DPH v druhe snizene sazbe v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetDan3(string val)
         {
             Dan3 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka DPH pro cestovni sluzbu v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka DPH pro cestovni sluzbu v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCestSluz(double val)
         {
             CestSluz = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka DPH pro cestovni sluzbu v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka DPH pro cestovni sluzbu v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCestSluz(string val)
         {
             CestSluz = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz1(double val)
         {
             PouzitZboz1 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane v zakladni sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz1(string val)
         {
             PouzitZboz1 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz2(double val)
         {
             PouzitZboz2 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane v prvni snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz2(string val)
         {
             PouzitZboz2 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz3(double val)
         {
             PouzitZboz3 = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.
+        /// </summary>
+        /// <param name="val">Celkovy zaklad dane ve druhe snizene sazbe DPH z <c>Pouziteho</c> zbozi v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetPouzitZboz3(string val)
         {
             PouzitZboz3 = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetUrcenoCerpZuct(double val)
         {
             UrcenoCerpZuct = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka plateb urcena k naslednemu cerpani nebo zuctovani v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetUrcenoCerpZuct(string val)
         {
             UrcenoCerpZuct = double.Parse(val);
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCerpZuct(double val)
         {
             CerpZuct = val;
             return this;
         }
 
+        /// <summary>
+        /// Sets Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.
+        /// </summary>
+        /// <param name="val">Celkova castka plateb, ktere jsou naslednym cerpanim nebo zuctovanim platby v Kc.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetCerpZuct(string val)
         {
             CerpZuct = double.Parse(val);
             return this;
         }
 
-        /**
-		 * Defualts to Rezim.STANDARDNI
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim. Default je Standardni.
+        /// </summary>
+        /// <param name="val">Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim.</param>
+        /// <returns></returns>
         public EetRequestBuilder SetRezim(RezimEnum val)
         {
             Rezim = val;
             return this;
         }
 
-
+        /// <summary>
+        /// Sets Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim. Default je Standardni.
+        /// </summary>
+        /// <param name="val">Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim.</param>
+        /// <returns></returns>
         public EetRequestBuilder SetRezim(int val)
         {
             if (val == 0)
-                return SetRezim(RezimEnum.STANDARDNI);
+                return SetRezim(RezimEnum.Standardni);
             if (val == 1)
-                return SetRezim(RezimEnum.ZJEDNODUSENY);
+                return SetRezim(RezimEnum.Zjednoduseny);
             throw new ArgumentException("only 0 and 1 is allowed as int value");
         }
 
+        /// <summary>
+        /// Sets Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim. Default je Standardni.
+        /// </summary>
+        /// <param name="val">Rezim trzby. Standardni bezny rezim nebo zjednoduseny rezim.</param>
+        /// <returns></returns>
         public EetRequestBuilder SetRezim(string val)
         {
             return SetRezim(int.Parse(val));
         }
 
-        /**
-		 * Computed when pkp available during build() call
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP. Computed when pkp available during build() call.
+        /// </summary>
+        /// <param name="val">The BKP.</param>
+        /// <returns>This builder</returns>
         public EetRequestBuilder SetBkp(byte[] val)
         {
             Bkp = val;
             return this;
         }
 
-        /**
-		 * Parses string according to EET spec e.g 17796128-AED2BB9E-2301FF97-0A75656A-DF2B011D
-		 * @param val hex splitted into 5 groups containing 8 digits
-		 * @return
-		 */
-        public EetRequestBuilder SetBkps(string val)
+        /// <summary>
+        /// Sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP. Computed when pkp available during build() call.
+        /// Parses string according to EET spec e.g 17796128-AED2BB9E-2301FF97-0A75656A-DF2B011D
+        /// </summary>
+        /// <param name="val">The BKP.</param>
+        /// <returns>This builder</returns>
+        public EetRequestBuilder SetBkp(string val)
         {// v delphi lze vlozit bkp v textovem tvaru
             Bkp = EetRegisterRequest.ParseBkp(val);
             return this;
         }
 
-        /**
-		 * Computed when private key available during nuild() call
-		 * @param val
-		 * @return
-		 */
+        /// <summary>
+        /// Sets Podpisovy kod poplatnika. Jedna se o podpis vybranych dat. Computed when private key available during build() call.
+        /// </summary>
+        /// <param name="val">The PKP.</param>
+        /// <returns></returns>
         public EetRequestBuilder SetPkp(byte[] val)
         {
             Pkp = val;
             return this;
         }
-        public EetRequestBuilder SetPkps(string val)
+
+        /// <summary>
+        /// Sets Podpisovy kod poplatnika. Jedna se o podpis vybranych dat. Computed when private key available during build() call.
+        /// </summary>
+        /// <param name="val">The PKP.</param>
+        /// <returns></returns>
+        public EetRequestBuilder SetPkp(string val)
         {// v delphi lze vlozit pkp v textovem tvaru
             Pkp = EetRegisterRequest.ParsePkp(val);
             return this;
         }
-
-
-        /** 
-		 * file is loaded immediately
-		 * @param p12Filename
-		 * @return
-		 */
-        public EetRequestBuilder SetPkcs12s(string p12Filename)
+        
+        /// <summary>
+        /// Sets the PKCS12 from filename.
+        /// </summary>
+        /// <param name="p12Filename">The Pkcs12 filename.</param>
+        /// <returns>This builder</returns>
+        public EetRequestBuilder SetPkcs12(string p12Filename)
         {// v delphi lze vlozit nazev souboru 'xxxxxx.p12'
             return SetPkcs12(File.ReadAllBytes(p12Filename));
         }
 
-        public EetRequestBuilder SetPkcs12(byte[] p12bytes)
+        /// <summary>
+        /// Sets the PKCS12.
+        /// </summary>
+        /// <param name="p12Bytes">The P12 bytes.</param>
+        /// <returns></returns>
+        public EetRequestBuilder SetPkcs12(byte[] p12Bytes)
         {
-            Pkcs12 = p12bytes;
+            Pkcs12 = p12Bytes;
             return this;
         }
 
-        public EetRequestBuilder SetPkcs12password(string password)
+        /// <summary>
+        /// Sets the PKCS12 password.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
+        public EetRequestBuilder SetPkcs12Password(string password)
         {
-            Pkcs12password = password;
+            Pkcs12Password = password;
             return this;
         }
 
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns></returns>
         public EetRegisterRequest Build()
         {
             return new EetRegisterRequest(this);
@@ -664,6 +948,9 @@ namespace openeet_lite
 
     }
 
+    /// <summary>
+    /// EET Request
+    /// </summary>
     public class EetRegisterRequest
     {
         public X509Certificate2 Certificate { get; private set; }
@@ -682,7 +969,7 @@ namespace openeet_lite
         /// <value>
         /// Prvni zaslani.
         /// </value>
-        public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.PRVNI;
+        public PrvniZaslaniEnum? PrvniZaslani { get; set; } = PrvniZaslaniEnum.Prvni;
 
         /// <summary>
         /// Gets or sets UUID zpravy. Identifikator zpravy, ne e-trzbu.
@@ -698,7 +985,7 @@ namespace openeet_lite
         /// <value>
         /// Prvni zaslani.
         /// </value>
-        public OvereniEnum? Overeni { get; set; } = OvereniEnum.PRODUKCNI;
+        public OvereniEnum? Overeni { get; set; } = OvereniEnum.Produkcni;
 
         /// <summary>
         /// Gets or sets DIC poplatnika, ktery ke kteremu se ma uctenka zapocitat.
@@ -868,7 +1155,7 @@ namespace openeet_lite
         /// <value>
         /// Rezim trzby.
         /// </value>
-        public RezimEnum? Rezim { get; set; } = RezimEnum.STANDARDNI;
+        public RezimEnum? Rezim { get; set; } = RezimEnum.Standardni;
 
         /// <summary>
         /// Gets or sets Bezpecnostni kod poplatnika. Jedna se o hash Kodu PKP.
@@ -922,11 +1209,11 @@ namespace openeet_lite
 
             if (eetRequestBuilder.Pkcs12 != null)
             {
-                if (eetRequestBuilder.Pkcs12password == null)
+                if (eetRequestBuilder.Pkcs12Password == null)
                 {
                     throw new ArgumentException("found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.");
                 }
-                LoadP12(eetRequestBuilder.Pkcs12, eetRequestBuilder.Pkcs12password);
+                LoadP12(eetRequestBuilder.Pkcs12, eetRequestBuilder.Pkcs12Password);
             }
 
             if (Key != null)
@@ -1024,12 +1311,12 @@ namespace openeet_lite
         /// </summary>
         /// <param name="data">Byte data.</param>
         /// <returns>Hexa data in string.</returns>
-        public static string Byte2hex(byte[] data)
+        public static string Byte2Hex(byte[] data)
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
+            foreach (byte t in data)
             {
-                sb.Append(string.Format("{0:X2}", data[i]));
+                sb.Append($"{t:X2}");
             }
             return sb.ToString();
         }
@@ -1037,12 +1324,12 @@ namespace openeet_lite
         /// <summary>
         /// Formats the BKP.
         /// </summary>
-        /// <param name="_bkp">The BKP.</param>
+        /// <param name="bkp">The BKP.</param>
         /// <returns></returns>
-        public static string FormatBkp(byte[] _bkp)
+        public static string FormatBkp(byte[] bkp)
         {
             Regex re = new Regex("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$");
-            return re.Replace(Byte2hex(_bkp).ToUpper(), @"$1-$2-$3-$4-$5"); ;
+            return re.Replace(Byte2Hex(bkp).ToUpper(), @"$1-$2-$3-$4-$5");
         }
 
         /// <summary>
@@ -1055,7 +1342,7 @@ namespace openeet_lite
         /// </exception>
         public static byte[] ParseBkp(string val)
         {
-            byte[] _bkp = new byte[20];
+            byte[] bkp = new byte[20];
             val = val.Replace("-", "");
             Regex re = new Regex("^[A-F0-9]{40}$");
 
@@ -1066,9 +1353,9 @@ namespace openeet_lite
 
             for (int i = 0; i < 20; i++)
             {
-                _bkp[i] = (byte)Convert.ToUInt32(val.Substring(i * 2, 2), 16);
+                bkp[i] = (byte)Convert.ToUInt32(val.Substring(i * 2, 2), 16);
             }
-            return _bkp;
+            return bkp;
         }
 
         /// <summary>
@@ -1093,21 +1380,21 @@ namespace openeet_lite
         /// <summary>
         /// Formats the PKP.
         /// </summary>
-        /// <param name="_pkp">The PKP.</param>
+        /// <param name="pkp">The PKP.</param>
         /// <returns></returns>
-        public static string FormatPkp(byte[] _pkp)
+        public static string FormatPkp(byte[] pkp)
         {
-            return Convert.ToBase64String(_pkp);
+            return Convert.ToBase64String(pkp);
         }
 
         /// <summary>
         /// Parses the PKP.
         /// </summary>
-        /// <param name="_pkp">The PKP.</param>
+        /// <param name="pkp">The PKP.</param>
         /// <returns></returns>
-        public static byte[] ParsePkp(string _pkp)
+        public static byte[] ParsePkp(string pkp)
         {
-            return Convert.FromBase64String(_pkp);
+            return Convert.FromBase64String(pkp);
         }
 
         /// <summary>
@@ -1116,22 +1403,22 @@ namespace openeet_lite
         /// <returns></returns>
         public string GenerateSoapRequest()
         {
-            string sha1sum = templates.sha1sum;
-            StringReader rd = new StringReader(sha1sum);
+            string sha1Sum = templates.sha1sum;
+            StringReader rd = new StringReader(sha1Sum);
             Dictionary<string, string> hashes = new Dictionary<string, string>();
 
             string ln;
             while ((ln = rd.ReadLine()) != null)
             {
-                string[] fields = ln.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                string[] fields = ln.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                 hashes[fields[1]] = fields[0];
             }
 
-            if (!Byte2hex(SHA1.Create().ComputeHash(templates.template)).ToLower().Equals(hashes["template.xml"]))
+            if (!Byte2Hex(SHA1.Create().ComputeHash(templates.template)).ToLower().Equals(hashes["template.xml"]))
                 throw new ArgumentException("template.xml checksum verification failed");
-            if (!Byte2hex(SHA1.Create().ComputeHash(templates.digest_template)).ToLower().Equals(hashes["digest-template"]))
+            if (!Byte2Hex(SHA1.Create().ComputeHash(templates.digest_template)).ToLower().Equals(hashes["digest-template"]))
                 throw new ArgumentException("digest-template checksum verification failed");
-            if (!Byte2hex(SHA1.Create().ComputeHash(templates.signature_template)).ToLower().Equals(hashes["signature-template"]))
+            if (!Byte2Hex(SHA1.Create().ComputeHash(templates.signature_template)).ToLower().Equals(hashes["signature-template"]))
                 throw new ArgumentException("signature-template checksum verification failed");
 
             string xmlTemplate = Encoding.UTF8.GetString(templates.template);
@@ -1176,15 +1463,15 @@ namespace openeet_lite
             {
                 if (Certificate != null) src = src.Replace("${certb64}", Convert.ToBase64String(Certificate.GetRawCertData()));
                 if (PrvniZaslani != null) src = src.Replace("${prvni_zaslani}", FormatPrvniZaslani(PrvniZaslani.GetValueOrDefault()));
-                if (DatOdesl != null) src = src.Replace("${dat_odesl}", FormatDate(DatOdesl));
-                if (UuidZpravy != null) src = src.Replace("${uuid_zpravy}", UuidZpravy.ToString());
+                src = src.Replace("${dat_odesl}", FormatDate(DatOdesl));
+                src = src.Replace("${uuid_zpravy}", UuidZpravy.ToString());
                 if (Overeni != null) src = src.Replace("${overeni}", FormatOvereni(Overeni.GetValueOrDefault()));
                 if (DicPopl != null) src = src.Replace("${dic_popl}", DicPopl);
                 if (DicPoverujiciho != null) src = src.Replace("${dic_poverujiciho}", DicPoverujiciho);
                 if (IdProvoz != null) src = src.Replace("${id_provoz}", IdProvoz);
                 if (IdPokl != null) src = src.Replace("${id_pokl}", IdPokl);
                 if (PoradCis != null) src = src.Replace("${porad_cis}", PoradCis);
-                if (DatTrzby != null) src = src.Replace("${dat_trzby}", FormatDate(DatTrzby));
+                src = src.Replace("${dat_trzby}", FormatDate(DatTrzby));
                 if (CelkTrzba != null) src = src.Replace("${celk_trzba}", FormatAmount(CelkTrzba.GetValueOrDefault()));
                 if (ZaklNepodlDph != null) src = src.Replace("${zakl_nepodl_dph}", FormatAmount(ZaklNepodlDph.GetValueOrDefault()));
                 if (ZaklDan1 != null) src = src.Replace("${zakl_dan1}", FormatAmount(ZaklDan1.GetValueOrDefault()));
@@ -1232,6 +1519,7 @@ namespace openeet_lite
         /// <param name="requestBody">The request body.</param>
         /// <param name="serviceUrl">The service URL.</param>
         /// <returns></returns>
+        /// <exception cref="NullReferenceException">When cannot obtain response stream.</exception>
         public string SendRequest(string requestBody, string serviceUrl)
         {
             //enable minimal versions of TLS required by EET
@@ -1248,6 +1536,10 @@ namespace openeet_lite
 
             WebResponse resp = req.GetResponse();
             Stream respStream = resp.GetResponseStream();
+            if (respStream == null)
+            {
+                throw new NullReferenceException();
+            }
             StreamReader rdr = new StreamReader(respStream, Encoding.UTF8);
             string responseString = rdr.ReadToEnd();
             return responseString;
@@ -1257,13 +1549,13 @@ namespace openeet_lite
         /// <summary>
         /// Loads the P12.
         /// </summary>
-        /// <param name="p12data">The p12data.</param>
+        /// <param name="p12Data">The p12data.</param>
         /// <param name="password">The password.</param>
         /// <exception cref="ArgumentException">key and/or certificate still missing after p12 processing</exception>
-        void LoadP12(byte[] p12data, string password)
+        void LoadP12(byte[] p12Data, string password)
         {
             X509Certificate2Collection col = new X509Certificate2Collection();
-            col.Import(p12data, password, X509KeyStorageFlags.Exportable);
+            col.Import(p12Data, password, X509KeyStorageFlags.Exportable);
             foreach (X509Certificate2 cert in col)
             {
                 if (cert.HasPrivateKey)
@@ -1271,8 +1563,7 @@ namespace openeet_lite
                     Certificate = cert;
                     RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
                     RSAParameters keyParams = tmpKey.ExportParameters(true);
-                    CspParameters p = new CspParameters();
-                    p.ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider";
+                    CspParameters p = new CspParameters { ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider" };
                     Key = new RSACryptoServiceProvider(p);
                     Key.ImportParameters(keyParams);
                 }
@@ -1289,7 +1580,7 @@ namespace openeet_lite
         /// <returns></returns>
         protected string FormatPrvniZaslani(PrvniZaslaniEnum val)
         {
-            return val == PrvniZaslaniEnum.PRVNI ? "true" : "false";
+            return val == PrvniZaslaniEnum.Prvni ? "true" : "false";
         }
 
         /// <summary>
@@ -1299,7 +1590,7 @@ namespace openeet_lite
         /// <returns></returns>
         protected string FormatOvereni(OvereniEnum val)
         {
-            return val == OvereniEnum.OVEROVACI ? "true" : "false";
+            return val == OvereniEnum.Overovaci ? "true" : "false";
         }
 
         /// <summary>
@@ -1309,7 +1600,7 @@ namespace openeet_lite
         /// <returns></returns>
         protected string FormatRezim(RezimEnum val)
         {
-            return val == RezimEnum.STANDARDNI ? "0" : "1";
+            return val == RezimEnum.Standardni ? "0" : "1";
         }
     }
 }
