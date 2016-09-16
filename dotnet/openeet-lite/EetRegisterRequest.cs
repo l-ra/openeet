@@ -933,11 +933,20 @@ namespace openeet_lite
                 ComputeCodes(Key);
         }
 
+        /// <summary>
+        /// Get Builder.
+        /// </summary>
+        /// <returns>Request builder.</returns>
         public static EetRequestBuilder Builder()
         {
             return new EetRequestBuilder();
         }
 
+        /// <summary>
+        /// Computes PKP and BKP.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <exception cref="ArgumentException">Error while computing codes</exception>
         private void ComputeCodes(RSACryptoServiceProvider key)
         {
             try
@@ -948,7 +957,7 @@ namespace openeet_lite
                     if (toBeSigned != null)
                     {
                         SHA256 sha256 = SHA256.Create();
-                        byte[] data = UTF8Encoding.UTF8.GetBytes(toBeSigned);
+                        byte[] data = Encoding.UTF8.GetBytes(toBeSigned);
                         byte[] hash = sha256.ComputeHash(data);
                         RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(key);
                         fmt.SetHashAlgorithm("SHA256");
@@ -964,38 +973,57 @@ namespace openeet_lite
             }
             catch (Exception e)
             {
-                throw new ArgumentException("error while computing codes", e);
+                throw new ArgumentException("Error while computing codes: ", e);
             }
         }
 
-        /**
-         * Formats data to form ready to be signed for PKP computation based on data in this object 
-         * @return 
-         */
+        /// <summary>
+        /// Formats data to form ready to be signed for PKP computation based on data in this object.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException">missing some of DicPopl({DicPopl}), IdProvoz({IdProvoz}), IdPokl({IdPokl}), PoradCis({PoradCis}), DatTrzby({DatTrzby}), CelkTrzba({CelkTrzba})");</exception>
         public string FormatToBeSignedData()
         {
             if (DicPopl == null || IdProvoz == null || IdPokl == null || PoradCis == null || DatTrzby == null || CelkTrzba == null)
-                throw new NullReferenceException(
-                    $"missing some of DicPopl({DicPopl}), IdProvoz({IdProvoz}), IdPokl({IdPokl}), PoradCis({PoradCis}), DatTrzby({DatTrzby}), CelkTrzba({CelkTrzba})");
-            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}", DicPopl, IdProvoz, IdPokl, PoradCis, FormatDate(DatTrzby), FormatAmount(CelkTrzba.GetValueOrDefault()));
+                throw new ArgumentNullException($"missing some of DicPopl({DicPopl}), IdProvoz({IdProvoz}), IdPokl({IdPokl}), PoradCis({PoradCis}), DatTrzby({DatTrzby}), CelkTrzba({CelkTrzba})");
+            return $"{DicPopl}|{IdProvoz}|{IdPokl}|{PoradCis}|{FormatDate(DatTrzby)}|{FormatAmount(CelkTrzba.GetValueOrDefault())}";
         }
 
+        /// <summary>
+        /// Formats the date to EET form.
+        /// </summary>
+        /// <param name="date">The date.</param>
+        /// <returns>Formated date</returns>
         public string FormatDate(DateTime date)
         {
             string ret = date.ToString("yyyy-MM-dd'T'HH:mm:sszzz");
             return ret;
         }
 
+        /// <summary>
+        /// Parses the date.
+        /// </summary>
+        /// <param name="date">The date.</param>
+        /// <returns>The date</returns>
         public static DateTime ParseDate(string date)
         {
             return DateTime.Parse(date);
         }
 
+        /// <summary>
+        /// Formats the BKP.
+        /// </summary>
+        /// <returns></returns>
         public string FormatBkp()
         {
             return FormatBkp(Bkp);
         }
 
+        /// <summary>
+        /// Convert byte data to hexa string.
+        /// </summary>
+        /// <param name="data">Byte data.</param>
+        /// <returns>Hexa data in string.</returns>
         public static string Byte2hex(byte[] data)
         {
             StringBuilder sb = new StringBuilder();
@@ -1006,12 +1034,25 @@ namespace openeet_lite
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Formats the BKP.
+        /// </summary>
+        /// <param name="_bkp">The BKP.</param>
+        /// <returns></returns>
         public static string FormatBkp(byte[] _bkp)
         {
             Regex re = new Regex("^([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})([0-9A-F]{8})$");
             return re.Replace(Byte2hex(_bkp).ToUpper(), @"$1-$2-$3-$4-$5"); ;
         }
 
+        /// <summary>
+        /// Retrieve byte BKP from string form.
+        /// </summary>
+        /// <param name="val">String BKP.</param>
+        /// <returns>Bytes BKP.</returns>
+        /// <exception cref="ArgumentException">
+        /// Wrong length or wrong format.
+        /// </exception>
         public static byte[] ParseBkp(string val)
         {
             byte[] _bkp = new byte[20];
@@ -1030,82 +1071,105 @@ namespace openeet_lite
             return _bkp;
         }
 
+        /// <summary>
+        /// Formats the amount.
+        /// </summary>
+        /// <param name="amount">The amount.</param>
+        /// <returns></returns>
         private static string FormatAmount(double amount)
         {
             return string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:F2}", amount);
         }
 
+        /// <summary>
+        /// Formats the PKP.
+        /// </summary>
+        /// <returns></returns>
         public string FormatPkp()
         {
             return FormatPkp(Pkp);
         }
 
+        /// <summary>
+        /// Formats the PKP.
+        /// </summary>
+        /// <param name="_pkp">The PKP.</param>
+        /// <returns></returns>
         public static string FormatPkp(byte[] _pkp)
         {
             return Convert.ToBase64String(_pkp);
         }
 
+        /// <summary>
+        /// Parses the PKP.
+        /// </summary>
+        /// <param name="_pkp">The PKP.</param>
+        /// <returns></returns>
         public static byte[] ParsePkp(string _pkp)
         {
             return Convert.FromBase64String(_pkp);
         }
 
-
+        /// <summary>
+        /// Generates the SOAP request.
+        /// </summary>
+        /// <returns></returns>
         public string GenerateSoapRequest()
         {
-            try
+            string sha1sum = templates.sha1sum;
+            StringReader rd = new StringReader(sha1sum);
+            Dictionary<string, string> hashes = new Dictionary<string, string>();
+
+            string ln;
+            while ((ln = rd.ReadLine()) != null)
             {
-                string sha1sum = templates.sha1sum;
-                StringReader rd = new StringReader(sha1sum);
-                Dictionary<string, string> hashes = new Dictionary<string, string>();
-
-                string ln;
-                while ((ln = rd.ReadLine()) != null)
-                {
-                    string[] fields = ln.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                    hashes[fields[1]] = fields[0];
-                }
-
-                if (!Byte2hex(SHA1.Create().ComputeHash(templates.template)).ToLower().Equals(hashes["template.xml"]))
-                    throw new ArgumentException("template.xml checksum verification failed");
-                if (!Byte2hex(SHA1.Create().ComputeHash(templates.digest_template)).ToLower().Equals(hashes["digest-template"]))
-                    throw new ArgumentException("digest-template checksum verification failed");
-                if (!Byte2hex(SHA1.Create().ComputeHash(templates.signature_template)).ToLower().Equals(hashes["signature-template"]))
-                    throw new ArgumentException("signature-template checksum verification failed");
-
-                string xmlTemplate = UTF8Encoding.UTF8.GetString(templates.template);
-                string digestTemplate = UTF8Encoding.UTF8.GetString(templates.digest_template);
-                string signatureTemplate = UTF8Encoding.UTF8.GetString(templates.signature_template);
-
-                digestTemplate = ReplacePlaceholders(digestTemplate, null, null);
-                digestTemplate = RemoveUnusedPlaceholders(digestTemplate);
-                SHA256Managed md = new SHA256Managed();
-                byte[] digestRaw = md.ComputeHash(UTF8Encoding.UTF8.GetBytes(digestTemplate));
-                string digest = Convert.ToBase64String(digestRaw);
-
-
-                signatureTemplate = ReplacePlaceholders(signatureTemplate, digest, null);
-                signatureTemplate = RemoveUnusedPlaceholders(signatureTemplate);
-
-                SHA256 sha256 = SHA256.Create();
-                byte[] data = UTF8Encoding.UTF8.GetBytes(signatureTemplate);
-                byte[] hash = sha256.ComputeHash(data);
-                RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(Key);
-                fmt.SetHashAlgorithm("SHA256");
-                byte[] signatureRaw = fmt.CreateSignature(hash);
-                string signature = Convert.ToBase64String(signatureRaw);
-
-                xmlTemplate = ReplacePlaceholders(xmlTemplate, digest, signature);
-                xmlTemplate = RemoveUnusedPlaceholders(xmlTemplate);
-
-                return xmlTemplate;
+                string[] fields = ln.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                hashes[fields[1]] = fields[0];
             }
-            catch (Exception e)
-            {
-                throw new ArgumentException("Error while generating soap request", e);
-            }
+
+            if (!Byte2hex(SHA1.Create().ComputeHash(templates.template)).ToLower().Equals(hashes["template.xml"]))
+                throw new ArgumentException("template.xml checksum verification failed");
+            if (!Byte2hex(SHA1.Create().ComputeHash(templates.digest_template)).ToLower().Equals(hashes["digest-template"]))
+                throw new ArgumentException("digest-template checksum verification failed");
+            if (!Byte2hex(SHA1.Create().ComputeHash(templates.signature_template)).ToLower().Equals(hashes["signature-template"]))
+                throw new ArgumentException("signature-template checksum verification failed");
+
+            string xmlTemplate = Encoding.UTF8.GetString(templates.template);
+            string digestTemplate = Encoding.UTF8.GetString(templates.digest_template);
+            string signatureTemplate = Encoding.UTF8.GetString(templates.signature_template);
+
+            digestTemplate = ReplacePlaceholders(digestTemplate, null, null);
+            digestTemplate = RemoveUnusedPlaceholders(digestTemplate);
+            SHA256Managed md = new SHA256Managed();
+            byte[] digestRaw = md.ComputeHash(Encoding.UTF8.GetBytes(digestTemplate));
+            string digest = Convert.ToBase64String(digestRaw);
+
+
+            signatureTemplate = ReplacePlaceholders(signatureTemplate, digest, null);
+            signatureTemplate = RemoveUnusedPlaceholders(signatureTemplate);
+
+            SHA256 sha256 = SHA256.Create();
+            byte[] data = Encoding.UTF8.GetBytes(signatureTemplate);
+            byte[] hash = sha256.ComputeHash(data);
+            RSAPKCS1SignatureFormatter fmt = new RSAPKCS1SignatureFormatter(Key);
+            fmt.SetHashAlgorithm("SHA256");
+            byte[] signatureRaw = fmt.CreateSignature(hash);
+            string signature = Convert.ToBase64String(signatureRaw);
+
+            xmlTemplate = ReplacePlaceholders(xmlTemplate, digest, signature);
+            xmlTemplate = RemoveUnusedPlaceholders(xmlTemplate);
+
+            return xmlTemplate;
         }
 
+        /// <summary>
+        /// Replaces the placeholders.
+        /// </summary>
+        /// <param name="src">The source.</param>
+        /// <param name="digest">The digest.</param>
+        /// <param name="signature">The signature.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">replacement processing got wrong</exception>
         private string ReplacePlaceholders(string src, string digest, string signature)
         {
             try
@@ -1149,6 +1213,11 @@ namespace openeet_lite
             }
         }
 
+        /// <summary>
+        /// Removes the unused placeholders.
+        /// </summary>
+        /// <param name="src">The source.</param>
+        /// <returns></returns>
         private string RemoveUnusedPlaceholders(string src)
         {
             src = Regex.Replace(src, " [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"", "");
@@ -1157,11 +1226,17 @@ namespace openeet_lite
         }
 
 
+        /// <summary>
+        /// Sends the request.
+        /// </summary>
+        /// <param name="requestBody">The request body.</param>
+        /// <param name="serviceUrl">The service URL.</param>
+        /// <returns></returns>
         public string SendRequest(string requestBody, string serviceUrl)
         {
             //enable minimal versions of TLS required by EET
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-            byte[] content = UTF8Encoding.UTF8.GetBytes(requestBody);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+            byte[] content = Encoding.UTF8.GetBytes(requestBody);
             WebRequest req = WebRequest.Create(serviceUrl);
             req.ContentType = "text/xml;charset=UTF-8";
             req.ContentLength = content.Length;
@@ -1179,6 +1254,12 @@ namespace openeet_lite
         }
 
 
+        /// <summary>
+        /// Loads the P12.
+        /// </summary>
+        /// <param name="p12data">The p12data.</param>
+        /// <param name="password">The password.</param>
+        /// <exception cref="ArgumentException">key and/or certificate still missing after p12 processing</exception>
         void LoadP12(byte[] p12data, string password)
         {
             X509Certificate2Collection col = new X509Certificate2Collection();
@@ -1201,16 +1282,31 @@ namespace openeet_lite
             if (Key == null || Certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
         }
 
+        /// <summary>
+        /// Transformuje enum do stringu.
+        /// </summary>
+        /// <param name="val">The value.</param>
+        /// <returns></returns>
         protected string FormatPrvniZaslani(PrvniZaslaniEnum val)
         {
             return val == PrvniZaslaniEnum.PRVNI ? "true" : "false";
         }
 
+        /// <summary>
+        /// Transformuje enum do stringu.
+        /// </summary>
+        /// <param name="val">The value.</param>
+        /// <returns></returns>
         protected string FormatOvereni(OvereniEnum val)
         {
             return val == OvereniEnum.OVEROVACI ? "true" : "false";
         }
 
+        /// <summary>
+        /// Transformuje enum do stringu.
+        /// </summary>
+        /// <param name="val">The value.</param>
+        /// <returns></returns>
         protected string FormatRezim(RezimEnum val)
         {
             return val == RezimEnum.STANDARDNI ? "0" : "1";
