@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+ * Copyright 2016 Jakub Cermoch and other contributors as 
+ * indicated by the @author tags.
+ * Upravil Jakub Cermoch
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -350,6 +367,17 @@ namespace openeet_lite
         }
 
         /// <summary>
+        /// Sets Datum a cas odeslani zpravy na server.
+        /// </summary>
+        /// <param name="val">Datum a cas odeslani zpravy na server.</param>
+        /// <returns>This builder</returns>
+        public EetRequestBuilder SetDatOdesl(string val)
+        {
+            DatOdesl = EetRegisterRequest.ParseDate(val);
+            return this;
+        }
+
+        /// <summary>
         /// Sets value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani. Default je Prvni.
         /// </summary>
         /// <param name="val">Value indicating whether is zprava odeslana poprve, nebo se jedna o dalsi odeslani.</param>
@@ -486,7 +514,7 @@ namespace openeet_lite
         /// </summary>
         /// <param name="val">Datum provedeni trzby.</param>
         /// <returns>This builder</returns>
-        public EetRequestBuilder SetDatTrzbys(string val)
+        public EetRequestBuilder SetDatTrzby(string val)
         { // v delphi lze vlozit datum v textovem tvaru
             DatTrzby = EetRegisterRequest.ParseDate(val);
             return this;

@@ -7,3 +7,6 @@
 /dotnet/openeet-lite/bin/Debug
 /dotnet/openeet-lite/obj/Debug
 .vs
+/dotnet/openeet-lite/TestResults
+/dotnet/UnitTests/bin/Debug
+obj

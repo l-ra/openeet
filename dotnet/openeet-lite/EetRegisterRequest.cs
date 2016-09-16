@@ -1,7 +1,7 @@
 ﻿/*
  * Copyright 2016 Luděk Rašek and other contributors as 
  * indicated by the @author tags.
- * Upravil Vlastimil Čoček 
+ * Upravil Vlastimil Čoček, Jakub Cermoch
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at

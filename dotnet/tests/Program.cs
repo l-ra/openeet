@@ -1,7 +1,8 @@
 ﻿/*
  * Copyright 2016 Luděk Rašek and other contributors as 
  * indicated by the @author tags.
- *
+ * Upravil Jakub Cermoch
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,7 +95,7 @@ namespace tests
                .SetIdProvoz("1")
                .SetIdPokl("POKLADNA01")
                .SetPoradCis("1")
-               .SetDatTrzbys("2016-09-12T08:43:28+02:00")
+               .SetDatTrzby("2016-09-12T08:43:28+02:00")
                .SetCelkTrzba(100.0)
                .SetPkcs12(TestData._01000003)
                .SetPkcs12Password("eet")
