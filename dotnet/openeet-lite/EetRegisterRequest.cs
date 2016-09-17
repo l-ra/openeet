@@ -303,17 +303,9 @@ namespace openeet_lite
             Key = eetRequestBuilder.Key;
             Certificate = eetRequestBuilder.Certificate;
 
-            if (eetRequestBuilder.Pkcs12 != null)
-            {
-                if (eetRequestBuilder.Pkcs12Password == null)
-                {
-                    throw new ArgumentException("Found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.");
-                }
-                LoadP12(eetRequestBuilder.Pkcs12, eetRequestBuilder.Pkcs12Password);
-            }
+            LoadP12(eetRequestBuilder.Pkcs12, eetRequestBuilder.Pkcs12Password);
 
-            if (Key != null)
-                ComputeCodes(Key);
+            ComputeCodes(Key);
         }
 
         /// <summary>
@@ -326,12 +318,48 @@ namespace openeet_lite
         }
 
         /// <summary>
+        /// Loads the P12.
+        /// </summary>
+        /// <param name="p12Data">The p12data.</param>
+        /// <param name="password">The password.</param>
+        /// <exception cref="ArgumentException">key and/or certificate still missing after p12 processing</exception>
+        private void LoadP12(byte[] p12Data, string password)
+        {
+            if (p12Data == null)
+                return;
+
+            if (p12Data != null && password == null)
+                throw new ArgumentException("Found pkcs12 data and missing pkcs12 password. use pkcs12password(\"pwd\") during the eetRequestBuilder setup.");
+
+            X509Certificate2Collection col = new X509Certificate2Collection();
+            col.Import(p12Data, password, X509KeyStorageFlags.Exportable);
+            foreach (X509Certificate2 cert in col)
+            {
+                if (cert.HasPrivateKey)
+                {
+                    Certificate = cert;
+                    RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
+                    RSAParameters keyParams = tmpKey.ExportParameters(true);
+                    CspParameters p = new CspParameters { ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider" };
+                    Key = new RSACryptoServiceProvider(p);
+                    Key.ImportParameters(keyParams);
+                }
+
+            }
+
+            if (Key == null || Certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
+        }
+
+        /// <summary>
         /// Computes PKP and BKP.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <exception cref="ArgumentException">Error while computing codes</exception>
         private void ComputeCodes(RSACryptoServiceProvider key)
         {
+            if (key == null)
+                return;
+
             try
             {
                 if (Pkp == null && key != null)
@@ -369,7 +397,7 @@ namespace openeet_lite
         {
             if (DicPopl == null || IdProvoz == null || IdPokl == null || PoradCis == null || DatTrzby == null || CelkTrzba == null)
                 throw new ArgumentNullException($"missing some of DicPopl({DicPopl}), IdProvoz({IdProvoz}), IdPokl({IdPokl}), PoradCis({PoradCis}), DatTrzby({DatTrzby}), CelkTrzba({CelkTrzba})");
-            return $"{DicPopl}|{IdProvoz}|{IdPokl}|{PoradCis}|{FormatDate(DatTrzby)}|{FormatAmount(CelkTrzba.GetValueOrDefault())}";
+            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}", DicPopl, IdProvoz, IdPokl, PoradCis, FormatDate(DatTrzby), FormatAmount(CelkTrzba.GetValueOrDefault()));
         }
 
         /// <summary>
@@ -459,7 +487,7 @@ namespace openeet_lite
         /// </summary>
         /// <param name="amount">The amount.</param>
         /// <returns></returns>
-        private static string FormatAmount(double amount)
+        public static string FormatAmount(double amount)
         {
             return string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:F2}", amount);
         }
@@ -601,7 +629,7 @@ namespace openeet_lite
         /// </summary>
         /// <param name="src">The source.</param>
         /// <returns></returns>
-        private string RemoveUnusedPlaceholders(string src)
+        public static string RemoveUnusedPlaceholders(string src)
         {
             src = Regex.Replace(src, " [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"", "");
             src = Regex.Replace(src, "\\$\\{[a-b_0-9]+\\}", "");
@@ -641,40 +669,12 @@ namespace openeet_lite
             return responseString;
         }
 
-
-        /// <summary>
-        /// Loads the P12.
-        /// </summary>
-        /// <param name="p12Data">The p12data.</param>
-        /// <param name="password">The password.</param>
-        /// <exception cref="ArgumentException">key and/or certificate still missing after p12 processing</exception>
-        void LoadP12(byte[] p12Data, string password)
-        {
-            X509Certificate2Collection col = new X509Certificate2Collection();
-            col.Import(p12Data, password, X509KeyStorageFlags.Exportable);
-            foreach (X509Certificate2 cert in col)
-            {
-                if (cert.HasPrivateKey)
-                {
-                    Certificate = cert;
-                    RSACryptoServiceProvider tmpKey = (RSACryptoServiceProvider)cert.PrivateKey;
-                    RSAParameters keyParams = tmpKey.ExportParameters(true);
-                    CspParameters p = new CspParameters { ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider" };
-                    Key = new RSACryptoServiceProvider(p);
-                    Key.ImportParameters(keyParams);
-                }
-
-            }
-
-            if (Key == null || Certificate == null) throw new ArgumentException("key and/or certificate still missing after p12 processing");
-        }
-
         /// <summary>
         /// Transformuje enum do stringu.
         /// </summary>
         /// <param name="val">The value.</param>
         /// <returns></returns>
-        protected string FormatPrvniZaslani(PrvniZaslaniEnum val)
+        private string FormatPrvniZaslani(PrvniZaslaniEnum val)
         {
             return val == PrvniZaslaniEnum.Prvni ? "true" : "false";
         }
@@ -684,7 +684,7 @@ namespace openeet_lite
         /// </summary>
         /// <param name="val">The value.</param>
         /// <returns></returns>
-        protected string FormatOvereni(OvereniEnum val)
+        private string FormatOvereni(OvereniEnum val)
         {
             return val == OvereniEnum.Overovaci ? "true" : "false";
         }
@@ -694,7 +694,7 @@ namespace openeet_lite
         /// </summary>
         /// <param name="val">The value.</param>
         /// <returns></returns>
-        protected string FormatRezim(RezimEnum val)
+        private string FormatRezim(RezimEnum val)
         {
             return val == RezimEnum.Standardni ? "0" : "1";
         }

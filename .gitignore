@@ -10,3 +10,5 @@
 /dotnet/openeet-lite/TestResults
 /dotnet/UnitTests/bin/Debug
 obj
+/dotnet/openeet-lite/packages/JetBrains.dotMemoryUnit.2.3.20160517.113140/Doc
+/dotnet/openeet-lite/packages/JetBrains.dotMemoryUnit.2.3.20160517.113140
