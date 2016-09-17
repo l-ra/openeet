@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>2016.08.19 23:00:54.507.bdsproj,D:\D PLOCHA\openeet\d_openeet\SdiApp.bdsproj=D:\D PLOCHA\openeet\d_openeet\uctenka.bdsproj</Transaction>
-    <Transaction>2016.08.19 23:01:10.613.bdsproj,D:\D PLOCHA\openeet\d_openeet\uctenka.bdsproj=D:\D PLOCHA\openeet\d_openeet\uctenka.bdsproj</Transaction>
-    <Transaction>2016/08/29 10:57:59.561.bdsproj,D:\D PLOCHA\openeet\d_openeet\uctenka.bdsproj=D:\D PLOCHA\openeet\d_openeet\test.bdsproj</Transaction>
-  </Transactions>
-</BorlandProject>
