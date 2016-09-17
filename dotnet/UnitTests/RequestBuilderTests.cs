@@ -188,16 +188,84 @@ namespace UnitTests
             Assert.IsTrue(builder.Pkcs12.SequenceEqual(bytes));
 
             Assert.AreSame(builder, builder.SetPkcs12Password(pkpString));
-            Assert.AreEqual(builder.Pkcs12Password,pkpString);
+            Assert.AreEqual(builder.Pkcs12Password, pkpString);
         }
 
         #region Public Methods
 
         [TestMethod]
-        [DeploymentItem("TestData/SomeText.txt")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void InvalidIntRezimTests()
+        {
+            var builder = new EetRequestBuilder();
+            builder.SetRezim(2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
         public void BuildTest()
         {
-            
+            var okRequest = new byte[] { 23, 121, 97, 40, 174, 210, 187, 158, 35, 1, 255, 151, 10, 117, 101, 106, 223, 43, 1, 29 };
+            EetRegisterRequest request = new EetRequestBuilder()
+            {
+                DicPopl = "CZ1212121218",
+                IdProvoz = "1",
+                IdPokl = "POKLADNA01",
+                PoradCis = "1",
+                DatTrzby = DateTime.Now,
+                CelkTrzba = 100.0,
+                Rezim = RezimEnum.Standardni,
+                Pkcs12 = TestData._01000003,
+                Pkcs12Password = "eet",
+                CerpZuct = 1,
+                CestSluz = 2,
+                Dan1 = 3,
+                Dan2 = 4,
+                Dan3 = 5,
+                DatOdesl = DateTime.Now,
+                DicPoverujiciho = "CZ1212121219",
+                Overeni = OvereniEnum.Overovaci,
+                PouzitZboz1 = 6,
+                PouzitZboz2 = 7,
+                PouzitZboz3 = 8,
+                PrvniZaslani = PrvniZaslaniEnum.Opakovane,
+                UrcenoCerpZuct = 9,
+                ZaklDan1 = 10,
+                ZaklDan2 = 11,
+                ZaklDan3 = 12,
+                ZaklNepodlDph = 13
+            }.Build();
+
+            Assert.IsNotNull(request.Certificate);
+
+            request = new EetRequestBuilder()
+            {
+                DicPopl = "CZ1212121218",
+                IdProvoz = "1",
+                IdPokl = "POKLADNA01",
+                PoradCis = "1",
+                DatTrzby = DateTime.Now,
+                CelkTrzba = 100.0,
+                Rezim = RezimEnum.Standardni,
+                Pkcs12 = TestData._01000003,
+                CerpZuct = 1,
+                CestSluz = 2,
+                Dan1 = 3,
+                Dan2 = 4,
+                Dan3 = 5,
+                DatOdesl = DateTime.Now,
+                DicPoverujiciho = "CZ1212121219",
+                Overeni = OvereniEnum.Overovaci,
+                PouzitZboz1 = 6,
+                PouzitZboz2 = 7,
+                PouzitZboz3 = 8,
+                PrvniZaslani = PrvniZaslaniEnum.Opakovane,
+                UrcenoCerpZuct = 9,
+                ZaklDan1 = 10,
+                ZaklDan2 = 11,
+                ZaklDan3 = 12,
+                ZaklNepodlDph = 13
+            }.Build();
         }
 
         ///// <summary>
