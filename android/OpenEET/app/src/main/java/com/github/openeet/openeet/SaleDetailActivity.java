@@ -46,15 +46,6 @@ public class SaleDetailActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static void setupVelocity(AssetManager assetManager) {
-        Velocity.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, "com.github.openeet.openeet.velocity.Logger");
-        Velocity.setProperty("resource.loader", "android");
-        Velocity.setProperty("android.resource.loader.class", "com.github.openeet.openeet.velocity.AndroidResourceLoader");
-        Velocity.setProperty("android.content.res.AssetManager",assetManager);
-        Velocity.setProperty("android.content.res.AssetManager.path","com/github/openeet/templates");
-
-        Velocity.init();
-    }
 
 
     /**
@@ -65,8 +56,6 @@ public class SaleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setupVelocity(getAssets());
 
         setContentView(R.layout.activity_sale_detail);
 
@@ -126,61 +115,6 @@ public class SaleDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class ReceiptFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        public ReceiptFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static ReceiptFragment newInstance(Bundle params) {
-            ReceiptFragment fragment = new ReceiptFragment();
-            fragment.setArguments(params);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sale_detail_receipt, container, false);
-            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
-            if(entry!=null) {
-                WebView logWebView = (WebView) rootView.findViewById(R.id.receipt_web_view);
-                String html = formatReceipt(entry);
-                if (html!=null) {
-                    //logWebView.loadDataWithBaseURL("file://android_assets/com/github/openeet/templates", string2base64(html), "text/html; charset=utf-8", "base64", null);
-                    logWebView.loadDataWithBaseURL("file:///android_asset/com/github/openeet/templates/", (html), "text/html; charset=utf-8", "base64", null);
-                }
-                else {
-                    logWebView.loadData(string2base64("<h1>Template Erroe</h1>"), "text/html; charset=utf-8", "base64");
-                }
-            }
-            else {
-                Log.e(LOGCAT,"No entry data arived");
-            }
-            return rootView;
-        }
-
-        private String formatReceipt(SaleService.SaleEntry entry) {
-            try {
-                VelocityContext context = new VelocityContext();
-                context.put("sale",entry);
-                Template template = Velocity.getTemplate("receipt.vm","utf-8");
-                StringWriter sw = new StringWriter();
-                template.merge(context, sw);
-                return sw.toString();
-            }
-            catch (Exception e){
-                Log.e(LOGCAT, "template exception", e);
-            }
-            return null;
-        }
-    }
 
     private static String string2base64(String s){
         try {
@@ -191,81 +125,6 @@ public class SaleDetailActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
-    public static class LogFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        public LogFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static LogFragment newInstance(Bundle params) {
-            LogFragment fragment = new LogFragment();
-            fragment.setArguments(params);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sale_detail_log, container, false);
-            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
-            if(entry!=null) {
-                WebView logWebView = (WebView) rootView.findViewById(R.id.logWebView);
-                String html = String.format("<h4 style='color: blue;'>Log</h4><p>FIK:%s</p>", entry.fik);
-                logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
-            }
-            else {
-                Log.e(LOGCAT,"No entry data arived");
-            }
-            return rootView;
-        }
-    }
-
-    public static class TechFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        public TechFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static TechFragment newInstance(Bundle params) {
-            Log.d(LOGCAT,"Techragment.newInstance");
-            TechFragment fragment = new TechFragment();
-            fragment.setArguments(params);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sale_detail_tech, container, false);
-
-            SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(EXTRA_SALE_ENTRY);
-            if(entry!=null) {
-                WebView logWebView = (WebView) rootView.findViewById(R.id.techWebView);
-                String html = String.format("<h4 style='color: blue;'>Technická diagnostika</h4><p>FIK:%s</p>", entry.fik);
-                logWebView.loadData(string2base64(html), "text/html; charset=utf-8", "base64");
-            }
-            else {
-                Log.e(LOGCAT,"No entry data arived");
-            }
-
-            return rootView;
-        }
-    }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -281,11 +140,11 @@ public class SaleDetailActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return ReceiptFragment.newInstance(getIntent().getExtras());
+                    return SaleDetailWebViewFragment.newInstance("receipt.vm",getIntent().getExtras());
                 case 1:
-                    return LogFragment.newInstance(getIntent().getExtras());
+                    return SaleDetailWebViewFragment.newInstance("log.vm",getIntent().getExtras());
                 case 2:
-                    return TechFragment.newInstance(getIntent().getExtras());
+                    return SaleDetailWebViewFragment.newInstance("tech.vm",getIntent().getExtras());
             }
             return null;
         }

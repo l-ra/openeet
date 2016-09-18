@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,21 +52,25 @@ public class SaleService {
         public String fik;
         public Throwable throwable;
         public String info;
-        long startTime;
-        long startSendingTime;
-        long finishTime;
+        public long startTime;
+        public long startSendingTime;
+        public long finishTime;
+
+        public String getSoapRequest(){ return soapRequest; };
+        public String getSoapResponse(){ return soapResponse; };
+        public EetHeaderDTO getHeader(){ return header; };
+        public EetResponse getResponse(){ return response; };
+        public String getFik(){ return fik; };
+        public String getThrowable(){ return throwable.toString(); };
+        public String getInfo(){ return info; };
+        public String getStartTime(){ return new Date(startTime).toString(); };
+        public String getStartSendingTime(){ return new Date(startSendingTime).toString(); };
+        public String getFinishTime(){ return new Date(finishTime).toString(); };
 
         public SaleRegisterAttempt(){
             startTime=System.currentTimeMillis();
         }
 
-        public String getInfo(){
-            return info;
-        }
-
-        public long getStartTime(){
-            return startTime;
-        }
     }
 
     /**
@@ -112,26 +117,18 @@ public class SaleService {
         public List<SaleRegisterAttempt> attempts;
         public boolean inProgress;
 
-        public boolean isInProgress(){
-            return inProgress;
-        }
+        public SaleRegisterAttempt getCurrentAttempt(){ return currentAttempt; };
+        public EetSaleDTO getSaleData(){ return saleData; };
+        public boolean getRegistered(){ return registered; };
+        public boolean isOffline(){ return offline; };
+        public boolean isError(){ return error; };
+        public String getFik(){ return fik; };
+        public List<SaleRegisterAttempt> getAttempts(){ return attempts; };
+        public boolean isInProgress(){ return inProgress; };
 
-        public String getFik(){
-            return fik;
-        }
-
-        public SaleRegisterAttempt[] getAttempts(){
-            return attempts.toArray(new SaleRegisterAttempt[attempts.size()]);
-        }
-
-        public String getBkp(){
-            return saleData.bkp;
-        }
-
-        public String getPkp(){
-            return saleData.pkp;
-        }
-
+        //public SaleRegisterAttempt[] getAttempts(){
+        //    return attempts.toArray(new SaleRegisterAttempt[attempts.size()]);
+        //}
     }
 
     /**
