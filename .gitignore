@@ -2,12 +2,13 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/dotnet/openeet-lite/.vs/openeet-lite/v14
-/dotnet/UnitTests/obj/Debug
-/dotnet/UnitTests/bin/Debug
-/dotnet/tests/obj/Debug
 /dotnet/tests/bin/Debug
-/dotnet/openeet-lite/TestResults
-/dotnet/openeet-lite/packages/JetBrains.dotMemoryUnit.2.3.20160517.113140
-/dotnet/openeet-lite/obj/Debug
+/dotnet/tests/obj/Debug
 /dotnet/openeet-lite/bin/Debug
+/dotnet/openeet-lite/obj/Debug
+.vs
+/dotnet/openeet-lite/packages/JetBrains.dotMemoryUnit.2.3.20160517.113140
+/dotnet/openeet-lite/TestResults
+/dotnet/UnitTests/bin/Debug
+/dotnet/UnitTests/obj/Debug
+/dotnet/openeet-lite/.vs/openeet-lite/v14
