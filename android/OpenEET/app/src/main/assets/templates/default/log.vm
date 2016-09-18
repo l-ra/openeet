@@ -2,9 +2,37 @@
 <html>
 <head>
 <meta charset="utf-8">
+<style>
+.att-head {
+  font-style: italics;
+  font-weight: bold;
+}
+
+.att-body {
+  padding-left: 2ex;
+}
+
+.fixed {
+    font-family: monospace;
+}
+</style>
 </head>
 <body>
-<h1>Log</h1>
-Příliš Žluťoučký kůň úpěl ďábelské ódy.
+
+#foreach( $att in $entry.attempts )
+    <div class="att">
+        <div class="att-head">Pokus č. $foreach.count:</div>
+        <div class="att-body">
+            Zahájeno: $att.startSendingTime <br>
+            Dokončeno: $att.finishTime <br>
+            Odpověď: $att.response.time <br>
+            Výsledek: $att.result <br>
+            Chyba: $att.throwable <br>
+        </div>
+        <hr>
+    </div>
+#end
+
+
 </body>
 </html>

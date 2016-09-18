@@ -70,4 +70,6 @@ public abstract class SaleStore {
 
     abstract public void removeSale(String bkp) throws SaleStoreException;
 
+    abstract public void resetStore(String type) throws SaleStoreException;
+
 }

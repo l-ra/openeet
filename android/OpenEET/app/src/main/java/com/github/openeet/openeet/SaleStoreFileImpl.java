@@ -14,11 +14,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -229,6 +231,16 @@ public class SaleStoreFileImpl extends  SaleStore {
         Map<String,SaleService.SaleEntry> all=load(BY_BKP);
         all.remove(bkp);
         save(all,BY_BKP);
+    }
+
+    @Override
+    public void resetStore(String type) throws SaleStoreException {
+        File storeFile=getFile(type);
+        if (storeFile.exists()){
+            File target=new File(storeFile.getAbsolutePath()+new SimpleDateFormat("-yyyy-MM-dd'T'HH-mm-ss").format(new Date()));
+            if (!storeFile.renameTo(target))
+                throw new SaleStoreException("failed to rename from->to: "+storeFile.getAbsolutePath()+"->"+target.getAbsolutePath());
+        }
     }
 
 }

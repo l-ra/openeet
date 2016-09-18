@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -149,6 +150,13 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(findViewById(R.id.content_main_activity),"Zobrazeny účtenky s chybou",3000).show();
         } else if (id == R.id.nav_settings) {
             Snackbar.make(findViewById(R.id.content_main_activity),"Nastavení není implementováno",3000).show();
+        } else if (id == R.id.nav_reset_store) {
+            try {
+                SaleStore.getInstance(getApplicationContext()).resetStore(SaleStoreFileImpl.BY_BKP);
+            } catch (SaleStoreException e) {
+                Snackbar.make(findViewById(R.id.content_main_activity),"Chyba pri resety: "+e.getMessage(),3000).show();
+            }
+            Snackbar.make(findViewById(R.id.content_main_activity),"Soubor úložiště zálohován a přejmenován.",3000).show();
         } else if (id == R.id.nav_about) {
             Intent showAboutIntent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(showAboutIntent);

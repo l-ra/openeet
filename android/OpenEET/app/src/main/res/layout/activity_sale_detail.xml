@@ -20,8 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <!-- scroll| - remnoved from scrollFlags -->
 
         </android.support.v7.widget.Toolbar>
 
@@ -39,10 +41,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <RelativeLayout
+        android:id="@+id/button_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_gravity="end|bottom" >
+        android:layout_gravity="end|bottom">
 
 
         <android.support.design.widget.FloatingActionButton

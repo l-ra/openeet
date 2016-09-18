@@ -12,11 +12,6 @@ import com.github.openeet.openeet.velocity.TemplateManager;
 
 import org.apache.velocity.VelocityContext;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
 /**
  * Created by rasekl on 9/18/16.
  */
@@ -43,7 +38,7 @@ public class SaleDetailWebViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_sale_detail_receipt, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_sale_detail_webview, container, false);
 
         SaleService.SaleEntry entry=(SaleService.SaleEntry) getArguments().getSerializable(SaleDetailActivity.EXTRA_SALE_ENTRY);
         String templateName= getArguments().getString(TEMPLATE_NAME_PARAM);
@@ -53,7 +48,7 @@ public class SaleDetailWebViewFragment extends Fragment {
 
             WebView logWebView = (WebView) rootView.findViewById(R.id.receipt_web_view);
             VelocityContext ctx=new VelocityContext();
-            ctx.put("sale",entry);
+            ctx.put("entry",entry);
 
             TemplateManager templateManager=new TemplateManager(getActivity().getAssets());
             String html=templateManager.processTemplate(templateName, ctx);

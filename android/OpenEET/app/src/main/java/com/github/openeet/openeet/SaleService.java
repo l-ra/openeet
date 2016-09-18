@@ -7,7 +7,9 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,17 +57,28 @@ public class SaleService {
         public long startTime;
         public long startSendingTime;
         public long finishTime;
+        public String result;
 
         public String getSoapRequest(){ return soapRequest; };
         public String getSoapResponse(){ return soapResponse; };
         public EetHeaderDTO getHeader(){ return header; };
         public EetResponse getResponse(){ return response; };
         public String getFik(){ return fik; };
-        public String getThrowable(){ return throwable.toString(); };
+        public String getThrowable(){ return throwable!=null?throwable.toString():"-"; };
         public String getInfo(){ return info; };
         public String getStartTime(){ return new Date(startTime).toString(); };
         public String getStartSendingTime(){ return new Date(startSendingTime).toString(); };
         public String getFinishTime(){ return new Date(finishTime).toString(); };
+        public String getResult(){ return result;};
+
+        public String getThrowableTrace(){
+            StringWriter sw=new StringWriter();
+            PrintWriter pw=new PrintWriter(sw);
+            throwable.printStackTrace(pw);
+            pw.close();
+            return throwable!=null?throwable.getMessage()+"\n"+sw.toString():"-";
+        };
+
 
         public SaleRegisterAttempt(){
             startTime=System.currentTimeMillis();
@@ -92,6 +105,7 @@ public class SaleService {
             attempts.add(ret);
             inProgress=true;
             currentAttempt=ret;
+            currentAttempt.result="N/A";
             return ret;
         }
 
@@ -104,6 +118,18 @@ public class SaleService {
             currentAttempt.info=info;
             currentAttempt.throwable=throwable;
             currentAttempt.finishTime=System.currentTimeMillis();
+            if (registered){
+                currentAttempt.result="OK";
+            }
+            else {
+                if (error){
+                    currentAttempt.result="Error!";
+                }
+                else if (offline){
+                    currentAttempt.result="Retry";
+                }
+            }
+
             inProgress=false;
             currentAttempt=null;
         }
@@ -129,6 +155,45 @@ public class SaleService {
         //public SaleRegisterAttempt[] getAttempts(){
         //    return attempts.toArray(new SaleRegisterAttempt[attempts.size()]);
         //}
+
+        public String wrapping(String s, int charCount){
+            StringBuffer sb=new StringBuffer();
+            int remain=s.length();
+            int offset=0;
+            while(remain>0){
+                sb.append(s.substring(offset,offset+charCount>s.length()-1?s.length()-1:offset+charCount)).append(" ");
+                offset+=charCount;
+                remain-=charCount;
+            }
+            return sb.toString();
+        }
+
+        public String groupLine(String s, int charPerGroupCount, int groupsPerLine){
+            StringBuffer sb=new StringBuffer();
+            int remain=s.length();
+            int offset=0;
+            int groupCount=0;
+            while(remain>0){
+                sb.append(s.substring(offset,offset+charPerGroupCount>s.length()?s.length():offset+charPerGroupCount));
+                offset+=charPerGroupCount;
+                remain-=charPerGroupCount;
+                groupCount++;
+                if (groupCount==groupsPerLine) {
+                    sb.append("\n");
+                    groupCount=0;
+                }
+                else {
+                    sb.append(" ");
+                }
+            }
+            return sb.toString();
+        }
+
+        public String escapeXml(String s){
+            return s.replaceAll("&","&amp;").replaceAll("<","&lt;");
+        }
+
+
     }
 
     /**

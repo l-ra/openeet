@@ -27,6 +27,10 @@
             android:icon="@drawable/pointer_spot_touch"
             android:title="Nastavení" />
         <item
+            android:id="@+id/nav_reset_store"
+            android:icon="@drawable/pointer_spot_touch"
+            android:title="Reset úložiště" />
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/pointer_spot_touch"
             android:title="O aplikaci ..." />
