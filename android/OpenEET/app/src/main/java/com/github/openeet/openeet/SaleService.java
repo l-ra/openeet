@@ -157,6 +157,7 @@ public class SaleService {
         //}
 
         public String wrapping(String s, int charCount){
+            if (s==null) return "null";
             StringBuffer sb=new StringBuffer();
             int remain=s.length();
             int offset=0;
@@ -169,6 +170,7 @@ public class SaleService {
         }
 
         public String groupLine(String s, int charPerGroupCount, int groupsPerLine){
+            if (s==null) return "null";
             StringBuffer sb=new StringBuffer();
             int remain=s.length();
             int offset=0;
@@ -190,6 +192,7 @@ public class SaleService {
         }
 
         public String escapeXml(String s){
+            if (s==null) return "null";
             return s.replaceAll("&","&amp;").replaceAll("<","&lt;");
         }
 
