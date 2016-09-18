@@ -15,8 +15,24 @@ public class EetHeaderDTO implements Serializable{
 	public String uuid_zpravy;
 	public String overeni;
 	
+	public String getDatOdesl() {
+		return dat_odesl;
+	}
+
+	public String getPrvniZaslani() {
+		return prvni_zaslani;
+	}
+
+	public String getUuidZpravy() {
+		return uuid_zpravy;
+	}
+
+	public String getOvereni() {
+		return overeni;
+	}	
+	
 	public String toString() {
-    	return String.format("%s|%s|%s|%s",dat_odesl, uuid_zpravy, prvni_zaslani, overeni);
+    	return String.format("%s|%s|%s|%s",getDatOdesl(), uuid_zpravy, prvni_zaslani, overeni);
     }   
 }
 

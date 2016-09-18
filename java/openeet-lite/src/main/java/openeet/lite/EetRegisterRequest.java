@@ -674,7 +674,7 @@ public class EetRegisterRequest {
 		public Builder fromDTO(EetHeaderDTO dto){
 			if (dto==null) return this;
 			this
-		    .dat_odesl(dto.dat_odesl)
+		    .dat_odesl(dto.getDatOdesl())
 			.prvni_zaslani(dto.prvni_zaslani)
 			.uuid_zpravy(dto.uuid_zpravy)
 			.overeni(dto.overeni);
@@ -1064,7 +1064,7 @@ public class EetRegisterRequest {
 	 * @return
 	 */
 	public String generateSoapRequest(EetHeaderDTO header){
-		return generateSoapRequest(parseDate(header.dat_odesl), 
+		return generateSoapRequest(parseDate(header.getDatOdesl()), 
 				                   PrvniZaslani.valueOf(header.prvni_zaslani),
 				                   header.uuid_zpravy, 
 				                   Overeni.valueOf(header.overeni));

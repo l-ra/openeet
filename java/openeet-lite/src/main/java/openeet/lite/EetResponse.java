@@ -31,6 +31,15 @@ public class EetResponse implements Serializable {
 	private String warnings; // all warnings joined into one string as [code1]
 								// text1\n[code2] text2...
 
+	public String getErrCode(){ return errCode; }
+	public String getErrText(){ return errText; }
+	public String getUuid(){ return uuid; }
+	public String getBkp(){ return bkp; }
+	public String getTime(){ return time; }
+	public String getFik(){ return fik; }
+	public String getTest(){ return test; }
+	public String getWarnings(){ return warnings; }
+	
 	public EetResponse(String response) throws ParserConfigurationException, SAXException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();

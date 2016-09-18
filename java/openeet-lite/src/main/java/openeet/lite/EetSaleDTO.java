@@ -35,6 +35,32 @@ public class EetSaleDTO implements Serializable {
     public String bkp;
     public String pkp;
     
+    
+	public String getDicPopl(){ return dic_popl; }
+    public String getDicPoverujiciho(){ return dic_poverujiciho; }
+    public String getIdProvoz(){ return id_provoz; }
+    public String getIdPokl(){ return id_pokl; }
+    public String getPoradCis(){ return porad_cis; }
+    public String getDatTrzby(){ return dat_trzby; }
+    public String getCelkTrzba(){ return celk_trzba; }
+    public String getZaklNepodlDph(){ return zakl_nepodl_dph; }
+    public String getZaklDan1(){ return zakl_dan1; }
+    public String getDan1(){ return dan1; }
+    public String getZaklDan2(){ return zakl_dan2; }
+    public String getDan2(){ return dan2; }
+    public String getZaklDan3(){ return zakl_dan3; }
+    public String getDan3(){ return dan3; }
+    public String getCestSluz(){ return cest_sluz; }
+    public String getPouzitZboz1(){ return pouzit_zboz1; }
+    public String getPouzitZboz2(){ return pouzit_zboz2; }
+    public String getPouzitZboz3(){ return pouzit_zboz3; }
+    public String getUrcenoCerpZuct(){ return urceno_cerp_zuct; }
+    public String getCerpZuct(){ return cerp_zuct; }
+    public String getRezim(){ return rezim; } 
+    public String getBkp(){ return bkp; }
+    public String getPkp(){ return pkp; }    
+    
+    
     @Override
     public String toString() {
     	return String.format("%s|%s|%s|%s|%s|%s",dic_popl, id_provoz, id_pokl, porad_cis, dat_trzby,celk_trzba);
