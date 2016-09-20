@@ -16,11 +16,7 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using openeet_lite;
 
@@ -194,14 +190,11 @@ namespace UnitTests
             string requestBody = request.GenerateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
             string response = request.SendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
-
-            //via local stunnel
-            //string  response = request.SendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
-
+            
             // TODO
             //zde by to chtelo dodelat kontrolu jestli prijata zprava nebyla zmenena, jestli souhlasi podpis zpravy
             //muzete to nekdo doplnit ?
-            
+
             //extract FIK
             if (response == null) throw new ApplicationException("response is null");
             if (response.IndexOf("Potvrzeni fik=", StringComparison.Ordinal) < 0) throw new ApplicationException("FIK not found in the response");
@@ -224,6 +217,11 @@ namespace UnitTests
                 Rezim = 0
             }.Build();
         }
+
+        /// <summary>
+        /// Generates the basic request.
+        /// </summary>
+        /// <returns></returns>
         private EetRegisterRequest GenerateBasicRequest()
         {
             return new EetRequestBuilder

@@ -27,6 +27,9 @@ namespace UnitTests
     [TestClass]
     public class RequestBuilderTests
     {
+        /// <summary>
+        /// Test sets methods.
+        /// </summary>
         [TestMethod]
         [DeploymentItem("TestData/SomeText.txt")]
         public void SetMethodsTests()
@@ -55,7 +58,7 @@ namespace UnitTests
             Assert.AreSame(builder, builder.SetDatOdesl(dt.ToString("yyyy-MM-dd'T'HH:mm:sszzz")));
             Assert.AreEqual(builder.DatOdesl, dt);
 
-            Assert.AreEqual(builder.PrvniZaslani, PrvniZaslaniEnum.Prvni);
+            Assert.AreEqual(builder.PrvniZaslani, PrvniZaslaniEnum.Prvni);      // Default value
             Assert.AreSame(builder, builder.SetPrvniZaslani(PrvniZaslaniEnum.Opakovane));
             Assert.AreEqual(builder.PrvniZaslani, PrvniZaslaniEnum.Opakovane);
             Assert.AreSame(builder, builder.SetPrvniZaslani(true));
@@ -67,7 +70,7 @@ namespace UnitTests
             Assert.AreSame(builder, builder.SetUuidZpravy(guid.ToString()));
             Assert.AreEqual(builder.UuidZpravy, guid);
 
-            Assert.AreEqual(builder.Overeni, OvereniEnum.Produkcni);
+            Assert.AreEqual(builder.Overeni, OvereniEnum.Produkcni);            // Default value
             Assert.AreSame(builder, builder.SetOvereni(OvereniEnum.Overovaci));
             Assert.AreEqual(builder.Overeni, OvereniEnum.Overovaci);
             Assert.AreSame(builder, builder.SetOvereni(false));
@@ -164,7 +167,7 @@ namespace UnitTests
             Assert.AreSame(builder, builder.SetCerpZuct("1,0"));
             Assert.AreEqual(builder.CerpZuct, 1.0);
 
-            Assert.AreEqual(builder.Rezim, RezimEnum.Standardni);
+            Assert.AreEqual(builder.Rezim, RezimEnum.Standardni);       // Default value
             Assert.AreSame(builder, builder.SetRezim(RezimEnum.Zjednoduseny));
             Assert.AreEqual(builder.Rezim, RezimEnum.Zjednoduseny);
             Assert.AreSame(builder, builder.SetRezim("0"));
@@ -191,8 +194,9 @@ namespace UnitTests
             Assert.AreEqual(builder.Pkcs12Password, pkpString);
         }
 
-        #region Public Methods
-
+        /// <summary>
+        /// Test rezim set with bad value.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void InvalidIntRezimTests()
@@ -201,11 +205,13 @@ namespace UnitTests
             builder.SetRezim(2);
         }
 
+        /// <summary>
+        /// Test build method.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void BuildTest()
         {
-            var okRequest = new byte[] { 23, 121, 97, 40, 174, 210, 187, 158, 35, 1, 255, 151, 10, 117, 101, 106, 223, 43, 1, 29 };
             EetRegisterRequest request = new EetRequestBuilder()
             {
                 DicPopl = "CZ1212121218",
@@ -238,7 +244,7 @@ namespace UnitTests
 
             Assert.IsNotNull(request.Certificate);
 
-            request = new EetRequestBuilder()
+            new EetRequestBuilder()
             {
                 DicPopl = "CZ1212121218",
                 IdProvoz = "1",
@@ -267,16 +273,5 @@ namespace UnitTests
                 ZaklNepodlDph = 13
             }.Build();
         }
-
-        ///// <summary>
-        ///// Builds this instance.
-        ///// </summary>
-        ///// <returns></returns>
-        //public EetRegisterRequest Build()
-        //{
-        //    return new EetRegisterRequest(this);
-        //}
-
-        #endregion
     }
 }

@@ -362,7 +362,7 @@ namespace openeet_lite
 
             try
             {
-                if (Pkp == null && key != null)
+                if (Pkp == null)
                 {
                     string toBeSigned = FormatToBeSignedData();
                     if (toBeSigned != null)
@@ -397,7 +397,7 @@ namespace openeet_lite
         {
             if (DicPopl == null || IdProvoz == null || IdPokl == null || PoradCis == null || DatTrzby == null || CelkTrzba == null)
                 throw new ArgumentNullException($"missing some of DicPopl({DicPopl}), IdProvoz({IdProvoz}), IdPokl({IdPokl}), PoradCis({PoradCis}), DatTrzby({DatTrzby}), CelkTrzba({CelkTrzba})");
-            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}", DicPopl, IdProvoz, IdPokl, PoradCis, FormatDate(DatTrzby), FormatAmount(CelkTrzba.GetValueOrDefault()));
+            return $"{DicPopl}|{IdProvoz}|{IdPokl}|{PoradCis}|{FormatDate(DatTrzby)}|{FormatAmount(CelkTrzba.GetValueOrDefault())}";
         }
 
         /// <summary>
