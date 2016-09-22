@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using openeet_lite;
 
 namespace tests
@@ -24,7 +25,7 @@ namespace tests
     class Program
     {
 
-        public static void SimpleRegistrationProcessTest()
+        public static async Task SimpleRegistrationProcessTest()
         {
             // moznost pouziti
             /*EetRegisterRequest request = EetRegisterRequest.Builder()
@@ -65,7 +66,7 @@ namespace tests
             //try send
             string requestBody = request.GenerateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
-            string response = request.SendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
+            string response = await request.SendRequestAsync(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel
             //string  response = request.SendRequest(requestBody, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
@@ -80,7 +81,7 @@ namespace tests
             if (response.IndexOf("Potvrzeni fik=", StringComparison.Ordinal) < 0) throw new ApplicationException("FIK not found in the response");
             //ready to print online receipt
             Console.WriteLine(@"OK!"); //a bit brief :-) but enough
-                                      //set minimal business data & certificate with key loaded from pkcs12 file
+                                       //set minimal business data & certificate with key loaded from pkcs12 file
         }
 
         /*
@@ -88,7 +89,7 @@ namespace tests
             <pkp cipher="RSA2048" digest="SHA256" encoding="base64">Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==</pkp>
             <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
             */
-        public static void SignAndSend()
+        public static async Task SignAndSend()
         {
             EetRegisterRequest data = EetRegisterRequest.Builder()
                .SetDicPopl("CZ1212121218")
@@ -119,7 +120,7 @@ namespace tests
             Console.WriteLine(@"SOAP request created");
 
             //assertTrue(validateXmlDSig(signed, data.getCertificate()));
-            string response = data.SendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
+            string response = await data.SendRequestAsync(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
 
             //via local stunnel 
             //string  response=data.SendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
@@ -132,7 +133,7 @@ namespace tests
         static void Main(string[] args)
         {
             //SignAndSend();
-            SimpleRegistrationProcessTest();
+            Task.WaitAll(SimpleRegistrationProcessTest());
             Console.WriteLine(@"Press any key to finish ...");
             Console.ReadKey();
         }

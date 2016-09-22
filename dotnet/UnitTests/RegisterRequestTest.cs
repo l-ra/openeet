@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using openeet_lite;
 
@@ -162,7 +163,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SendRequestTest()
+        public async Task SendRequestTest()
         {
             EetRegisterRequest request = new EetRequestBuilder()
             {
@@ -189,8 +190,8 @@ namespace UnitTests
             //try send
             string requestBody = request.GenerateSoapRequest();
             if (requestBody == null) throw new ApplicationException("SOAP request is null");
-            string response = request.SendRequest(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
-            
+            string response = await request.SendRequestAsync(requestBody, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
+
             // TODO
             //zde by to chtelo dodelat kontrolu jestli prijata zprava nebyla zmenena, jestli souhlasi podpis zpravy
             //muzete to nekdo doplnit ?

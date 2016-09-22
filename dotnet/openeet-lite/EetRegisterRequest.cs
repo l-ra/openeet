@@ -23,6 +23,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
+
 // ReSharper disable MemberInitializerValueIgnored
 
 namespace openeet_lite
@@ -644,7 +646,7 @@ namespace openeet_lite
         /// <param name="serviceUrl">The service URL.</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException">When cannot obtain response stream.</exception>
-        public string SendRequest(string requestBody, string serviceUrl)
+        public async Task<string> SendRequestAsync(string requestBody, string serviceUrl)
         {
             //enable minimal versions of TLS required by EET
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
@@ -654,19 +656,23 @@ namespace openeet_lite
             req.ContentLength = content.Length;
             req.Headers.Add("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
             req.Method = "POST";
-            Stream reqStream = req.GetRequestStream();
-            reqStream.Write(content, 0, content.Length);
-            reqStream.Close();
 
-            WebResponse resp = req.GetResponse();
-            Stream respStream = resp.GetResponseStream();
-            if (respStream == null)
+            return await Task<string>.Factory.StartNew(() =>
             {
-                throw new NullReferenceException();
-            }
-            StreamReader rdr = new StreamReader(respStream, Encoding.UTF8);
-            string responseString = rdr.ReadToEnd();
-            return responseString;
+                Stream reqStream = req.GetRequestStream();
+                reqStream.Write(content, 0, content.Length);
+                reqStream.Close();
+
+                WebResponse resp = req.GetResponse();
+                Stream respStream = resp.GetResponseStream();
+                if (respStream == null)
+                {
+                    throw new NullReferenceException();
+                }
+                StreamReader rdr = new StreamReader(respStream, Encoding.UTF8);
+                string responseString = rdr.ReadToEnd();
+                return responseString;
+            });
         }
 
         /// <summary>
