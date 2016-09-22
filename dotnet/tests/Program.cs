@@ -1,7 +1,8 @@
 ﻿/*
  * Copyright 2016 Luděk Rašek and other contributors as 
  * indicated by the @author tags.
- *
+ * Upravil Jakub Cermoch
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,12 +17,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using openeet_lite;
 
 namespace tests
@@ -29,7 +24,7 @@ namespace tests
     class Program
     {
 
-        public static void simpleRegistrationProcessTest()
+        public static void SimpleRegistrationProcessTest()
         {
             // moznost pouziti
             /*EetRegisterRequest request = EetRegisterRequest.Builder()
@@ -82,9 +77,9 @@ namespace tests
 
             //extract FIK
             if (response == null) throw new ApplicationException("response is null");
-            if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
+            if (response.IndexOf("Potvrzeni fik=", StringComparison.Ordinal) < 0) throw new ApplicationException("FIK not found in the response");
             //ready to print online receipt
-            Console.WriteLine("OK!"); //a bit brief :-) but enough
+            Console.WriteLine(@"OK!"); //a bit brief :-) but enough
                                       //set minimal business data & certificate with key loaded from pkcs12 file
         }
 
@@ -93,14 +88,14 @@ namespace tests
             <pkp cipher="RSA2048" digest="SHA256" encoding="base64">Ddk2WTYu8nzpQscH7t9n8cBsGq4k/ggCwdfkPjM+gHUHPL8P7qmnWofzeW2pAekSSmOClBjF141yN+683g0aXh6VvxY4frBjYhy4XB506LDykIW0oAv086VH7mR0utA8zGd7mCI55p3qv1M/oog/2yG0DefD5mtHIiBG7/n7jgWbROTatJPQYeQWEXEoOJh9/gAq2kuiK3TOYeGeHwOyFjM2Cy3UVal8E3LwafP49kmGOWjHG+cco0CRXxOD3b8y4mgBqTwwC4V8e85917e5sVsaEf3t0hwPkag+WM1LIRzW+QwkkgiMEwoIqCAkhoF1eq/VcsML2ZcrLGejAeAixw==</pkp>
             <bkp digest="SHA1" encoding="base16">AC502107-1781EEE4-ECFD152F-2ED08CBA-E6226199</bkp>
             */
-        public static void signAndSend()
+        public static void SignAndSend()
         {
             EetRegisterRequest data = EetRegisterRequest.Builder()
                .SetDicPopl("CZ1212121218")
                .SetIdProvoz("1")
                .SetIdPokl("POKLADNA01")
                .SetPoradCis("1")
-               .SetDatTrzbys("2016-09-12T08:43:28+02:00")
+               .SetDatTrzby("2016-09-12T08:43:28+02:00")
                .SetCelkTrzba(100.0)
                .SetPkcs12(TestData._01000003)
                .SetPkcs12Password("eet")
@@ -108,7 +103,7 @@ namespace tests
                .Build();
             if (data == null)
                 throw new Exception("failed - data null");
-            Console.WriteLine("business data created");
+            Console.WriteLine(@"business data created");
 
             string pkp = EetRegisterRequest.FormatPkp(data.Pkp);
             string bkp = EetRegisterRequest.FormatBkp(data.Bkp);
@@ -118,10 +113,10 @@ namespace tests
                 throw new Exception("failed - PKP differs");
             if (!bkp.Equals(expectedBkp))
                 throw new Exception("failed - BKP differs");
-            Console.WriteLine("Codes validated");
+            Console.WriteLine(@"Codes validated");
 
             string signed = data.GenerateSoapRequest();
-            Console.WriteLine("SOAP request created");
+            Console.WriteLine(@"SOAP request created");
 
             //assertTrue(validateXmlDSig(signed, data.getCertificate()));
             string response = data.SendRequest(signed, "https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3");
@@ -129,15 +124,16 @@ namespace tests
             //via local stunnel 
             //string  response=data.SendRequest(signed, "http://127.0.0.1:27541/eet/services/EETServiceSOAP/v2");
 
-            if (response.IndexOf("Potvrzeni fik=") < 0) throw new ApplicationException("FIK not found in the response");
-            Console.WriteLine("FIK received:" + response.Substring(response.IndexOf("Potvrzeni fik=") + 15, 36));
+            if (response.IndexOf("Potvrzeni fik=", StringComparison.Ordinal) < 0) throw new ApplicationException("FIK not found in the response");
+            Console.WriteLine(@"FIK received:" + response.Substring(response.IndexOf("Potvrzeni fik=", StringComparison.Ordinal) + 15, 36));
         }
 
+        // ReSharper disable once UnusedParameter.Local
         static void Main(string[] args)
         {
-            //signAndSend();
-            simpleRegistrationProcessTest();
-            Console.WriteLine("Press any key to finish ...");
+            //SignAndSend();
+            SimpleRegistrationProcessTest();
+            Console.WriteLine(@"Press any key to finish ...");
             Console.ReadKey();
         }
     }

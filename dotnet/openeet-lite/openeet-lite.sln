@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openeet-lite", "openeet-lit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "..\tests\tests.csproj", "{4B3F2169-2FEC-4F20-907F-81D98B9C2CC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{FF0A880B-55F0-4DCC-BF3C-C4242F4BAA55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4B3F2169-2FEC-4F20-907F-81D98B9C2CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B3F2169-2FEC-4F20-907F-81D98B9C2CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B3F2169-2FEC-4F20-907F-81D98B9C2CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0A880B-55F0-4DCC-BF3C-C4242F4BAA55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0A880B-55F0-4DCC-BF3C-C4242F4BAA55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0A880B-55F0-4DCC-BF3C-C4242F4BAA55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0A880B-55F0-4DCC-BF3C-C4242F4BAA55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
