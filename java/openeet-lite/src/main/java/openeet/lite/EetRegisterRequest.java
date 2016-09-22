@@ -978,6 +978,8 @@ public class EetRegisterRequest {
 	}
 	
 	public static String formatDate(Date date){
+		if(date==null)
+			return null;
 		String ret= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date);
 		ret=ret.replaceFirst("\\+([0-9][0-9])([0-9][0-9])$","+$1:$2");
 		return ret;
@@ -1026,7 +1028,9 @@ public class EetRegisterRequest {
 		return _bkp;  
 	}
 
-	private static String formatAmount(double amount){
+	private static String formatAmount(Double amount){
+		if(amount==null)
+			return null;
 		return String.format(Locale.US, "%.2f", amount);
 	}
 
@@ -1116,90 +1120,104 @@ public class EetRegisterRequest {
 			}
 			br.close();
 			
-			String xmlTemplate=loadTemplateFromResource("/openeet/lite/templates/template.xml",hashes.get("template.xml"));
-			String digestTemplate=loadTemplateFromResource("/openeet/lite/templates/digest-template",hashes.get("digest-template"));
-			String signatureTemplate=loadTemplateFromResource("/openeet/lite/templates/signature-template",hashes.get("signature-template"));
-					
-			digestTemplate=replacePlaceholders(digestTemplate, null, null, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
-			digestTemplate=removeUnusedPlaceholders(digestTemplate);
-			MessageDigest md=MessageDigest.getInstance("SHA-256");
-			byte[] digestRaw=md.digest(digestTemplate.getBytes("utf-8"));
-			String digest=Base64.encodeToString(digestRaw, Base64.NO_WRAP);
-			
-			signatureTemplate=replacePlaceholders(signatureTemplate, digest, null, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
-			signatureTemplate=removeUnusedPlaceholders(signatureTemplate);
-			Signature signatureEngine = Signature.getInstance("SHA256withRSA");
-	        signatureEngine.initSign(key);
-	        signatureEngine.update(signatureTemplate.getBytes("UTF-8"));
-	        byte[] signatureRaw=signatureEngine.sign();
-	        String signature=Base64.encodeToString(signatureRaw, Base64.NO_WRAP);
-	        
-			xmlTemplate=replacePlaceholders(xmlTemplate, digest, signature, dat_odesl_force, prvni_zaslani_force, uuid_zpravy_force, overeni_force);
-			xmlTemplate=removeUnusedPlaceholders(xmlTemplate);
+			String templateBody=loadTemplateFromResource("/openeet/lite/templates/template_body.txt",hashes.get("template_body"));
+			String templateSignature=loadTemplateFromResource("/openeet/lite/templates/template_signature.txt",hashes.get("template_signature"));
+			String templateRequest=loadTemplateFromResource("/openeet/lite/templates/template_request.txt",hashes.get("template_request"));
 
-			return xmlTemplate;			
+			HashMap<String,String> values=prepareValues(dat_odesl_force,prvni_zaslani_force,uuid_zpravy_force,overeni_force);
+			templateBody=fillTemplate(templateBody,values);
+
+			MessageDigest md=MessageDigest.getInstance("SHA-256");
+			byte[] digestRaw=md.digest(templateBody.getBytes("utf-8"));
+			String digest=Base64.encodeToString(digestRaw,Base64.NO_WRAP);
+			values.put("soap:Body",templateBody);
+			values.put("digest",digest);
+
+			templateSignature=fillTemplate(templateSignature,values);
+			Signature signatureEngine=Signature.getInstance("SHA256withRSA");
+			signatureEngine.initSign(key);
+			signatureEngine.update(templateSignature.getBytes("UTF-8"));
+			byte[] signatureRaw=signatureEngine.sign();
+			String signature=Base64.encodeToString(signatureRaw,Base64.NO_WRAP);
+			values.put("signature",signature);
+
+			templateRequest=fillTemplate(templateRequest,values);
+			return templateRequest;
 		}
 		catch (Exception e){
 			throw new RuntimeException("Error while generating soap request",e);
 		}
 	}
 	
-	private String replacePlaceholders(String src, String digest, String signature, Date dat_odesl_force, PrvniZaslani prvni_zaslani_force, String uuid_zpravy_force, Overeni overeni_force){
-		try {
-			
-			if (prvni_zaslani_force!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani_force.toString());
-			else if (prvni_zaslani!=null) src=src.replace("${prvni_zaslani}",prvni_zaslani.toString());
-			
-			if (dat_odesl_force!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl_force));
-			else if (dat_odesl!=null) src=src.replace("${dat_odesl}",formatDate(dat_odesl));
-			
-			if (uuid_zpravy_force!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy_force.toString());
-			else if (uuid_zpravy!=null) src=src.replace("${uuid_zpravy}",uuid_zpravy.toString());
-			
-			if (overeni_force!=null) src=src.replace("${overeni}",overeni_force.toString());
-			else if (overeni!=null) src=src.replace("${overeni}",overeni.toString());
+private HashMap<String,String> prepareValues(Date dat_odesl_force,PrvniZaslani prvni_zaslani_force,String uuid_zpravy_force,Overeni overeni_force) throws Exception
+  {
+    HashMap<String,String> values=new HashMap<String,String>();
+    values.put("prvni_zaslani",(prvni_zaslani_force!=null?prvni_zaslani_force:prvni_zaslani).toString());
+    values.put("dat_odesl",formatDate(dat_odesl_force!=null?dat_odesl_force:dat_odesl));
+    values.put("uuid_zpravy",(uuid_zpravy_force!=null?uuid_zpravy_force:uuid_zpravy).toString());
+    values.put("overeni",(overeni_force!=null?overeni_force:overeni).toString());
+    values.put("certb64",certificate!=null?Base64.encodeToString(certificate.getEncoded(),Base64.NO_WRAP):null);
+    values.put("dic_popl",dic_popl);
+    values.put("dic_poverujiciho",dic_poverujiciho);
+    values.put("id_provoz",id_provoz);
+    values.put("id_pokl",id_pokl);
+    values.put("porad_cis",porad_cis);
+    values.put("dat_trzby",formatDate(dat_trzby));
+    values.put("celk_trzba",formatAmount(celk_trzba));
+    values.put("zakl_nepodl_dph",formatAmount(zakl_nepodl_dph));
+    values.put("zakl_dan1",formatAmount(zakl_dan1));
+    values.put("dan1",formatAmount(dan1));
+    values.put("zakl_dan2",formatAmount(zakl_dan2));
+    values.put("dan2",formatAmount(dan2));
+    values.put("zakl_dan3",formatAmount(zakl_dan3));
+    values.put("dan3",formatAmount(dan3));
+    values.put("cest_sluz",formatAmount(cest_sluz));
+    values.put("pouzit_zboz1",formatAmount(pouzit_zboz1));
+    values.put("pouzit_zboz2",formatAmount(pouzit_zboz2));
+    values.put("pouzit_zboz3",formatAmount(pouzit_zboz3));
+    values.put("urceno_cerp_zuct",formatAmount(urceno_cerp_zuct));
+    values.put("cerp_zuct",formatAmount(cerp_zuct));
+    values.put("rezim",rezim!=null?rezim.toString():null);
+    values.put("bkp",formatBkp(bkp));
+    values.put("pkp",formatPkp(pkp));
+    return values;
+  }
 
-			if (certificate!=null) src=src.replace("${certb64}",Base64.encodeToString(certificate.getEncoded(), Base64.NO_WRAP));
-			if (dic_popl!=null) src=src.replace("${dic_popl}",dic_popl);
-			if (dic_poverujiciho!=null) src=src.replace("${dic_poverujiciho}",dic_poverujiciho);
-			if (id_provoz!=null) src=src.replace("${id_provoz}",id_provoz);
-			if (id_pokl!=null) src=src.replace("${id_pokl}",id_pokl);
-			if (porad_cis!=null) src=src.replace("${porad_cis}",porad_cis);
-			if (dat_trzby!=null) src=src.replace("${dat_trzby}",formatDate(dat_trzby));
-			if (celk_trzba!=null) src=src.replace("${celk_trzba}",formatAmount(celk_trzba));
-			if (zakl_nepodl_dph!=null) src=src.replace("${zakl_nepodl_dph}",formatAmount(zakl_nepodl_dph));
-			if (zakl_dan1!=null) src=src.replace("${zakl_dan1}",formatAmount(zakl_dan1));
-			if (dan1!=null) src=src.replace("${dan1}",formatAmount(dan1));
-			if (zakl_dan2!=null) src=src.replace("${zakl_dan2}",formatAmount(zakl_dan2));
-			if (dan2!=null) src=src.replace("${dan2}",formatAmount(dan2));
-			if (zakl_dan3!=null) src=src.replace("${zakl_dan3}",formatAmount(zakl_dan3));
-			if (dan3!=null) src=src.replace("${dan3}",formatAmount(dan3));
-			if (cest_sluz!=null) src=src.replace("${cest_sluz}",formatAmount(cest_sluz));
-			if (pouzit_zboz1!=null) src=src.replace("${pouzit_zboz1}",formatAmount(pouzit_zboz1));
-			if (pouzit_zboz2!=null) src=src.replace("${pouzit_zboz2}",formatAmount(pouzit_zboz2));
-			if (pouzit_zboz3!=null) src=src.replace("${pouzit_zboz3}",formatAmount(pouzit_zboz3));
-			if (urceno_cerp_zuct!=null) src=src.replace("${urceno_cerp_zuct}",formatAmount(urceno_cerp_zuct));
-			if (cerp_zuct!=null) src=src.replace("${cerp_zuct}",formatAmount(cerp_zuct));
-			if (rezim!=null) src=src.replace("${rezim}",rezim.toString());
-			if (bkp!=null) src=src.replace("${bkp}",formatBkp(bkp));
-			if (pkp!=null) src=src.replace("${pkp}",formatPkp(pkp));
-			if (digest!=null) src=src.replace("${digest}",digest);
-			if (signature!=null) src=src.replace("${signature}",signature);
-			
-			return src;
-		}
-		catch (Exception e){
-			throw new IllegalArgumentException("replacement processing got wrong",e);
-		}
-	}
-	
-	private String removeUnusedPlaceholders(String src){
-		src=src.replaceAll(" [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"","");
-		src=src.replaceAll("\\$\\{[a-b_0-9]+\\}","");
-		return src;
-	}
-	
-	
+  private String fillTemplate(String template,HashMap<String,String> values)
+  {
+    StringBuilder result=new StringBuilder();
+    for(int i=0;i<template.length();++i)
+    {
+      char c=template.charAt(i);
+      if(!template.startsWith("${",i)&&!template.startsWith(" @{",i))
+      {
+        result.append(c);
+        continue;
+      }
+      int p=template.indexOf('}',i+2);
+      if(p<0)
+      {
+        result.append(c);
+        continue;
+      }
+      boolean attribute=c==' ';
+      if(attribute)
+        ++i; //skip space
+      String name=template.substring(i+2,p);
+      if(!values.containsKey(name))
+        throw new RuntimeException("Unknown placeholder "+template.substring(i,p+1));
+      i=p;
+      String value=values.get(name);
+      if(value!=null)
+      {
+        if(attribute)
+          value=String.format(" %s=\"%s\"",name,value);
+        result.append(value);
+      }
+    }
+    return result.toString();
+  }
+  
 	public static byte[] loadStream(InputStream in) throws IOException {
 		return loadStream(in,null);
 	}
