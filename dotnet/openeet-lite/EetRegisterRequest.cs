@@ -648,6 +648,18 @@ namespace openeet_lite
         /// <exception cref="NullReferenceException">When cannot obtain response stream.</exception>
         public async Task<string> SendRequestAsync(string requestBody, string serviceUrl)
         {
+            return await Task<string>.Factory.StartNew(() => SendRequest(requestBody, serviceUrl));
+        }
+
+        /// <summary>
+        /// Sends the request.
+        /// </summary>
+        /// <param name="requestBody">The request body.</param>
+        /// <param name="serviceUrl">The service URL.</param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException">When cannot obtain response stream.</exception>
+        public string SendRequest(string requestBody, string serviceUrl)
+        {
             //enable minimal versions of TLS required by EET
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
             byte[] content = Encoding.UTF8.GetBytes(requestBody);
@@ -657,22 +669,19 @@ namespace openeet_lite
             req.Headers.Add("SOAPAction", "http://fs.mfcr.cz/eet/OdeslaniTrzby");
             req.Method = "POST";
 
-            return await Task<string>.Factory.StartNew(() =>
-            {
-                Stream reqStream = req.GetRequestStream();
-                reqStream.Write(content, 0, content.Length);
-                reqStream.Close();
+            Stream reqStream = req.GetRequestStream();
+            reqStream.Write(content, 0, content.Length);
+            reqStream.Close();
 
-                WebResponse resp = req.GetResponse();
-                Stream respStream = resp.GetResponseStream();
-                if (respStream == null)
-                {
-                    throw new NullReferenceException();
-                }
-                StreamReader rdr = new StreamReader(respStream, Encoding.UTF8);
-                string responseString = rdr.ReadToEnd();
-                return responseString;
-            });
+            WebResponse resp = req.GetResponse();
+            Stream respStream = resp.GetResponseStream();
+            if (respStream == null)
+            {
+                throw new NullReferenceException();
+            }
+            StreamReader rdr = new StreamReader(respStream, Encoding.UTF8);
+            string responseString = rdr.ReadToEnd();
+            return responseString;
         }
 
         /// <summary>
