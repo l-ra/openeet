@@ -12,7 +12,7 @@ The project consists of following repositories (no full release yet - use prerel
   * latest prerelease build [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) - from now (2016-09-13) .NET mplementation will not progress much in this repo (only bug fixes and protocol changes will be refelcted) - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
   * you might be interested in [Windows XP TLS problem workaround](#windows-xp--tls11-problem)
 * [OpenEET Shell](https://github.com/l-ra/openeet-shell)
-* [OpenEET Android](https://github.com/l-ra/openeet-java)
+* [OpenEET Android](https://github.com/l-ra/openeet-android)
   * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
 
 
