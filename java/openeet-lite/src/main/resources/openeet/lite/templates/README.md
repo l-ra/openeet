@@ -9,6 +9,6 @@ If you need to modify templates (should not be necessary), the recommended appro
 
 Take working example of the message from Ministry of finance or somewhere else, use the scripts 
 in the shell part of the repository - prepare-tamplates.sh and the templates will be prepared for you. 
-Keep in mind there need to be placeholders (e.g. ${xxx}) instead of real values. The placeholders 
+Keep in mind there need to be placeholders (e.g. ${xxx} or @{xxx} for attribute) instead of real values. The placeholders 
 are used to manipulate the request to fill in business data. The template regeneration should not be needed 
 unless the specification version changes.  
