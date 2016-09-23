@@ -16,13 +16,6 @@ The project consists of following repositories (no full release yet - use prerel
   * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
 
 
-There are also other projects implementing EET API client (not related to OpenEET implementation in this repository):
-* https://github.com/ondrejnov/eet (PHP, MIT license)
-* https://github.com/novakmi/eetlite (Groovy, MIT license)
-* https://github.com/mirus77/DelphiEET (Delphi, MIT license)
-* https://github.com/todvora/eet-client (Java, MIT license)
-* https://github.com/vlastikcocek/openeet/tree/master/dotnet - fork of this repo focussed on the .NET/C# implementation
-
 ## Java example:
 
 ```java
@@ -100,6 +93,15 @@ public static void simpleRegistrationProcessTest(){
     Console.WriteLine("OK!"); //a bit brief :-) but enough
 }
 ```
+
+## Other opensource implementations
+
+There are also other projects implementing EET API client (not related to OpenEET implementation in this repository):
+* https://github.com/ondrejnov/eet (PHP, MIT license)
+* https://github.com/novakmi/eetlite (Groovy, MIT license)
+* https://github.com/mirus77/DelphiEET (Delphi, MIT license)
+* https://github.com/todvora/eet-client (Java, MIT license)
+* https://github.com/vlastikcocek/openeet/tree/master/dotnet - fork of this repo focussed on the .NET/C# implementation
 
 ## Windows XP & TLS1.1 problem
 To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not support TLS 1.0+](https://blogs.msdn.microsoft.com/kaushal/2011/10/02/support-for-ssltls-protocols-on-windows/). The problem canbe solved by SSL/TLS tunneling using stunnel. The tunneeling concept is described in following schema:
