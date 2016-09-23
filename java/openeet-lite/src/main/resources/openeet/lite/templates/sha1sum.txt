@@ -1,3 +1,0 @@
-bd735dc039274c38000ecfa91fd752aef5e53830  template_body
-78df1d563048085b2e870e51fd2a56d8571ec1e6  template_signature
-10ec3981178e47d864c781ea04ac43faaf944d7a  template_request
