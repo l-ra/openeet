@@ -3,18 +3,18 @@
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
-The project consists of following repositories:
+The project consists of following repositories (no full release yet - use prerelease snapshot or source code):
 * [OpenEET Java](https://github.com/l-ra/openeet-java)
-  *latest build prerelease
+  * latest build prerelease
     * Java 7 [openeet-lite-java7-20160923-0840.jar](releases/prerelease/openeet-lite-java7-20160923-0840.jar) 
     * Java 8 [openeet-lite-java8-20160923-0840.jar](releases/prerelease/openeet-lite-java8-20160923-0840.jar)
 * [OpenEET DotNet](https://github.com/l-ra/openeet-dotnet)
   * latest prerelease build [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) - from now (2016-09-13) .NET mplementation will not progress much in this repo (only bug fixes and protocol changes will be refelcted) - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
+  * you might be interested in [Windows XP TLS problem workaround](#windows-xp--tls11-problem)
 * [OpenEET Shell](https://github.com/l-ra/openeet-shell)
 * [OpenEET Android](https://github.com/l-ra/openeet-java)
   * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
 
-It is necessary to force git not to normalize line ends when clonning. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
 
 There are also other projects implementing EET API client (not related to OpenEET implementation in this repository):
 * https://github.com/ondrejnov/eet (PHP, MIT license)
@@ -23,18 +23,7 @@ There are also other projects implementing EET API client (not related to OpenEE
 * https://github.com/todvora/eet-client (Java, MIT license)
 * https://github.com/vlastikcocek/openeet/tree/master/dotnet - fork of this repo focussed on the .NET/C# implementation
 
-[Windows TLS problem workaround](#windows-xp--tls11-problem)
-
-## Java/C# implementation
-Java/C# implementation now works with EET playground v2. No extra dependencies besides the runtime, just the java runtime itself (1.4.2+) or .NET framework. No full release yet - use snapshot or source code. 
-
-For details look at 
-* Java implementation description [Java implementation description/](java/) 
-* .NET implementation description [.NET implementation description/](dotnet/) 
-
-
-To register a sale it is as easy as this:
-Java:
+## Java example:
 
 ```java
 @Test
@@ -74,7 +63,7 @@ public void simpleRegistrationProcessTest() throws MalformedURLException, IOExce
 ```
 
 
-C#:
+## C# example:
 ```c#
 public static void simpleRegistrationProcessTest(){
     //set minimal business data & certificate with key loaded from pkcs12 file
@@ -133,9 +122,13 @@ After the template instances with right data in are ready, signature value can b
 
 The final step fills the computed values into xml template and the message is ready to be sent to EET API.
 
+The templates are used in all versions of the library. It is necessary to force git not to normalize line ends when clonning. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
+
 ##UNIX Shell based Proof of Concept Implementation
 Shell implementation of the EET client - working out of box for the simplest case receipt.
 Shell experiment available at [shell/](shell/) - it is able to send valid request to playground EET API.
 
 Follow me [on twitter](https://twitter.com/_lra) if you want to be notified when something great happens to this repo.
+
+
 
