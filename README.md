@@ -1,13 +1,20 @@
+# !!! Repository reorganized see below
+
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
-EET API v3
-* Java 7 [openeet-lite-java7-20160923-0840.jar](releases/prerelease/openeet-lite-java7-20160923-0840.jar) 
-* Java 8 [openeet-lite-java8-20160923-0840.jar](releases/prerelease/openeet-lite-java8-20160923-0840.jar)
-* .NET [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) - from now (2016-09-13) .NET implementation will not progress much in this repo (only bug fixes and protocol changes will be refelcted) - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
-* [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
+The project consists of following repositories:
+* [OpenEET Java](https://github.com/l-ra/openeet-java)
+  *latest build prerelease
+    * Java 7 [openeet-lite-java7-20160923-0840.jar](releases/prerelease/openeet-lite-java7-20160923-0840.jar) 
+    * Java 8 [openeet-lite-java8-20160923-0840.jar](releases/prerelease/openeet-lite-java8-20160923-0840.jar)
+* [OpenEET DotNet](https://github.com/l-ra/openeet-dotnet)
+  * latest prerelease build [openeet-lite-shapshot-20160911-1837.dll](releases/prerelease/openeet-lite-shapshot-20160911-1837.dll) - from now (2016-09-13) .NET mplementation will not progress much in this repo (only bug fixes and protocol changes will be refelcted) - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
+* [OpenEET Shell](https://github.com/l-ra/openeet-shell)
+* [OpenEET Android](https://github.com/l-ra/openeet-java)
+  * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
 
-It is necessary to force git not to normalize line ends. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
+It is necessary to force git not to normalize line ends when clonning. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
 
 There are also other projects implementing EET API client (not related to OpenEET implementation in this repository):
 * https://github.com/ondrejnov/eet (PHP, MIT license)
