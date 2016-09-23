@@ -1177,7 +1177,7 @@ private HashMap<String,String> prepareValues(Date dat_odesl_force,PrvniZaslani p
     values.put("pouzit_zboz3",formatAmount(pouzit_zboz3));
     values.put("urceno_cerp_zuct",formatAmount(urceno_cerp_zuct));
     values.put("cerp_zuct",formatAmount(cerp_zuct));
-    values.put("rezim",rezim!=null?rezim.toString():null);
+    values.put("rezim",rezim.toString());
     values.put("bkp",formatBkp(bkp));
     values.put("pkp",formatPkp(pkp));
     return values;
@@ -1196,10 +1196,7 @@ private HashMap<String,String> prepareValues(Date dat_odesl_force,PrvniZaslani p
       }
       int p=template.indexOf('}',i+2);
       if(p<0)
-      {
-        result.append(c);
-        continue;
-      }
+        throw new RuntimeException("Missing end of placeholder");
       boolean attribute=c==' ';
       if(attribute)
         ++i; //skip space
@@ -1326,21 +1323,21 @@ private HashMap<String,String> prepareValues(Date dat_odesl_force,PrvniZaslani p
 		dto.id_provoz=id_provoz;
 		dto.id_pokl=id_pokl;
 		dto.porad_cis=porad_cis;
-		dto.dat_trzby=dat_trzby!=null?formatDate(dat_trzby):null;
-		dto.celk_trzba=celk_trzba!=null?formatAmount(celk_trzba):null;
-		dto.zakl_nepodl_dph=zakl_nepodl_dph!=null?formatAmount(zakl_nepodl_dph):null;
-		dto.zakl_dan1=zakl_dan1!=null?formatAmount(zakl_dan1):null;
-		dto.dan1=dan1!=null?formatAmount(dan1):null;
-		dto.zakl_dan2=zakl_dan2!=null?formatAmount(zakl_dan2):null;
-		dto.dan2=dan2!=null?formatAmount(dan2):null;
-		dto.zakl_dan3=zakl_dan3!=null?formatAmount(zakl_dan3):null;
-		dto.dan3=dan3!=null?formatAmount(dan3):null;
-		dto.cest_sluz=cest_sluz!=null?formatAmount(cest_sluz):null;
-		dto.pouzit_zboz1=pouzit_zboz1!=null?formatAmount(pouzit_zboz1):null;
-		dto.pouzit_zboz2=pouzit_zboz2!=null?formatAmount(pouzit_zboz2):null;
-		dto.pouzit_zboz3=pouzit_zboz3!=null?formatAmount(pouzit_zboz3):null;
-		dto.urceno_cerp_zuct=urceno_cerp_zuct!=null?formatAmount(urceno_cerp_zuct):null;
-		dto.cerp_zuct=cerp_zuct!=null?formatAmount(cerp_zuct):null;
+		dto.dat_trzby=formatDate(dat_trzby);
+		dto.celk_trzba=formatAmount(celk_trzba);
+		dto.zakl_nepodl_dph=formatAmount(zakl_nepodl_dph);
+		dto.zakl_dan1=formatAmount(zakl_dan1);
+		dto.dan1=formatAmount(dan1);
+		dto.zakl_dan2=formatAmount(zakl_dan2);
+		dto.dan2=formatAmount(dan2);
+		dto.zakl_dan3=formatAmount(zakl_dan3);
+		dto.dan3=formatAmount(dan3);
+		dto.cest_sluz=formatAmount(cest_sluz);
+		dto.pouzit_zboz1=formatAmount(pouzit_zboz1);
+		dto.pouzit_zboz2=formatAmount(pouzit_zboz2);
+		dto.pouzit_zboz3=formatAmount(pouzit_zboz3);
+		dto.urceno_cerp_zuct=formatAmount(urceno_cerp_zuct);
+		dto.cerp_zuct=formatAmount(cerp_zuct);
 		dto.rezim=rezim.toString();
 		dto.bkp=formatBkp();
 		dto.pkp=formatPkp();
