@@ -34,8 +34,8 @@
   </SOAP-ENV:Header>
   <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="TheBody" xml:id="TheBody">
     <Trzba xmlns="http://fs.mfcr.cz/eet/schema/v3">
-      <Hlavicka dat_odesl="${dat_odesl}" prvni_zaslani="${prvni_zaslani}" uuid_zpravy="${uuid_zpravy}" overeni="${overeni}"/>
-      <Data dic_popl="${dic_popl}" dic_poverujiciho="${dic_poverujiciho}" id_provoz="${id_provoz}" id_pokl="${id_pokl}" porad_cis="${porad_cis}" dat_trzby="${dat_trzby}" celk_trzba="${celk_trzba}" zakl_nepodl_dph="${zakl_nepodl_dph}" zakl_dan1="${zakl_dan1}" dan1="${dan1}" zakl_dan2="${zakl_dan2}" dan2="${dan2}" zakl_dan3="${zakl_dan3}" dan3="${dan3}" cest_sluz="${cest_sluz}" pouzit_zboz1="${pouzit_zboz1}" pouzit_zboz2="${pouzit_zboz2}" pouzit_zboz3="${pouzit_zboz3}" urceno_cerp_zuct="${urceno_cerp_zuct}" cerp_zuct="${cerp_zuct}" rezim="${rezim}"/>
+      <Hlavicka dat_odesl="@" overeni="@" prvni_zaslani="@" uuid_zpravy="@"/>
+      <Data celk_trzba="@" cerp_zuct="@" cest_sluz="@" dan1="@" dan2="@" dan3="@" dat_trzby="@" dic_popl="@" dic_poverujiciho="@" id_pokl="@" id_provoz="@" porad_cis="@" pouzit_zboz1="@" pouzit_zboz2="@" pouzit_zboz3="@" rezim="@" urceno_cerp_zuct="@" zakl_dan1="@" zakl_dan2="@" zakl_dan3="@" zakl_nepodl_dph="@"/>
       <KontrolniKody>
         <pkp cipher="RSA2048" digest="SHA256" encoding="base64">${pkp}</pkp>
         <bkp digest="SHA1" encoding="base16">${bkp}</bkp>

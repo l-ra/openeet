@@ -11,9 +11,9 @@ $data=json_decode($dataJson, $assoc=true);
 
 
 #load templates
-$xmlTemplate=file_get_contents($dir."/data/template.xml");
-$digestTemplate=file_get_contents($dir."/templates/digest-template");
-$signatureTemplate=file_get_contents($dir."/templates/signature-template");
+$requestTemplate=file_get_contents($dir."/templates/template_request.txt");
+$bodyTemplate=file_get_contents($dir."/templates/template_body.txt");
+$signatureTemplate=file_get_contents($dir."/templates/template_signature.txt");
 
 #prepare dynamic data
 $data["dat_odesl"]=date("c");
@@ -64,18 +64,24 @@ $data["bkp"]=$bkpValue;
 
 #compute digest from canonicalized data of the Body element based on template extracted enriched with business data
 #replace the placeholders with real business data and stpore to file  
-$digestFinal=$digestTemplate;
+$digestFinal=$bodyTemplate;
 #fill in data in the digest first
 foreach ($data as $key => $value) {
 	$digestFinal=str_replace("\${".$key."}",$value,$digestFinal);
+  $digestFinal=str_replace("@{".$key."}","$key=\"$value\"",$digestFinal);
 }
 #remove unused fields
-$digestFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$digestFinal);
-$digestFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$digestFinal);
+#$digestFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$digestFinal);
+$digestFinal=preg_replace("/\\$\\{[a-z_0-9:]+\\}/","",$digestFinal);
+$digestFinal=preg_replace("/ @\\{[a-z_0-9:]+\\}/","",$digestFinal);
+
+#$digestFinal=preg_replace("/ @/","BUBUBUBU",$digestFinal);
 
 $digestDataFile=$dir."/work/digest-data";
 $digestValueFile=$dir."/work/digest-value";
 file_put_contents($digestDataFile, $digestFinal);
+$data["soap_body"]=$digestFinal;
+
 #compute digest over the enriched data
 $digestCmd= "openssl sha256 -binary $digestDataFile "  #compute hash
            ."| base64  "                               #apply base64 according to XMLDSig
@@ -90,10 +96,12 @@ $data["digest"]=$digestValue; #add digest to data - it is used in the next repla
 $signatureFinal=$signatureTemplate;
 foreach ($data as $key => $value) {
 	$signatureFinal=str_replace("\${".$key."}",$value,$signatureFinal);
+  $signatureFinal=str_replace("@{".$key."}","$key=\"$value\"",$signatureFinal);
 }
 #remove unused fields
-$signatureFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$signatureFinal);
-$signatureFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$signatureFinal);
+#$signatureFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$signatureFinal);
+$signatureFinal=preg_replace("/\\$\\{[a-z_0-9]+\\}/","",$signatureFinal);
+$signatureFinal=preg_replace("/ @\\{[a-z_0-9]+\\}/","",$signatureFinal);
 
 
 $signatureDataFile=$dir."/work/signature-data";
@@ -108,13 +116,15 @@ $signatureValue=file_get_contents($signatureValueFile);
 $data["signature"]=$signatureValue;
 
 #complete XML with all the values computes
-$xmlFinal=$xmlTemplate;
+$xmlFinal=$requestTemplate;
 foreach ($data as $key => $value) {
 	$xmlFinal=str_replace("\${".$key."}",$value,$xmlFinal);
+  $xmlFinal=str_replace("@{".$key."}","$key=\"$value\"",$xmlFinal);
 }
 #remove unused fields
-$xmlFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$xmlFinal);
-$xmlFinal=preg_replace("/\\$\\{[a-b_0-9]+\\}/","",$xmlFinal);
+#$xmlFinal=preg_replace("/ [a-z_0-9]+=\"\\$\\{[0-9_a-z]+\\}\"/","",$xmlFinal);
+$xmlFinal=preg_replace("/\\$\\{[a-z_0-9]+\\}/","",$xmlFinal);
+$xmlFinal=preg_replace("/@\\{[a-z_0-9]+\\}/","",$xmlFinal);
 
 $signedMessageFile=$dir."/work/signed-message";
 file_put_contents($signedMessageFile, $xmlFinal);
