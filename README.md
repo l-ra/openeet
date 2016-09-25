@@ -4,7 +4,7 @@
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
 The project consists of following repositories (no full release yet - use prerelease snapshot or source code):
-* [OpenEET Java](https://github.com/l-ra/openeet-java)
+* [OpenEET Java](https://github.com/l-ra/openeet-java) ![build status](https://camo.githubusercontent.com/596e721ea9e5279dc30fcca1f1f176ae99266289/68747470733a2f2f7472617669732d63692e6f72672f6c2d72612f6f70656e6565742d6a6176612e7376673f6272616e63683d6d6173746572)
   * latest build prerelease
     * Java 7 [openeet-lite-java7-20160923-0840.jar](releases/prerelease/openeet-lite-java7-20160923-0840.jar) 
     * Java 8 [openeet-lite-java8-20160923-0840.jar](releases/prerelease/openeet-lite-java8-20160923-0840.jar)
