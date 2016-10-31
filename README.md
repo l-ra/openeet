@@ -1,5 +1,3 @@
-# !!! Repository reorganized see below
-
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
@@ -131,6 +129,8 @@ Shell implementation of the EET client - working out of box for the simplest cas
 Shell experiment available at [shell/](shell/) - it is able to send valid request to playground EET API.
 
 Follow me [on twitter](https://twitter.com/_lra) if you want to be notified when something great happens to this repo.
+
+If you want to support me with beer or pizza, Bitcoins are welcomed at 15wuP8HRu29pYNe4jtfiTuGXrWtzdg53Jg 
 
 
 
