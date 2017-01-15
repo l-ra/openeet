@@ -1,10 +1,8 @@
-# !!! Repository reorganized see below
-
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
 The project consists of following repositories (no full release yet - use prerelease snapshot or source code):
-* [OpenEET Java](https://github.com/l-ra/openeet-java)
+* [OpenEET Java](https://github.com/l-ra/openeet-java) ![build status](https://camo.githubusercontent.com/596e721ea9e5279dc30fcca1f1f176ae99266289/68747470733a2f2f7472617669732d63692e6f72672f6c2d72612f6f70656e6565742d6a6176612e7376673f6272616e63683d6d6173746572)
   * latest build prerelease
     * Java 7 [openeet-lite-java7-20160923-0840.jar](releases/prerelease/openeet-lite-java7-20170115-0140.jar) 
     * Java 8 [openeet-lite-java8-20160923-0840.jar](releases/prerelease/openeet-lite-java8-20170115-0140.jar)
@@ -131,6 +129,8 @@ Shell implementation of the EET client - working out of box for the simplest cas
 Shell experiment available at [shell/](shell/) - it is able to send valid request to playground EET API.
 
 Follow me [on twitter](https://twitter.com/_lra) if you want to be notified when something great happens to this repo.
+
+If you want to support me with beer or pizza, Bitcoins are welcomed at 15wuP8HRu29pYNe4jtfiTuGXrWtzdg53Jg 
 
 
 
