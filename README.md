@@ -9,8 +9,9 @@ The project consists of following repositories (no full release yet - use prerel
   * latest prerelease build [openeet-lite-shapshot-20170303-1130.zip](releases/prerelease/openeet-lite-shapshot-20170303-1130.zip) - from now (2016-09-13) .NET mplementation will not progress much in this repo (only bug fixes and protocol changes will be refelcted) - [see fork focuussed on .NET](https://github.com/vlastikcocek/openeet/tree/master/dotnet)
   * you might be interested in [Windows XP TLS problem workaround](#windows-xp--tls11-problem)
 * [OpenEET Shell](https://github.com/l-ra/openeet-shell)
+* [OpenEET JS](https://github.com/l-ra/openeet-js) - PoC implementation in browser Javascript (no deps, webcrypto)
 * [OpenEET Android](https://github.com/l-ra/openeet-android)
-  * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet)
+  * [Android Application OpenEET](https://play.google.com/store/apps/details?id=com.github.openeet.openeet) - unmaintained
 
 
 ## Java example:
