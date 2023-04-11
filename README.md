@@ -1,3 +1,6 @@
+# Abandoned
+As EET (elektronicka evidence trzeb) was canceled in Czechia - this repoitory is not maintained anymore. It will be kept as a record of history only. 
+
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
 
