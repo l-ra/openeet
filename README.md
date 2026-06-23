@@ -115,11 +115,11 @@ To interact with EET endpoint at least TLS v1.1 is needed. [Windows XP does not 
 ```
 You can use stunnel distribution tailored to EET needs available in this repo in the [stunnel-eet](stunnel-eet/win32/) folder. The proposed solution was not tested on WinXP yet. Use issue to let me know whether it works or not.  
 
-##XMLDSig&SOAP&WS-Security approach for restricted devices
+## XMLDSig&SOAP&WS-Security approach for restricted devices
 As XMLDsig&SOAP&WSS are huge standards, it is hard to find fuully compliant implementation on restricted devices. I decided to work around this. The intention of of this work (for now) is to provide "light" implementation of the EET API clien.
 I will decsribe my approach later (not som much spare time now). For now just short intro. You ucan see working PoC in th shell implementation. The concept is based on XMLDSig processing (see spec). XML is preprocessed from the point of view of canonicalization during compile time and then message is constructed using preprocessing results (templates), some (careful) string replacements and basic crytpo primitives (SHA256, SHA1 and RSASSA_PKCS_1_5)which are widely available on most platforms.
 
-###Templates preparation
+### Templates preparation
 This step take part during library build. It is bound to certain version of the spec and it is automated by calling a script. The "compile time" preprocessing of the example SOAP message produces two blobs.
 * xml temmplate - template of the whole SOAP message
 * digested data - template needs to be filled in with business data
@@ -130,11 +130,11 @@ The final step fills the computed values into xml template and the message is re
 
 The templates are used in all versions of the library. It is necessary to force git not to normalize line ends when clonning. The templates must be binary identical when checking out. Master branch contains template hash validation. In case the hash validation fails (exceptoin during soap message generation), check the files in the templates folder. To reconfigure git not to modify line ends use `git config --global core.autocrlf input` and checkout master branch.
 
-##UNIX Shell based Proof of Concept Implementation
+## UNIX Shell based Proof of Concept Implementation
 Shell implementation of the EET client - working out of box for the simplest case receipt.
 Shell experiment available at [shell/](shell/) - it is able to send valid request to playground EET API.
 
-Follow me [on twitter](https://twitter.com/_lra) if you want to be notified when something great happens to this repo.
+Follow me [on twitter](https://x.com/_lra) if you want to be notified when something great happens to this repo.
 
 If you want to support me with beer or pizza, Bitcoins are welcomed at 15wuP8HRu29pYNe4jtfiTuGXrWtzdg53Jg 
 
