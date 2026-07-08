@@ -1,8 +1,8 @@
-# UnAbandoned
+# ReUnAbandoned
 EET (Elektronická evidence tržeb - Electronic Registration of Sales) was abolished in Czechia after the COVID pandemic. And now—wait for it—it is set to make its glorious and completely unnecessary return in 2026 or 2027. That means this repository may also rise from the dead. As our precious Alice says, “We’ll see.” Apparently, history does not just repeat itself—it keeps recycling the same useless bureaucratic ideas.
 
 # What's new for resurection of EET
-From the technology point of view the protocol seems to be the same. Good old WS Security and XML Signatures. At a first glance, the library can be used if needed. When sandbox is ready I might test it and give results here. 
+From the technology point of view the protocol seems to be the same. Good old WS Security and XML Signatures. No paper receipts. There are too many changes in message formata and too little time. For now I do not plan to update the library. These days everyone can take specs and ask some AI agent to develop implementation with minimal or no dependencies. I will not do it for now.  
 
 # OpenEET
 Open source light implementation of EET client library (Java, C#, UNIX shell). Working client (XMLDSig, WS-Security, SOAP call) with no external dependencies in 16/25kB JAR/DLL file. Get the devel snapshot and !Try It! (Use the code to get latest fixes&features)
